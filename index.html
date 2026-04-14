@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNIDO · Factory of the Future — SME Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --un-blue: #009EDB;
+    --un-dark: #0A2463;
+    --un-mid: #1A5F9C;
+    --un-light: #E8F4FC;
+    --un-lighter: #F4FAFD;
+    --grey-100: #F5F7FA;
+    --grey-200: #E9EDF2;
+    --grey-400: #9BAABF;
+    --grey-600: #546E8A;
+    --grey-800: #2D3F55;
+    --ink: #1A2B3C;
+    --radius: 6px;
+    --shadow-sm: 0 1px 4px rgba(10,36,99,0.08);
+    --shadow-md: 0 4px 16px rgba(10,36,99,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    background: var(--grey-100);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ---------- TOPBAR ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 52px;
+    background: var(--un-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+  }
+  .topbar-left {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .un-emblem {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    color: var(--un-dark);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.02em;
+  }
+  .topbar-divider {
+    width: 1px;
+    height: 22px;
+    background: rgba(255,255,255,0.2);
+  }
+  .topbar-org {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .topbar-title {
+    font-size: 0.82rem;
+    color: white;
+    font-weight: 600;
+  }
+  .topbar-right {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ---------- PROGRESS STRIP ---------- */
+  .progress-strip {
+    position: sticky;
+    top: 52px;
+    z-index: 99;
+    height: 4px;
+    background: var(--un-mid);
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--un-blue);
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ---------- SCREEN WRAPPER ---------- */
+  .screen-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  .screen { display: none; }
+  .screen.active {
+    display: block;
+    animation: fadeUp 0.28s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- CARDS ---------- */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--grey-200);
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--un-lighter);
+    border-bottom: 1px solid var(--grey-200);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .card-header-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--un-blue);
+    color: white;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-header-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #0096B4;
+    font-weight: 700;
+  }
+  .card-header-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--un-dark);
+  }
+  .card-body { padding: 1.5rem; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background: linear-gradient(135deg, var(--un-dark), var(--un-mid));
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -90px;
+    left: -40px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+  .hero > * { position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--un-blue);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .hero-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 0 0 0.8rem;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--un-blue);
+  }
+  .hero-sub {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .hero-meta {
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .hero-stat-n {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--un-blue);
+  }
+  .hero-stat-l {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 0.2rem;
+  }
+
+  /* ---------- INFO GRID ---------- */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+  @media (max-width: 560px) {
+    .info-grid { grid-template-columns: 1fr; }
+  }
+  .info-tile {
+    background: white;
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .info-tile-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+  .info-tile-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: #0096B4;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .info-tile-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--un-dark);
+    margin-bottom: 0.35rem;
+  }
+  .info-tile-text {
+    font-size: 0.8rem;
+    color: var(--grey-600);
+    line-height: 1.55;
+  }
+
+  /* ---------- STEP INDICATOR ---------- */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 2rem;
+  }
+  .step-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .step-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--grey-200);
+    background: white;
+    color: var(--grey-400);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s;
+  }
+  .step-dot.done {
+    background: var(--un-blue);
+    border-color: var(--un-blue);
+    color: white;
+  }
+  .step-dot.current {
+    background: var(--un-dark);
+    border-color: var(--un-dark);
+    color: white;
+  }
+  .step-dot-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    color: var(--grey-400);
+    white-space: nowrap;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .step-dot-label.current {
+    color: var(--un-dark);
+    font-weight: 700;
+  }
+  .step-dot-label.done {
+    color: #0096B4;
+  }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--grey-200);
+    margin-top: -14px;
+    transition: background 0.25s;
+  }
+  .step-line.done {
+    background: var(--un-blue);
+  }
+
+  /* ---------- QUESTION BLOCKS ---------- */
+  .q-block {
+    background: white;
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.18s;
+  }
+  .q-block.answered {
+    border-left: 3px solid var(--un-blue);
+  }
+  .q-head {
+    padding: 1rem 1.3rem 0.7rem;
+    border-bottom: 1px solid var(--grey-200);
+    display: flex;
+    gap: 0.75rem;
+  }
+  .q-number {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--un-blue);
+    font-weight: 700;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--un-dark);
+    line-height: 1.4;
+  }
+  .q-sub {
+    font-size: 0.77rem;
+    color: var(--grey-400);
+    font-weight: 400;
+    margin-top: 0.25rem;
+  }
+  .q-options {
+    padding: 0.8rem 1.3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .q-options.horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* ---------- OPTIONS ---------- */
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 4px;
+    border: 1.5px solid var(--grey-200);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: white;
+    user-select: none;
+  }
+  .opt:hover {
+    border-color: var(--un-blue);
+    background: var(--un-light);
+  }
+  .opt.selected {
+    border-color: var(--un-blue);
+    background: var(--un-light);
+  }
+  .opt-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--grey-400);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .opt.selected .opt-dot {
+    border-color: var(--un-blue);
+    background: var(--un-blue);
+  }
+  .opt.selected .opt-dot::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+  .opt.multi .opt-dot {
+    border-radius: 3px;
+  }
+  .opt-label {
+    font-size: 0.83rem;
+    color: var(--grey-800);
+    line-height: 1.45;
+    flex: 1;
+  }
+  .opt.selected .opt-label {
+    color: var(--un-dark);
+    font-weight: 500;
+  }
+  .opt.horizontal-chip {
+    padding: 0.45rem 0.9rem;
+    border-radius: 20px;
+    gap: 0.4rem;
+  }
+  .opt.horizontal-chip .opt-dot { display: none; }
+  .opt.horizontal-chip .opt-label { font-size: 0.8rem; }
+
+  /* ---------- SECTION LABELS ---------- */
+  .q-section-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #0096B4;
+    font-weight: 700;
+    padding: 1.2rem 0 0.5rem;
+    border-top: 2px solid var(--un-light);
+    margin-top: 0.5rem;
+  }
+  .q-section-label:first-child {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--radius);
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary {
+    background: var(--un-blue);
+    color: white;
+  }
+  .btn-primary:hover {
+    background: #0096B4;
+    box-shadow: var(--shadow-md);
+  }
+  .btn-dark {
+    background: var(--un-dark);
+    color: white;
+  }
+  .btn-dark:hover {
+    background: var(--un-mid);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--un-mid);
+    border: 1.5px solid var(--un-mid);
+  }
+  .btn-outline:hover {
+    background: var(--un-light);
+  }
+  .btn-lg {
+    padding: 0.85rem 2rem;
+    font-size: 0.95rem;
+  }
+  .btn-sm {
+    padding: 0.45rem 1rem;
+    font-size: 0.78rem;
+  }
+  .btn-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* ---------- SCREEN TITLES ---------- */
+  .screen-title {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #0096B4;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .screen-heading {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    font-weight: 600;
+    color: var(--un-dark);
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+  }
+  .screen-sub {
+    font-size: 0.87rem;
+    color: var(--grey-600);
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+  }
+
+  /* ---------- RESULTS ---------- */
+  .result-header {
+    background: linear-gradient(135deg, var(--un-dark), var(--un-mid));
+    border-radius: var(--radius);
+    padding: 2rem;
+    color: white;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .result-badge {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--un-blue);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .result-badge-n {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+  }
+  .result-badge-l {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.7);
+  }
+  .result-stage-name {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .result-stage-desc {
+    font-size: 0.83rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.55;
+  }
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+  @media (max-width: 560px) {
+    .profile-grid { grid-template-columns: 1fr; }
+  }
+  .profile-tile {
+    background: white;
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .profile-tile-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: #0096B4;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .profile-bar-wrap { margin-bottom: 0.7rem; }
+  .profile-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--grey-600);
+    margin-bottom: 0.25rem;
+  }
+  .profile-bar {
+    height: 6px;
+    background: var(--grey-200);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .profile-bar-fill {
+    height: 100%;
+    background: var(--un-blue);
+    border-radius: 3px;
+    transition: width 0.8s ease;
+    width: 0;
+  }
+  .note-box {
+    background: var(--un-lighter);
+    border-left: 3px solid var(--un-blue);
+    border-radius: 0 4px 4px 0;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.8rem;
+    color: var(--grey-600);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+
+  /* ---------- FOOTER ---------- */
+  .tool-footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.72rem;
+    color: var(--grey-400);
+    border-top: 1px solid var(--grey-200);
+    margin-top: 2rem;
+  }
+
+  /* ---------- PRINT ---------- */
+  @media print {
+    #password-gate, .topbar, .progress-strip, .btn-row, .tool-footer { display: none !important; }
+    body { background: white; }
+    .screen-wrap { max-width: 100%; padding: 0; }
+    .card, .q-block, .profile-tile, .info-tile { box-shadow: none !important; }
+    .screen { display: block !important; color: black; }
+  }
+
+  /* ---------- PASSWORD GATE ---------- */
+  #password-gate {
+    position: fixed;
+    inset: 0;
+    background: var(--un-dark);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+  .gate-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    text-align: center;
+  }
+  .gate-emblem {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--un-dark);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0 auto 1.2rem;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gate-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--un-dark);
+    margin-bottom: 0.3rem;
+  }
+  .gate-sub {
+    font-size: 0.78rem;
+    color: var(--grey-600);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .gate-input {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--grey-200);
+    border-radius: var(--radius);
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    font-size: 0.9rem;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .gate-input:focus {
+    border-color: var(--un-blue);
+  }
+  .gate-input.error {
+    border-color: #c0392b;
+    animation: shake 0.3s ease;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .gate-btn {
+    width: 100%;
+    padding: 0.7rem;
+    background: var(--un-blue);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .gate-btn:hover {
+    background: #0096B4;
+  }
+  .gate-error {
+    font-size: 0.75rem;
+    color: #c0392b;
+    margin-top: 0.6rem;
+    min-height: 1rem;
+  }
+  .gate-footer {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.3);
+    margin-top: 1.5rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== PASSWORD GATE ========== -->
+<div id="password-gate">
+  <div class="gate-card">
+    <div class="gate-emblem">UN</div>
+    <div class="gate-title">Factory of the Future</div>
+    <div class="gate-sub">SME Assessment Tool<br>Enter access code to continue</div>
+    <input
+      type="password"
+      id="gate-input"
+      class="gate-input"
+      placeholder="Access code"
+      autocomplete="off"
+      onkeydown="if(event.key==='Enter'){checkPassword();}"
+    >
+    <button class="gate-btn" onclick="checkPassword()">Enter →</button>
+    <div class="gate-error" id="gate-error"></div>
+  </div>
+  <div class="gate-footer">UNIDO · TCS/DAI · Project 230258</div>
+</div>
+
+<!-- ========== TOPBAR ========== -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="un-emblem">UN</div>
+    <div class="topbar-divider"></div>
+    <div>
+      <div class="topbar-org">UNIDO · TCS/DAI · Project 230258</div>
+      <div class="topbar-title">Factory of the Future — SME Assessment</div>
+    </div>
+  </div>
+  <div class="topbar-right">April 2026 · D1 v1.0</div>
+</div>
+
+<!-- ========== PROGRESS STRIP ========== -->
+<div class="progress-strip">
+  <div class="progress-fill" id="progress-fill"></div>
+</div>
+
+<!-- ========== SCREENS ========== -->
+<div class="screen-wrap">
+  <!-- ===== SCREEN 0 — WELCOME ===== -->
+  <div class="screen active" id="sc-0">
+    <div class="hero">
+      <div class="hero-eyebrow">UNIDO Industry 4.0 / 5.0 Programme</div>
+      <h1 class="hero-title">Is your factory ready for the <em>future</em>?</h1>
+      <p class="hero-sub">This short assessment helps you understand where your factory stands today, and what a structured transformation programme would look like for you. It takes about 8 minutes.</p>
+      <div class="hero-meta">
+        <div>
+          <div class="hero-stat-n">~8 min</div>
+          <div class="hero-stat-l">Estimated time</div>
+        </div>
+        <div>
+          <div class="hero-stat-n">24</div>
+          <div class="hero-stat-l">Questions</div>
+        </div>
+        <div>
+          <div class="hero-stat-n">7</div>
+          <div class="hero-stat-l">Capability areas</div>
+        </div>
+        <div>
+          <div class="hero-stat-n">No IT</div>
+          <div class="hero-stat-l">Needed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-tile">
+        <div class="info-tile-icon">🏭</div>
+        <div class="info-tile-label">Who this is for</div>
+        <div class="info-tile-title">Manufacturing SMEs</div>
+        <div class="info-tile-text">Factory owners, production managers, or operational leads in manufacturing companies of any size.</div>
+      </div>
+      <div class="info-tile">
+        <div class="info-tile-icon">📊</div>
+        <div class="info-tile-label">What you get</div>
+        <div class="info-tile-title">Your transformation profile</div>
+        <div class="info-tile-text">A clear picture of your current maturity stage and a recommended programme entry path.</div>
+      </div>
+      <div class="info-tile">
+        <div class="info-tile-icon">🔒</div>
+        <div class="info-tile-label">How data is used</div>
+        <div class="info-tile-title">For programme design only</div>
+        <div class="info-tile-text">Your answers help your UNIDO advisor prepare for the full on-site assessment. Nothing is shared externally.</div>
+      </div>
+      <div class="info-tile">
+        <div class="info-tile-icon">✅</div>
+        <div class="info-tile-label">Format</div>
+        <div class="info-tile-title">Mostly multiple choice</div>
+        <div class="info-tile-text">Select the option that best describes your situation. There are no right or wrong answers — be honest.</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary btn-lg" onclick="goTo(1)">Start assessment →</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 1 — ABOUT YOUR COMPANY ===== -->
+  <div class="screen" id="sc-1">
+    <div class="step-indicator" id="step-ind-1"></div>
+    <div class="screen-title">Section 1 of 4</div>
+    <h2 class="screen-heading">About your company</h2>
+    <p class="screen-sub">A few basics to help us contextualise your results.</p>
+
+    <div class="q-section-label">Size & Sector</div>
+
+    <div class="q-block" id="q1">
+      <div class="q-head">
+        <div class="q-number">Q1</div>
+        <div>
+          <div class="q-text">How many people work in your factory?</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">Fewer than 10</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">10–49</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">50–249</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">250 or more</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q2">
+      <div class="q-head">
+        <div class="q-number">Q2</div>
+        <div>
+          <div class="q-text">What best describes your main production sector?</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Metal/Machinery</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Food & Beverage</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Wood/Furniture</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Textiles/Apparel</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Chemicals/Pharma</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Automotive parts</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Other manufacturing</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q3">
+      <div class="q-head">
+        <div class="q-number">Q3</div>
+        <div>
+          <div class="q-text">Who are your main customers?</div>
+          <div class="q-sub">Select all that apply</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Local/domestic market</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Export to EU</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Export outside EU</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Large manufacturers (Tier 1/2 supplier)</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Direct to consumer</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q4">
+      <div class="q-head">
+        <div class="q-number">Q4</div>
+        <div>
+          <div class="q-text">What is your biggest operational challenge right now?</div>
+        </div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Keeping quality consistent across shifts and operators</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Meeting delivery deadlines reliably</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Reducing costs — energy, materials, or labour</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Finding and keeping skilled workers</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Keeping up with customer requirements and certifications</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Managing suppliers and raw material availability</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline btn-sm" onclick="goTo(0)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2 — HOW YOU WORK TODAY ===== -->
+  <div class="screen" id="sc-2">
+    <div class="step-indicator" id="step-ind-2"></div>
+    <div class="screen-title">Section 2 of 4</div>
+    <h2 class="screen-heading">How you work today</h2>
+    <p class="screen-sub">Select the option that best matches your current reality — not what you aspire to.</p>
+
+    <div class="q-section-label">Production & Process</div>
+
+    <div class="q-block" id="q5">
+      <div class="q-head">
+        <div class="q-number">Q5</div>
+        <div><div class="q-text">How are your production processes documented?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">Not documented — people work from experience and memory</span></div>
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">Some written down but not consistently followed</span></div>
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">Most have documented procedures operators follow regularly</span></div>
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">All key processes documented, version-controlled, and linked to training</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q6">
+      <div class="q-head">
+        <div class="q-number">Q6</div>
+        <div><div class="q-text">When a machine breaks down unexpectedly, what typically happens?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">We react and fix it — no formal process</span></div>
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">We have a maintenance team but breakdowns are mostly reactive</span></div>
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">Regular preventive maintenance on a schedule — breakdowns are less frequent</span></div>
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">Sensor data or alerts predict and prevent failures before they happen</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q7">
+      <div class="q-head">
+        <div class="q-number">Q7</div>
+        <div><div class="q-text">How is your factory floor organised?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Tools and parts not always in a defined place</span></div>
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Some areas organised, others not consistent</span></div>
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Factory is organised and visual — anyone can see normal vs. abnormal</span></div>
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Digital displays give real-time production and quality status</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q8">
+      <div class="q-head">
+        <div class="q-number">Q8</div>
+        <div><div class="q-text">When a quality defect is found, how do you respond?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Fix it and move on — no root cause investigation</span></div>
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Try to find the cause but depends on who is available</span></div>
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Defined process for root cause analysis and corrective action</span></div>
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Quality data tracked continuously, defect patterns identified before accumulation</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">Information & Data</div>
+
+    <div class="q-block" id="q9">
+      <div class="q-head">
+        <div class="q-number">Q9</div>
+        <div><div class="q-text">If a customer calls for a delivery status update, how do you find the answer?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Walk to the floor or call the responsible person</span></div>
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Check a spreadsheet or logbook — not always up to date</span></div>
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Check a system — data is usually accurate and current</span></div>
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Customer can track this via a shared portal</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q10">
+      <div class="q-head">
+        <div class="q-number">Q10</div>
+        <div>
+          <div class="q-text">Which digital tools do you currently use?</div>
+          <div class="q-sub">Select all that apply</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Spreadsheets (Excel/Sheets)</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Accounting/ERP software</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Production planning system (MES/MRP)</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Quality management software</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Machine sensors/IoT devices</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Inventory/warehouse system</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">None of the above</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q11">
+      <div class="q-head">
+        <div class="q-number">Q11</div>
+        <div><div class="q-text">How do your factory systems share information with each other?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">They don't — each department keeps its own data</span></div>
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">We manually copy or re-enter data between systems</span></div>
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">Some systems connected, others still require manual transfer</span></div>
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">Main systems exchange data automatically — shared information base</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">People & Culture</div>
+
+    <div class="q-block" id="q12">
+      <div class="q-head">
+        <div class="q-number">Q12</div>
+        <div><div class="q-text">How are improvement ideas typically generated?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">Owner or manager identifies problems and decides fixes</span></div>
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">A few key people raise issues occasionally, not systematic</span></div>
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">Workers encouraged to flag problems — some ideas get implemented</span></div>
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">Formal improvement process where floor-level data drives regular structured changes</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q13">
+      <div class="q-head">
+        <div class="q-number">Q13</div>
+        <div><div class="q-text">How would you describe your team's relationship with digital tools?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">Most workers prefer to work without screens — creates friction</span></div>
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">A few comfortable, others resistant or unfamiliar</span></div>
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">Most workers use basic digital tools without major issues</span></div>
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">Workers actively use data to monitor their area and flag issues in real time</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline btn-sm" onclick="goTo(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Continue →</button>
+    </div>
+  </div>
+  <!-- ===== SCREEN 3 — ENVIRONMENT, CUSTOMERS & SUPPLY CHAIN ===== -->
+  <div class="screen" id="sc-3">
+    <div class="step-indicator" id="step-ind-3"></div>
+    <div class="screen-title">Section 3 of 4</div>
+    <h2 class="screen-heading">Environment, customers & supply chain</h2>
+    <p class="screen-sub">These questions cover sustainability practices, how you manage customer requirements, and how you work with suppliers.</p>
+
+    <div class="q-section-label">Environmental Practices</div>
+
+    <div class="q-block" id="q14">
+      <div class="q-head">
+        <div class="q-number">Q14</div>
+        <div><div class="q-text">How do you track energy and resource consumption?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q14')"><span class="opt-dot"></span><span class="opt-label">Only total bills — don't know which process consumes most</span></div>
+        <div class="opt" onclick="pick(this,'q14')"><span class="opt-dot"></span><span class="opt-label">Track some data but not linked to specific operations</span></div>
+        <div class="opt" onclick="pick(this,'q14')"><span class="opt-dot"></span><span class="opt-label">Measure energy and materials per production area or process</span></div>
+        <div class="opt" onclick="pick(this,'q14')"><span class="opt-dot"></span><span class="opt-label">Real-time monitoring enables optimisation based on production conditions</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q15">
+      <div class="q-head">
+        <div class="q-number">Q15</div>
+        <div><div class="q-text">How do you manage production waste and scrap?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q15')"><span class="opt-dot"></span><span class="opt-label">Disposed of — not measured regularly</span></div>
+        <div class="opt" onclick="pick(this,'q15')"><span class="opt-dot"></span><span class="opt-label">Estimate volumes but no systematic tracking</span></div>
+        <div class="opt" onclick="pick(this,'q15')"><span class="opt-dot"></span><span class="opt-label">Scrap and waste recorded, targets set, active reduction projects</span></div>
+        <div class="opt" onclick="pick(this,'q15')"><span class="opt-dot"></span><span class="opt-label">Waste data integrated into production decisions — materials recirculated or repurposed</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q16">
+      <div class="q-head">
+        <div class="q-number">Q16</div>
+        <div><div class="q-text">Do your customers or export markets ask for environmental data?</div></div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip" onclick="pick(this,'q16')"><span class="opt-dot"></span><span class="opt-label">No, never</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q16')"><span class="opt-dot"></span><span class="opt-label">Occasionally, informally</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q16')"><span class="opt-dot"></span><span class="opt-label">Yes, as part of supplier audits</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q16')"><span class="opt-dot"></span><span class="opt-label">Yes, formal contractual requirement</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">Customer Requirements</div>
+
+    <div class="q-block" id="q17">
+      <div class="q-head">
+        <div class="q-number">Q17</div>
+        <div><div class="q-text">How do customer requirements get translated into what you produce?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q17')"><span class="opt-dot"></span><span class="opt-label">Based on experience — owner or sales interprets informally</span></div>
+        <div class="opt" onclick="pick(this,'q17')"><span class="opt-dot"></span><span class="opt-label">Technical specifications exist but not always updated</span></div>
+        <div class="opt" onclick="pick(this,'q17')"><span class="opt-dot"></span><span class="opt-label">Requirements formally captured, linked to specs, updated via feedback loops</span></div>
+        <div class="opt" onclick="pick(this,'q17')"><span class="opt-dot"></span><span class="opt-label">Customer data flows directly into product design and process improvement</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q18">
+      <div class="q-head">
+        <div class="q-number">Q18</div>
+        <div>
+          <div class="q-text">What certifications or quality standards do you hold?</div>
+          <div class="q-sub">Select all that apply</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q18')"><span class="opt-dot"></span><span class="opt-label">ISO 9001</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q18')"><span class="opt-dot"></span><span class="opt-label">ISO 14001</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q18')"><span class="opt-dot"></span><span class="opt-label">ISO 45001</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q18')"><span class="opt-dot"></span><span class="opt-label">IATF 16949</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q18')"><span class="opt-dot"></span><span class="opt-label">CE marking</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q18')"><span class="opt-dot"></span><span class="opt-label">Customer-specific certification</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q18')"><span class="opt-dot"></span><span class="opt-label">None currently</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">Supply Chain</div>
+
+    <div class="q-block" id="q19">
+      <div class="q-head">
+        <div class="q-number">Q19</div>
+        <div><div class="q-text">How do you manage communication with key suppliers?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q19')"><span class="opt-dot"></span><span class="opt-label">Phone and email — orders placed manually when needed</span></div>
+        <div class="opt" onclick="pick(this,'q19')"><span class="opt-dot"></span><span class="opt-label">Agreements and lead times but coordination is mostly reactive</span></div>
+        <div class="opt" onclick="pick(this,'q19')"><span class="opt-dot"></span><span class="opt-label">Key suppliers have visibility into our schedules — proactive joint planning</span></div>
+        <div class="opt" onclick="pick(this,'q19')"><span class="opt-dot"></span><span class="opt-label">Systems connected — orders, forecasts, and performance data flow automatically</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q20">
+      <div class="q-head">
+        <div class="q-number">Q20</div>
+        <div><div class="q-text">How resilient is your supply chain to disruptions?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q20')"><span class="opt-dot"></span><span class="opt-label">A disruption stops production — no backup plan</span></div>
+        <div class="opt" onclick="pick(this,'q20')"><span class="opt-dot"></span><span class="opt-label">We keep safety stock but no formalised resilience strategy</span></div>
+        <div class="opt" onclick="pick(this,'q20')"><span class="opt-dot"></span><span class="opt-label">Alternative suppliers and contingency plans for key materials</span></div>
+        <div class="opt" onclick="pick(this,'q20')"><span class="opt-dot"></span><span class="opt-label">Supply chain monitored in real time — risks detected early, fast response</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4 — READINESS & AMBITION ===== -->
+  <div class="screen" id="sc-4">
+    <div class="step-indicator" id="step-ind-4"></div>
+    <div class="screen-title">Section 4 of 4</div>
+    <h2 class="screen-heading">Readiness & ambition</h2>
+    <p class="screen-sub">These directly shape your programme entry path.</p>
+
+    <div class="q-section-label">Strategic Intent</div>
+
+    <div class="q-block" id="q21">
+      <div class="q-head">
+        <div class="q-number">Q21</div>
+        <div><div class="q-text">What is your primary motivation for joining this programme?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q21')"><span class="opt-dot"></span><span class="opt-label">Reduce costs and improve efficiency</span></div>
+        <div class="opt" onclick="pick(this,'q21')"><span class="opt-dot"></span><span class="opt-label">Meet requirements from customers or export markets</span></div>
+        <div class="opt" onclick="pick(this,'q21')"><span class="opt-dot"></span><span class="opt-label">Understand where we stand — external perspective</span></div>
+        <div class="opt" onclick="pick(this,'q21')"><span class="opt-dot"></span><span class="opt-label">Digital transformation is part of our growth strategy</span></div>
+        <div class="opt" onclick="pick(this,'q21')"><span class="opt-dot"></span><span class="opt-label">A combination of the above</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q22">
+      <div class="q-head">
+        <div class="q-number">Q22</div>
+        <div><div class="q-text">How much management time can realistically be dedicated to transformation in the next 12 months?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q22')"><span class="opt-dot"></span><span class="opt-label">Very limited — survival and day-to-day come first</span></div>
+        <div class="opt" onclick="pick(this,'q22')"><span class="opt-dot"></span><span class="opt-label">A few days per month on top of normal work</span></div>
+        <div class="opt" onclick="pick(this,'q22')"><span class="opt-dot"></span><span class="opt-label">A dedicated part-time person or regular team time set aside</span></div>
+        <div class="opt" onclick="pick(this,'q22')"><span class="opt-dot"></span><span class="opt-label">Transformation is a named priority with a budget and responsible person</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">Constraints</div>
+
+    <div class="q-block" id="q23">
+      <div class="q-head">
+        <div class="q-number">Q23</div>
+        <div><div class="q-text">What is the main obstacle to changing how you work?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q23')"><span class="opt-dot"></span><span class="opt-label">Budget — cannot afford significant technology investment now</span></div>
+        <div class="opt" onclick="pick(this,'q23')"><span class="opt-dot"></span><span class="opt-label">Knowledge — don't know where to start or what to prioritise</span></div>
+        <div class="opt" onclick="pick(this,'q23')"><span class="opt-dot"></span><span class="opt-label">People — resistance from workers or middle management</span></div>
+        <div class="opt" onclick="pick(this,'q23')"><span class="opt-dot"></span><span class="opt-label">Time — production pressure leaves no space for improvement</span></div>
+        <div class="opt" onclick="pick(this,'q23')"><span class="opt-dot"></span><span class="opt-label">We don't see a major obstacle — ready to act</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">Self-Assessment</div>
+
+    <div class="q-block" id="q24">
+      <div class="q-head">
+        <div class="q-number">Q24</div>
+        <div>
+          <div class="q-text">Which description best fits your factory overall, right now?</div>
+          <div class="q-sub">Choose the one that is genuinely true today.</div>
+        </div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q24')"><span class="opt-dot"></span><span class="opt-label"><strong>Ad Hoc</strong> — We work from experience. Processes vary. Decisions are mostly instinctive.</span></div>
+        <div class="opt" onclick="pick(this,'q24')"><span class="opt-dot"></span><span class="opt-label"><strong>Aware</strong> — We know we need to change. We have some tools, but they don't connect well.</span></div>
+        <div class="opt" onclick="pick(this,'q24')"><span class="opt-dot"></span><span class="opt-label"><strong>Structured</strong> — We have documented processes and use data regularly, but mostly within silos.</span></div>
+        <div class="opt" onclick="pick(this,'q24')"><span class="opt-dot"></span><span class="opt-label"><strong>Integrated</strong> — Our systems and teams share information. Sustainability is tracked. People are upskilled.</span></div>
+        <div class="opt" onclick="pick(this,'q24')"><span class="opt-dot"></span><span class="opt-label"><strong>Intelligent</strong> — AI tools, predictive operations, circular economy, and global value chain integration.</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Back</button>
+      <button class="btn btn-dark btn-lg" onclick="goTo(5)">View my results →</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 5 — RESULTS (rendered by JS) ===== -->
+  <div class="screen" id="sc-5">
+    <div id="results-content"></div>
+  </div>
+</div>
+
+<div class="tool-footer">UNIDO · TCS/DAI · Project ID 230258 · D1 v1.0 · April 2026</div>
+
+<script>
+  const answers = {};
+
+  function checkPassword() {
+    const input = document.getElementById('gate-input');
+    const error = document.getElementById('gate-error');
+    const normalised = input.value.trim().toUpperCase().replace(/[\s\-]/g, '/');
+    if (normalised === 'UNIDO/230258') {
+      document.getElementById('password-gate').style.display = 'none';
+    } else {
+      error.textContent = 'Incorrect access code. Please try again.';
+      input.classList.add('error');
+      input.value = '';
+      setTimeout(() => input.classList.remove('error'), 400);
+      input.focus();
+    }
+  }
+
+  function goTo(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('sc-' + n).classList.add('active');
+    const pct = n === 0 ? 2 : n === 5 ? 100 : (n / 5) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    if ([1,2,3,4].includes(n)) renderStepIndicator(n);
+    if (n === 5) renderResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderStepIndicator(current) {
+    const steps = ['Company','Operations','Environment','Readiness'];
+    ['step-ind-1','step-ind-2','step-ind-3','step-ind-4'].forEach((id, idx) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let html = '';
+      steps.forEach((s, i) => {
+        const idx2 = i + 1;
+        const dotCls = idx2 < current ? 'done' : idx2 === current ? 'current' : '';
+        const lblCls = idx2 < current ? 'done' : idx2 === current ? 'current' : '';
+        if (i > 0) html += '<div class="step-line ' + (idx2 <= current ? 'done' : '') + '"></div>';
+        html += '<div class="step-dot-wrap"><div class="step-dot ' + dotCls + '">' + (idx2 < current ? '✓' : idx2) + '</div><div class="step-dot-label ' + lblCls + '">' + s + '</div></div>';
+      });
+      el.innerHTML = html;
+    });
+  }
+
+  function pick(el, qid) {
+    el.closest('.q-options').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[qid] = el.querySelector('.opt-label').textContent.trim();
+    document.getElementById(qid).classList.add('answered');
+  }
+
+  function pickMulti(el, qid) {
+    el.classList.toggle('selected');
+    const selected = [...el.closest('.q-options').querySelectorAll('.opt.selected')].map(o => o.querySelector('.opt-label').textContent.trim());
+    answers[qid] = selected;
+    document.getElementById(qid).classList.toggle('answered', selected.length > 0);
+  }
+
+  function calcStage() {
+    const scored = ['q5','q6','q7','q8','q9','q11','q12','q13','q14','q15','q17','q19','q20'];
+    let total = 0, count = 0;
+    scored.forEach(qid => {
+      const opts = [...document.querySelectorAll('#' + qid + ' .q-options .opt')];
+      const idx = opts.findIndex(o => o.classList.contains('selected'));
+      if (idx >= 0) { total += idx + 1; count++; }
+    });
+    const raw = count ? total / count : 1;
+    const selfOpts = [...document.querySelectorAll('#q24 .q-options .opt')];
+    const selfIdx = selfOpts.findIndex(o => o.classList.contains('selected'));
+    const self = selfIdx >= 0 ? selfIdx + 1 : null;
+    const blend = self ? raw * 0.75 + self * 0.25 : raw;
+    if (blend < 1.6) return 1;
+    if (blend < 2.5) return 2;
+    if (blend < 3.4) return 3;
+    if (blend < 4.3) return 4;
+    return 5;
+  }
+
+  function calcPillars() {
+    const pillars = [
+      { name: 'Advanced Manufacturing', qs: ['q6','q7','q8'] },
+      { name: 'Digital Factory',        qs: ['q9','q10','q11'] },
+      { name: 'Eco Factory',            qs: ['q14','q15','q16'] },
+      { name: 'Customer Engineering',   qs: ['q17','q18'] },
+      { name: 'Human Organisation',     qs: ['q12','q13','q22','q23'] },
+      { name: 'Smart Manufacturing',    qs: ['q8','q9','q11'] },
+      { name: 'Open Factory',           qs: ['q19','q20','q3'] }
+    ];
+    return pillars.map(p => {
+      let t = 0, c = 0;
+      p.qs.forEach(qid => {
+        const opts = [...document.querySelectorAll('#' + qid + ' .q-options .opt')];
+        if (!opts.length) return;
+        const idx = opts.findIndex(o => o.classList.contains('selected'));
+        if (idx >= 0) { t += idx / (opts.length - 1); c++; }
+      });
+      return { name: p.name, pct: c ? Math.round((t / c) * 100) : 15 };
+    });
+  }
+
+  const stageData = {
+    1: { name:'Ad Hoc', desc:'Your factory operates primarily on experience and instinct. Processes vary between operators and shifts. Decisions are reactive. There is significant room to build stable foundations.', track:'Lean Readiness Pathway', trackDesc:'Before the main assessment, your advisor will work with you on lean manufacturing foundations — organised workspaces, documented procedures, and basic maintenance discipline. This typically takes 3–6 months.', next:['A UNIDO advisor will contact you to schedule an introductory site visit.','You will receive a lean readiness starter guide before the first visit.','Your advisor will co-develop a lean foundations action plan with you.','After completing lean foundations, you will enter the full Maturity Scan (D2).','A Transformation Plan (D3) will be built together, with achievable milestones.'] },
+    2: { name:'Aware', desc:'Your leadership understands that change is needed. You use some digital tools, but they are not connected. Some processes are documented, but not consistently applied.', track:'Lean Acceleration Track', trackDesc:'You enter the programme directly. Your advisor will work on lean and digital elements simultaneously — reinforcing process discipline while introducing digital tools on a stable foundation.', next:['A UNIDO advisor will contact you to schedule your Maturity Scan visit.','The Maturity Scan maps your factory across all 7 capability areas.','Lean and digital gaps are prioritised together in your Transformation Plan.','Quick-win actions will be identified alongside medium-term investments.','You will receive a structured support plan with regular advisor check-ins.'] },
+    3: { name:'Structured', desc:'Your processes are documented and mostly followed. You use data regularly, but primarily within separate departments. Cross-functional integration is the main gap ahead.', track:'Direct Entry — Structured Track', trackDesc:'Your lean foundations are in place. You enter the full programme immediately. The focus will be on connecting information across functions and enabling integrated decision-making.', next:['Your Maturity Scan (D2) will be scheduled within 2–4 weeks.','The scan will produce a detailed capability profile across all 7 pillars.','The critical gap — cross-functional integration — will be the central focus.','Your Transformation Plan will include technical and organisational change actions.','UNIDO will support you with both technology selection and change management.'] },
+    4: { name:'Integrated', desc:'Your systems and teams share information. Sustainability is tracked and factored into decisions. Workers are upskilled and engaged. The focus now is optimisation and advanced analytics.', track:'Direct Entry — Advanced Track', trackDesc:'You enter the programme at an advanced level. The Maturity Scan will confirm your profile and identify which pillars are ready to progress toward predictive and intelligent operations.', next:['Your Maturity Scan will identify which pillars have reached Stage 4.','The Transformation Plan will chart a path toward Stage 5 capabilities.','AI-supported tools, predictive operations, and circular economy integration will be explored.','UNIDO will connect you with peers and networks in your sector.','Pilot activities with advanced tools may be included in your programme.'] },
+    5: { name:'Intelligent', desc:'Your factory operates with AI-supported decisions, predictive systems, and circular economy principles. You participate in global value chains digitally.', track:'Benchmark Track', trackDesc:'Your entry focuses on validation, extension, and knowledge-sharing. Even at Stage 5, specific pillars may not yet have reached the same level — the scan will confirm this.', next:['Your Maturity Scan will confirm Stage 5 capabilities and identify any pillar gaps.','You may be invited to participate as a peer reference for other programme SMEs.','The programme will focus on resilience, supply chain sustainability, and global standards.','Advanced reporting frameworks (CBAM compliance, ESG disclosure) will be addressed.','Opportunities for regional and international collaboration will be explored.'] }
+  };
+
+  function renderResults() {
+    const stage = calcStage();
+    const info = stageData[stage];
+    const pillars = calcPillars();
+    const sector = answers['q2'] || '—';
+    const size = answers['q1'] || '—';
+
+    const barRows = pillars.map(p =>
+      '<div class="profile-bar-wrap"><div class="profile-bar-label"><span>' + p.name + '</span><span>' + p.pct + '%</span></div><div class="profile-bar"><div class="profile-bar-fill" style="width:0%" data-target="' + p.pct + '"></div></div></div>'
+    ).join('');
+
+    const nextItems = info.next.map((s, i) =>
+      '<li style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.7rem 0;border-bottom:1px solid #E9EDF2;font-size:0.83rem;color:#2D3F55;line-height:1.5"><div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">' + (i+1) + '</div><span>' + s + '</span></li>'
+    ).join('');
+
+    document.getElementById('results-content').innerHTML =
+      '<div class="screen-title">Your assessment results</div>' +
+      '<div class="screen-heading" style="margin-bottom:1.2rem">Your transformation profile</div>' +
+      '<div class="result-header"><div class="result-badge"><div class="result-badge-n">' + stage + '</div><div class="result-badge-l">of 5</div></div><div><div class="result-stage-name">Stage ' + stage + ' — ' + info.name + '</div><div class="result-stage-desc">' + info.desc + '</div></div></div>' +
+      '<div class="note-box"><strong>This is an indicative profile,</strong> not a formal assessment. Your UNIDO advisor will conduct a full on-site Maturity Scan (D2) that produces a validated capability profile across all seven areas.</div>' +
+      '<div class="profile-grid"><div class="profile-tile"><div class="profile-tile-label">Capability profile — 7 pillars</div>' + barRows + '</div><div class="profile-tile"><div class="profile-tile-label">Your context</div><div style="margin-bottom:1rem"><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Company size</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">' + size + '</div></div><div style="margin-bottom:1rem"><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Sector</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">' + sector + '</div></div><div style="margin-bottom:1rem"><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Maturity stage</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">Stage ' + stage + ' — ' + info.name + '</div></div><div><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Programme track</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">' + info.track + '</div></div></div></div>' +
+      '<div class="card"><div class="card-header"><div class="card-header-icon">🌿</div><div class="card-header-text"><div class="card-header-label">Programme Entry</div><div class="card-header-title">' + info.track + '</div></div></div><div class="card-body"><p style="font-size:0.85rem;color:#546E8A;line-height:1.65;margin-bottom:1rem">' + info.trackDesc + '</p><div style="font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:#0096B4;font-weight:700;margin-bottom:0.75rem">What happens next</div><ul style="list-style:none">' + nextItems + '</ul></div></div>' +
+      '<div class="card"><div class="card-header"><div class="card-header-icon">📘</div><div class="card-header-text"><div class="card-header-label">The Programme</div><div class="card-header-title">Three structured deliverables</div></div></div><div class="card-body"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">' +
+      [['D1','This Methodology','The framework, principles, and rules of the programme.','📘'],['D2','Maturity Scan','Full on-site assessment across all 7 pillars.','🔍'],['D3','Transformation Plan','Personalised action plan with steps, timelines, and KPIs.','🗺️']].map(([code,name,desc,icon]) =>
+        '<div style="border:1px solid #E9EDF2;border-radius:4px;padding:1rem;text-align:center"><div style="font-size:1.5rem;margin-bottom:0.4rem">' + icon + '</div><div style="font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#0096B4;font-weight:700;margin-bottom:0.2rem">' + code + '</div><div style="font-size:0.85rem;font-weight:600;color:#0A2463;margin-bottom:0.3rem">' + name + '</div><div style="font-size:0.75rem;color:#546E8A;line-height:1.5">' + desc + '</div></div>'
+      ).join('') +
+      '</div></div></div>' +
+      '<div class="btn-row"><button class="btn btn-outline btn-sm" onclick="goTo(4)">← Review answers</button><button class="btn btn-primary" onclick="window.print()">Print / Save PDF</button></div>';
+
+    // Animate pillar bars after render
+    setTimeout(() => {
+      document.querySelectorAll('.profile-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.target + '%';
+      });
+    }, 100);
+  }
+</script>
+
+</body>
+</html>
