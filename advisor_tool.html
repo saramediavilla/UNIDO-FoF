@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factory of the Future — Advisor Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --un-blue: #009EDB;
+  --un-dark: #0A2463;
+  --un-mid: #1A5F9C;
+  --un-light: #E8F4FC;
+  --un-lighter: #F4FAFD;
+  --grey-100: #F5F7FA;
+  --grey-200: #E9EDF2;
+  --grey-400: #9BAABF;
+  --grey-600: #546E8A;
+  --grey-800: #2D3F55;
+  --ink: #1A2B3C;
+  --amber: #C68B00;
+  --amber-soft: #FDF6E3;
+  --radius: 6px;
+  --shadow-sm: 0 1px 4px rgba(10,36,99,0.08);
+  --shadow-md: 0 4px 16px rgba(10,36,99,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: #F5F7FA;
+  color: #1A2B3C;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ========== PASSWORD GATE ========== */
+#password-gate {
+  position: fixed;
+  inset: 0;
+  background: #0A2463;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.gate-card {
+  background: white;
+  border-radius: 8px;
+  padding: 2.5rem 2rem;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+  text-align: center;
+}
+.gate-emblem {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #0A2463;
+  color: white;
+  font-weight: 700;
+  margin: 0 auto 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gate-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0A2463;
+}
+.gate-sub {
+  font-size: 0.78rem;
+  color: #546E8A;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+.gate-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid #E9EDF2;
+  border-radius: 6px;
+  font-family: 'Source Sans 3', sans-serif;
+  text-align: center;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+  outline: none;
+}
+.gate-input:focus { border-color: #009EDB; }
+.gate-input.error {
+  border-color: #c0392b;
+  animation: shake 0.4s;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.gate-btn {
+  width: 100%;
+  padding: 0.7rem;
+  background: #009EDB;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Source Sans 3', sans-serif;
+}
+.gate-error {
+  font-size: 0.75rem;
+  color: #c0392b;
+  margin-top: 0.6rem;
+  min-height: 1rem;
+}
+.gate-footer {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ========== TOPBAR ========== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  z-index: 200;
+  background: #0A2463;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+.topbar-left {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.un-emblem {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: white;
+  color: #0A2463;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.topbar-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255,255,255,0.2);
+}
+.topbar-org {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.topbar-title {
+  font-size: 0.82rem;
+  color: white;
+  font-weight: 600;
+}
+.topbar-right {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  position: fixed;
+  top: 52px;
+  left: 0;
+  width: 220px;
+  height: calc(100vh - 52px);
+  background: #0A2463;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar-section {
+  padding: 1rem 1rem 0.5rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  font-weight: 700;
+}
+.sme-btn {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.55);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+.sme-btn:hover {
+  color: white;
+  background: rgba(255,255,255,0.06);
+}
+.sme-btn.active {
+  color: white;
+  border-left-color: #C68B00;
+  background: rgba(255,255,255,0.08);
+}
+.sme-name-input {
+  width: calc(100% - 2rem);
+  margin: 0.3rem 1rem 0.8rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  color: white;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.8rem;
+  outline: none;
+}
+.sme-name-input::placeholder { color: rgba(255,255,255,0.3); }
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 0.5rem 1rem;
+}
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  color: rgba(255,255,255,0.55);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.mode-btn:hover {
+  color: white;
+  background: rgba(255,255,255,0.06);
+}
+.mode-btn.active {
+  color: white;
+  border-left-color: #C68B00;
+  background: rgba(255,255,255,0.08);
+  font-weight: 600;
+}
+.mode-icon {
+  font-size: 1rem;
+  width: 20px;
+  flex-shrink: 0;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 1rem;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.25);
+  line-height: 1.5;
+}
+.completion-counter {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+  padding: 0.5rem 1rem 1rem;
+}
+
+/* ========== MAIN CONTENT ========== */
+.main-content {
+  margin-left: 220px;
+  margin-top: 52px;
+  padding: 2rem;
+  min-height: calc(100vh - 52px);
+}
+.content-area { max-width: 860px; }
+.mode { display: none; }
+.mode.active { display: block; }
+
+/* ========== CARDS ========== */
+.card {
+  background: white;
+  border: 1px solid #E9EDF2;
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.card-header {
+  background: #F4FAFD;
+  border-bottom: 1px solid #E9EDF2;
+  padding: 0.9rem 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.card-header-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #009EDB;
+  color: white;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-header-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0A2463;
+}
+.card-header-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #0096B4;
+  font-weight: 700;
+  margin-bottom: 0.1rem;
+}
+.card-body { padding: 1.3rem; }
+
+/* ========== COLLAPSIBLE PANELS ========== */
+.panel {
+  background: white;
+  border: 1px solid #E9EDF2;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.3rem;
+  cursor: pointer;
+  background: #F4FAFD;
+  border-bottom: 1px solid transparent;
+  transition: all 0.15s;
+}
+.panel-header:hover { background: #E8F4FC; }
+.panel-header.open { border-bottom-color: #E9EDF2; }
+.panel-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #0A2463;
+}
+.panel-arrow {
+  font-size: 0.75rem;
+  color: #9BAABF;
+  transition: transform 0.2s;
+}
+.panel-header.open .panel-arrow { transform: rotate(180deg); }
+.panel-body {
+  padding: 1.3rem;
+  display: none;
+}
+.panel-body.open { display: block; }
+
+/* ========== PILLAR TABS ========== */
+.pillar-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #E9EDF2;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+.pillar-tab {
+  padding: 0.65rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9BAABF;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: 'Source Sans 3', sans-serif;
+  transition: all 0.15s;
+}
+.pillar-tab:hover { color: #0A2463; }
+.pillar-tab.active {
+  color: #0A2463;
+  border-bottom-color: #009EDB;
+}
+.pillar-tab .tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #E9EDF2;
+  color: #9BAABF;
+  font-size: 0.6rem;
+  font-weight: 700;
+  margin-left: 0.4rem;
+}
+.pillar-tab.active .tab-badge {
+  background: #009EDB;
+  color: white;
+}
+
+/* ========== ASSESSMENT QUESTIONS ========== */
+.assess-q {
+  background: white;
+  border: 1px solid #E9EDF2;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.assess-q.answered { border-color: #009EDB; }
+.assess-q-head {
+  padding: 0.9rem 1.2rem 0.7rem;
+  border-bottom: 1px solid #E9EDF2;
+}
+.assess-q-num {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #009EDB;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.assess-q-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #0A2463;
+  line-height: 1.4;
+}
+.rating-row {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  flex-wrap: wrap;
+}
+.rating-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.5rem 0.4rem;
+  border: 1.5px solid #E9EDF2;
+  border-radius: 4px;
+  cursor: pointer;
+  background: white;
+  font-family: 'Source Sans 3', sans-serif;
+  transition: all 0.15s;
+  text-align: center;
+}
+.rating-btn:hover {
+  border-color: #009EDB;
+  background: #E8F4FC;
+}
+.rating-btn.selected {
+  border-color: #009EDB;
+  background: #E8F4FC;
+}
+.rating-num {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #546E8A;
+  display: block;
+}
+.rating-btn.selected .rating-num { color: #0A2463; }
+.rating-label {
+  font-size: 0.62rem;
+  color: #9BAABF;
+  display: block;
+  margin-top: 0.15rem;
+  line-height: 1.3;
+}
+.rating-btn.selected .rating-label { color: #546E8A; }
+.assess-note {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #E9EDF2;
+  border-radius: 4px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.78rem;
+  color: #2D3F55;
+  resize: none;
+  outline: none;
+  margin: 0 1.2rem 0.8rem;
+  width: calc(100% - 2.4rem);
+  box-sizing: border-box;
+}
+.assess-note:focus { border-color: #009EDB; }
+
+/* ========== PILLAR HEADER ========== */
+.pillar-header {
+  background: linear-gradient(135deg, #0A2463, #1A5F9C);
+  border-radius: 6px;
+  padding: 1.2rem 1.5rem;
+  color: white;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pillar-header-left .pillar-num-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 0.2rem;
+}
+.pillar-header-left .pillar-name {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.pillar-header-left .pillar-def {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.65);
+  margin-top: 0.3rem;
+  max-width: 500px;
+  line-height: 1.5;
+}
+.stage-badge {
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+
+/* ========== SUSTAINABILITY CHECKBOX ========== */
+.sustain-check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1.2rem;
+  border-top: 1px solid #E9EDF2;
+  font-size: 0.8rem;
+  color: #546E8A;
+  cursor: pointer;
+}
+.sustain-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: #009EDB;
+  cursor: pointer;
+}
+
+/* ========== LEAN SCORE DISPLAY ========== */
+.lean-score-display {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.3rem;
+  background: #F4FAFD;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #E9EDF2;
+}
+.lean-score-num {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0A2463;
+  line-height: 1;
+}
+.lean-score-label {
+  font-size: 0.7rem;
+  color: #9BAABF;
+  margin-top: 0.15rem;
+}
+.lean-path-tag {
+  display: inline-flex;
+  padding: 0.3rem 0.8rem;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* ========== LEAN TABLE ========== */
+.lean-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.lean-table tr { border-bottom: 1px solid #E9EDF2; }
+.lean-table tr:last-child { border-bottom: none; }
+.lean-table td {
+  padding: 0.7rem 0.5rem;
+  font-size: 0.82rem;
+}
+.lean-table td:first-child {
+  font-weight: 600;
+  color: #0A2463;
+  width: 200px;
+}
+.lean-table td:last-child { text-align: right; }
+.lean-rating-btn {
+  padding: 0.3rem 0.7rem;
+  border: 1.5px solid #E9EDF2;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  font-family: 'Source Sans 3', sans-serif;
+  transition: all 0.15s;
+  margin-left: 0.25rem;
+}
+.lean-rating-btn:hover { border-color: #009EDB; }
+.lean-rating-btn.sel-yes {
+  background: #2E8B57;
+  border-color: #2E8B57;
+  color: white;
+}
+.lean-rating-btn.sel-partially {
+  background: #C68B00;
+  border-color: #C68B00;
+  color: white;
+}
+.lean-rating-btn.sel-no {
+  background: #C0392B;
+  border-color: #C0392B;
+  color: white;
+}
+
+/* ========== BOTTOM BAR ========== */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 220px;
+  right: 0;
+  height: 44px;
+  background: #0A2463;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 99;
+}
+.bottom-bar-stage {
+  font-size: 0.82rem;
+  color: white;
+  font-weight: 600;
+}
+.bottom-bar-count {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.3rem;
+  border-radius: 6px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+.btn-primary {
+  background: #009EDB;
+  color: white;
+}
+.btn-primary:hover { background: #0096B4; }
+.btn-outline {
+  background: transparent;
+  color: #1A5F9C;
+  border: 1.5px solid #1A5F9C;
+}
+.btn-outline:hover { background: #E8F4FC; }
+.btn-amber {
+  background: #C68B00;
+  color: white;
+}
+.btn-amber:hover { background: #a87800; }
+.btn-sm {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.76rem;
+}
+
+/* ========== FORM ELEMENTS ========== */
+.form-row { margin-bottom: 0.9rem; }
+.form-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #546E8A;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.form-select,
+.form-input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid #E9EDF2;
+  border-radius: 4px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.83rem;
+  color: #1A2B3C;
+  background: white;
+  outline: none;
+}
+.form-select:focus,
+.form-input:focus { border-color: #009EDB; }
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+.chip {
+  padding: 0.35rem 0.8rem;
+  border: 1.5px solid #E9EDF2;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  background: white;
+  transition: all 0.15s;
+  font-family: 'Source Sans 3', sans-serif;
+}
+.chip:hover {
+  border-color: #009EDB;
+  background: #E8F4FC;
+}
+.chip.selected {
+  border-color: #009EDB;
+  background: #E8F4FC;
+  color: #0A2463;
+  font-weight: 500;
+}
+.stage-pill {
+  padding: 0.3rem 0.7rem;
+  border: 1.5px solid #E9EDF2;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  background: white;
+  font-family: 'Source Sans 3', sans-serif;
+  transition: all 0.15s;
+}
+.stage-pill.selected {
+  border-color: #009EDB;
+  background: #009EDB;
+  color: white;
+  font-weight: 600;
+}
+
+/* ========== AGENDA ========== */
+.agenda-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #E9EDF2;
+}
+.agenda-item:last-child { border-bottom: none; }
+.agenda-time {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0096B4;
+  white-space: nowrap;
+  width: 60px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.agenda-label {
+  font-size: 0.82rem;
+  color: #2D3F55;
+  flex: 1;
+}
+.agenda-note {
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #E9EDF2;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-family: 'Source Sans 3', sans-serif;
+  resize: none;
+  outline: none;
+}
+.agenda-note:focus { border-color: #009EDB; }
+
+/* ========== OUTPUT / PRINT ========== */
+.output-section { margin-bottom: 1.5rem; }
+.output-section-title {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #0096B4;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid #E8F4FC;
+}
+.output-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.output-table td {
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid #E9EDF2;
+}
+.output-table td:first-child {
+  color: #546E8A;
+  width: 40%;
+  font-weight: 500;
+}
+.output-table td:last-child {
+  color: #1A2B3C;
+  font-weight: 600;
+}
+.output-header-block {
+  background: #0A2463;
+  color: white;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.output-bar-wrap { margin-bottom: 0.6rem; }
+.output-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #546E8A;
+  margin-bottom: 0.2rem;
+}
+.output-bar {
+  height: 8px;
+  background: #E9EDF2;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.output-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+/* ========== SCREEN TITLE STYLES ========== */
+.section-title {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #0096B4;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.section-heading {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0A2463;
+  margin-bottom: 0.4rem;
+}
+.section-sub {
+  font-size: 0.85rem;
+  color: #546E8A;
+  line-height: 1.65;
+  margin-bottom: 1.3rem;
+}
+
+/* ========== FOOTER ========== */
+.tool-footer {
+  text-align: center;
+  padding: 1.5rem 2rem 5rem;
+  font-size: 0.7rem;
+  color: #9BAABF;
+  border-top: 1px solid #E9EDF2;
+  margin-left: 220px;
+}
+
+/* ========== PRINT ========== */
+@media print {
+  #password-gate, .topbar, .sidebar, .pillar-tabs, .bottom-bar, .tool-footer, .btn, .mode-btn, .sme-btn { display: none !important; }
+  .main-content { margin-left: 0 !important; margin-top: 0 !important; }
+  body { background: white; font-size: 12px; }
+  .output-header-block { background: #0A2463 !important; -webkit-print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== PASSWORD GATE ========== -->
+<div id="password-gate">
+  <div class="gate-card">
+    <div class="gate-emblem">UN</div>
+    <div class="gate-title">Factory of the Future</div>
+    <div class="gate-sub">Advisor Tool — authorised access only.<br>Please enter the access code.</div>
+    <input type="password" id="gate-input" class="gate-input" placeholder="ACCESS CODE">
+    <button class="gate-btn" onclick="checkPassword()">Enter</button>
+    <div class="gate-error" id="gate-error"></div>
+  </div>
+  <div class="gate-footer">UNIDO · TCS/DAI · Project 230258</div>
+</div>
+
+<!-- ========== TOPBAR ========== -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="un-emblem">UN</div>
+    <div class="topbar-divider"></div>
+    <div>
+      <div class="topbar-org">UNIDO · TCS/DAI · Project 230258</div>
+      <div class="topbar-title">Factory of the Future — Advisor Tool</div>
+    </div>
+  </div>
+  <div class="topbar-right">D1 v1.0 · April 2026</div>
+</div>
+
+<!-- ========== SIDEBAR ========== -->
+<div class="sidebar">
+  <div class="sidebar-section">ACTIVE SME</div>
+  <button class="sme-btn active" id="sme-btn-1" onclick="selectSme(1)">SME 1</button>
+  <input type="text" class="sme-name-input" id="sme-name-1" placeholder="Company name..." oninput="updateSmeName(1)">
+  <button class="sme-btn" id="sme-btn-2" onclick="selectSme(2)">SME 2</button>
+  <input type="text" class="sme-name-input" id="sme-name-2" placeholder="Company name..." oninput="updateSmeName(2)" style="display:none;">
+  <button class="sme-btn" id="sme-btn-3" onclick="selectSme(3)">SME 3</button>
+  <input type="text" class="sme-name-input" id="sme-name-3" placeholder="Company name..." oninput="updateSmeName(3)" style="display:none;">
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">MODE</div>
+  <button class="mode-btn active" onclick="switchMode(1)">
+    <span class="mode-icon">&#9312;</span>
+    <span>Pre-Visit Prep</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode(2)">
+    <span class="mode-icon">&#9313;</span>
+    <span>On-Site Assessment</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode(3)">
+    <span class="mode-icon">&#9314;</span>
+    <span>Session Output</span>
+  </button>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="completion-counter" id="completion-counter">0 of 35 answered</div>
+
+  <div class="sidebar-bottom">
+    Fostering Industry 4.0 for Green Transition · Project ID 230258
+  </div>
+</div>
+
+<!-- ========== MAIN CONTENT ========== -->
+<div class="main-content">
+  <div class="content-area">
+    <div id="mode-1" class="mode active">
+      <div class="section-title">Mode 1</div>
+      <div class="section-heading">Pre-Visit Preparation</div>
+      <div class="section-sub">Complete before the site visit. Profile the SME, score lean readiness, and generate a suggested agenda.</div>
+
+      <!-- PANEL A — SME PROFILE INPUT -->
+      <div class="panel">
+        <div class="panel-header open">
+          <div class="panel-title">Panel A — SME Profile</div>
+          <div class="panel-arrow">&#9660;</div>
+        </div>
+        <div class="panel-body open">
+          <div class="form-row">
+            <label class="form-label">Sector</label>
+            <select id="p-sector" class="form-select">
+              <option value="">Select sector...</option>
+              <option>Metal/Machinery</option>
+              <option>Food &amp; Beverage</option>
+              <option>Wood/Furniture</option>
+              <option>Textiles/Apparel</option>
+              <option>Chemicals/Pharma</option>
+              <option>Automotive parts</option>
+              <option>Other manufacturing</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Company Size</label>
+            <select id="p-size" class="form-select">
+              <option value="">Select size...</option>
+              <option>Fewer than 10</option>
+              <option>10&ndash;49</option>
+              <option>50&ndash;249</option>
+              <option>250 or more</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Primary Market</label>
+            <div class="chip-group" data-group="market">
+              <div class="chip" onclick="toggleChip(this,'market')">Local only</div>
+              <div class="chip" onclick="toggleChip(this,'market')">EU export</div>
+              <div class="chip" onclick="toggleChip(this,'market')">Non-EU export</div>
+              <div class="chip" onclick="toggleChip(this,'market')">Mixed</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">SME Self-Reported Stage (if available)</label>
+            <div class="chip-group" data-group="stage">
+              <div class="stage-pill" onclick="togglePill(this,'stage')">1 Ad Hoc</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">2 Aware</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">3 Structured</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">4 Integrated</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">5 Intelligent</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">Not completed</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Main Stated Challenge</label>
+            <select id="p-challenge" class="form-select">
+              <option value="">Select challenge...</option>
+              <option>Quality consistency</option>
+              <option>Delivery reliability</option>
+              <option>Cost reduction</option>
+              <option>Skills and workforce</option>
+              <option>Customer requirements</option>
+              <option>Supply chain management</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Certifications Held</label>
+            <div class="chip-group" data-group="certs">
+              <div class="chip" onclick="toggleChip(this,'certs')">ISO 9001</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">ISO 14001</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">ISO 45001</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">IATF 16949</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">CE marking</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">Customer-specific</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">None</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL B — LEAN READINESS PRE-CHECK -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Panel B — Lean Readiness Pre-Check</div>
+          <div class="panel-arrow">&#9660;</div>
+        </div>
+        <div class="panel-body">
+          <div class="lean-score-display">
+            <div>
+              <div class="lean-score-num" id="lean-score-num">0</div>
+              <div class="lean-score-label">out of 16</div>
+            </div>
+            <div>
+              <label class="form-label" style="display:inline;margin-right:0.5rem;">Pathway:</label>
+              <span id="lean-path-tag" class="lean-path-tag"></span>
+            </div>
+          </div>
+
+          <table class="lean-table">
+            <tr>
+              <td>
+                <div>5S &amp; Visual Management</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Workspace organised with defined places for tools, parts, and materials</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="1" data-score="2" onclick="rateLean(this,1,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="1" data-score="1" onclick="rateLean(this,1,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="1" data-score="0" onclick="rateLean(this,1,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Value Stream Mapping</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">SME can describe complete product flow from material to customer</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="2" data-score="2" onclick="rateLean(this,2,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="2" data-score="1" onclick="rateLean(this,2,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="2" data-score="0" onclick="rateLean(this,2,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Standard Work</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Key production steps documented in a way operators actually follow</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="3" data-score="2" onclick="rateLean(this,3,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="3" data-score="1" onclick="rateLean(this,3,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="3" data-score="0" onclick="rateLean(this,3,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Kaizen / CI Culture</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Workers at all levels regularly identify and act on improvement opportunities</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="4" data-score="2" onclick="rateLean(this,4,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="4" data-score="1" onclick="rateLean(this,4,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="4" data-score="0" onclick="rateLean(this,4,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>TPM</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Scheduled preventive maintenance programme in place</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="5" data-score="2" onclick="rateLean(this,5,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="5" data-score="1" onclick="rateLean(this,5,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="5" data-score="0" onclick="rateLean(this,5,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Pull Systems / Kanban</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Production triggered by downstream demand, not pushed by schedule</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="6" data-score="2" onclick="rateLean(this,6,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="6" data-score="1" onclick="rateLean(this,6,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="6" data-score="0" onclick="rateLean(this,6,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Structured Problem-Solving</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Defects and problems investigated using a defined methodology (A3/PDCA)</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="7" data-score="2" onclick="rateLean(this,7,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="7" data-score="1" onclick="rateLean(this,7,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="7" data-score="0" onclick="rateLean(this,7,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Waste Elimination</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Waste (motion, waiting, overproduction, defects, inventory) actively identified and reduced</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="8" data-score="2" onclick="rateLean(this,8,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="8" data-score="1" onclick="rateLean(this,8,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="8" data-score="0" onclick="rateLean(this,8,0)">No</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL C — VISIT AGENDA BUILDER -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Panel C — Visit Agenda Builder</div>
+          <div class="panel-arrow">&#9660;</div>
+        </div>
+        <div class="panel-body">
+          <p style="font-size:0.8rem;color:#546E8A;margin-bottom:1rem">Agenda auto-generates based on lean score. Check or uncheck items and add notes.</p>
+          <div id="agenda-container"></div>
+        </div>
+      </div>
+    </div>
+    <div id="mode-2" class="mode">
+      <div class="section-title">Mode 2</div>
+      <div class="section-heading">On-Site Assessment &mdash; Maturity Scan D2</div>
+      <div class="section-sub">Score each question based on what you observe. Notes are optional but recommended.</div>
+
+      <!-- PILLAR TABS -->
+      <div class="pillar-tabs">
+        <button class="pillar-tab active" onclick="showPillar(1)">P1 Advanced Mfg <span class="tab-badge" id="tab-badge-1">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(2)">P2 Digital Factory <span class="tab-badge" id="tab-badge-2">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(3)">P3 Eco Factory <span class="tab-badge" id="tab-badge-3">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(4)">P4 Customer Eng. <span class="tab-badge" id="tab-badge-4">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(5)">P5 Human Org. <span class="tab-badge" id="tab-badge-5">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(6)">P6 Smart Mfg <span class="tab-badge" id="tab-badge-6">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(7)">P7 Open Factory <span class="tab-badge" id="tab-badge-7">0/5</span></button>
+      </div>
+
+      <!-- PILLAR 1 -->
+      <div class="pillar-panel" id="pillar-1" style="display:block">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 01</div>
+            <div class="pillar-name">Advanced Manufacturing Technologies</div>
+            <div class="pillar-def">Capability to deploy and operate production technologies that enhance process precision, flexibility, and efficiency, building on stable and standardised processes</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-1">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p1-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.1</div>
+            <div class="assess-q-text">Are production technologies deployed on stable, standardised processes &mdash; or do they compensate for process instability?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Technologies mask process problems</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some stability, inconsistent</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Technologies on well-defined processes</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Fully optimised, adaptive</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.2</div>
+            <div class="assess-q-text">How consistently are production technologies used across shifts and operators?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">Varies significantly by operator</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some consistency, informal rules</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Documented procedures followed</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Digital systems enforce consistency</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.3</div>
+            <div class="assess-q-text">Is equipment capability matched to current product and process requirements?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">Over or under-specified</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partially matched, some gaps</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Well-matched, regularly reviewed</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">Dynamically reconfigured</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.4</div>
+            <div class="assess-q-text">Is there evidence that technology investments have improved consistency, throughput, or resource efficiency?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">No improvement tracked</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Anecdotal improvement</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Measured with before/after data</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Continuous improvement loop</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.5</div>
+            <div class="assess-q-text">Is advanced manufacturing (additive, flexible automation, collaborative robotics) in use or planned?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">Not considered</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Awareness, no concrete plan</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Pilot or partial deployment</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Integrated in production strategy</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-1" data-pillar="1">
+          <label for="sustain-1">Sustainability dimension addressed in this pillar (material efficiency, scrap reduction)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 2 -->
+      <div class="pillar-panel" id="pillar-2" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 02</div>
+            <div class="pillar-name">Digital Factory</div>
+            <div class="pillar-def">Capability to capture, access, and use operational data across the organisation, including in fragmented data environments</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-2">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p2-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.1</div>
+            <div class="assess-q-text">Can operational data (production, inventory, quality) be accessed and combined across functions without manual reconciliation?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Data locked in silos</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Possible with major effort</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Mostly accessible, minor steps</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time across functions</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.2</div>
+            <div class="assess-q-text">Is there a single version of truth for key operational metrics?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">Different departments, different numbers</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partial alignment, frequent gaps</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Agreed metrics, mostly consistent</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Single integrated source</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.3</div>
+            <div class="assess-q-text">How current and reliable is operational data at the point of decision?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">Outdated or unreliable</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partially current, some lag</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Generally reliable</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time, high reliability</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.4</div>
+            <div class="assess-q-text">Are ERP, MES, or equivalent systems in use and actively used by operations teams?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">No systems</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Installed but underused</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Actively used by key roles</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Embedded across all decisions</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.5</div>
+            <div class="assess-q-text">Where formal integration is absent, are context-based or bridging approaches used to combine data?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">Silos accepted as fixed</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Ad hoc individual workarounds</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Structured informal integration</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Systematic context-based access</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-2" data-pillar="2">
+          <label for="sustain-2">Sustainability dimension addressed (energy and resource consumption visibility)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 3 -->
+      <div class="pillar-panel" id="pillar-3" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 03</div>
+            <div class="pillar-name">Eco Factory</div>
+            <div class="pillar-def">Capability to monitor, manage, and reduce environmental impact and resource use within production systems</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-3">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p3-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.1</div>
+            <div class="assess-q-text">Is energy consumption measured at the process or machine level?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Total bill only</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Area-level measurement</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Process or machine level</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time per-unit tracking</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.2</div>
+            <div class="assess-q-text">Is waste and scrap quantified, categorised, and linked to specific production activities?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">Not measured</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Total volumes estimated</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Categorised and linked to processes</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time with automated alerts</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.3</div>
+            <div class="assess-q-text">Are resource efficiency targets set and tracked with defined KPIs?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">No targets</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Informal, not tracked</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Formal KPIs tracked regularly</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">KPIs linked to decisions</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.4</div>
+            <div class="assess-q-text">Is environmental data used in operational decisions &mdash; not just reported?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">Not used in decisions</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Referenced occasionally</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Routinely considered</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Primary decision criterion</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.5</div>
+            <div class="assess-q-text">Is there evidence of circular resource flows &mdash; reuse, recycling, or material recovery?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">No circular practices</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some informal reuse</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Structured recycling programme</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Circular flows in product design</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-3" data-pillar="3">
+          <label for="sustain-3">Sustainability dimension addressed (structured environmental practices and circularity)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 4 -->
+      <div class="pillar-panel" id="pillar-4" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 04</div>
+            <div class="pillar-name">Customer-Focused Engineering</div>
+            <div class="pillar-def">Capability to design and adapt products and processes based on customer requirements across the full product lifecycle</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-4">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p4-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">4.1</div>
+            <div class="assess-q-text">Are customer requirements formally captured and translated into product and process specifications?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="4" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Informal, experience-based</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partially documented</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Formal capture and translation</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Digital system, real-time link</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="4" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p4-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">4.2</div>
+            <div class="assess-q-text">Is there a structured feedback loop between customer use and product/process design?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="4" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">No feedback loop</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Informal, occasional</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Structured, defined review cycle</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Continuous feedback loop</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="4" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p4-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">4.3</div>
+            <div class="assess-q-text">Are lifecycle considerations (durability, repairability, end-of-life) part of the design process?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="4" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">Not considered</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Considered informally</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Part of design criteria</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">Lifecycle data drives design</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="4" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p4-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">4.4</div>
+            <div class="assess-q-text">How quickly can the factory adapt to a customer change request?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="4" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">Weeks or months, disruptive</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">1&ndash;2 weeks with effort</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Days, managed process</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Near real-time, modular system</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="4" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p4-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">4.5</div>
+            <div class="assess-q-text">Has customer feedback driven measurable improvements in the last 12 months?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="4" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">No evidence</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">One or two informal changes</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Several documented improvements</span></button>
+            <button class="rating-btn" data-pillar="4" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Systematic programme</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="4" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-4" data-pillar="4">
+          <label for="sustain-4">Sustainability dimension addressed (product and packaging efficiency)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 5 -->
+      <div class="pillar-panel" id="pillar-5" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 05</div>
+            <div class="pillar-name">Human-Centred Organisation</div>
+            <div class="pillar-def">Capability to align workforce skills, roles, and culture with evolving operational, technological, and sustainability requirements</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-5">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p5-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">5.1</div>
+            <div class="assess-q-text">Are workers trained on current process standards, updated when standards change?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="5" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">No formal training</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Exists, not systematically updated</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Regular, linked to changes</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Continuous learning, digital support</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="5" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p5-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">5.2</div>
+            <div class="assess-q-text">Do floor-level workers use data or metrics to understand and manage their own area?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="5" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">No data access at floor level</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some access, rarely used</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Workers regularly use metrics</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Workers own their metrics</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="5" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p5-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">5.3</div>
+            <div class="assess-q-text">Is there a mechanism for workers to raise problems and suggest improvements &mdash; actively used?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="5" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">No mechanism</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Exists, rarely used</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Regularly used, ideas implemented</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">High participation, tracked outcomes</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="5" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p5-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">5.4</div>
+            <div class="assess-q-text">Can supervisors and middle managers lead data-driven problem-solving?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="5" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">Relay instructions only</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some capability, informal</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Most can facilitate structured PS</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">All levels competent</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="5" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p5-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">5.5</div>
+            <div class="assess-q-text">Is there evidence of workforce involvement in sustainability practices?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="5" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">No awareness programme</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Awareness only</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Active involvement in energy/waste</span></button>
+            <button class="rating-btn" data-pillar="5" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Workers own sustainability metrics</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="5" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-5" data-pillar="5">
+          <label for="sustain-5">Sustainability dimension addressed (workforce awareness and behavioural practices)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 6 -->
+      <div class="pillar-panel" id="pillar-6" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 06</div>
+            <div class="pillar-name">Smart Manufacturing</div>
+            <div class="pillar-def">Capability to use data and systematic analytical approaches to optimise operations across multiple performance dimensions</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-6">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p6-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">6.1</div>
+            <div class="assess-q-text">Are operational decisions based on structured data analysis or primarily on experience and intuition?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="6" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Almost entirely intuition</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Data consulted occasionally</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Data-informed decisions standard</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time analytics driven</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="6" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p6-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">6.2</div>
+            <div class="assess-q-text">Is there evidence of pattern recognition across multiple variables?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="6" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">No analytical capability</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Simple single-variable analysis</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Multi-variable for key decisions</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Automated pattern detection</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="6" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p6-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">6.3</div>
+            <div class="assess-q-text">Are predictive capabilities in use or actively being developed?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="6" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">No predictive capability</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Basic forecasting only</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Predictive maintenance in pilot</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">Predictive systems operational</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="6" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p6-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">6.4</div>
+            <div class="assess-q-text">Are analytical tools (dashboards, SPC, AI-assisted) actively used by operations?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="6" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">No tools</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Available but underused</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Regularly used by key roles</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Embedded in daily rhythm</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="6" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p6-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">6.5</div>
+            <div class="assess-q-text">Can the factory run scenario analysis before implementing changes?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="6" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">No simulation capability</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Informal what-if reasoning</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Structured scenario analysis</span></button>
+            <button class="rating-btn" data-pillar="6" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Digital twin or equivalent</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="6" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-6" data-pillar="6">
+          <label for="sustain-6">Sustainability dimension addressed (resource optimisation through system intelligence)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 7 -->
+      <div class="pillar-panel" id="pillar-7" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 07</div>
+            <div class="pillar-name">Value-Chain Open Factory</div>
+            <div class="pillar-def">Capability to coordinate and integrate operations with suppliers, partners, and customers across the value chain</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-7">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p7-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">7.1</div>
+            <div class="assess-q-text">Is information shared with key suppliers to support joint planning?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="7" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">No information sharing</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Ad hoc phone/email</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Structured sharing with key suppliers</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Automated data exchange</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="7" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p7-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">7.2</div>
+            <div class="assess-q-text">Can the factory receive and respond to customer demand signals faster than standard order cycle?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="7" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">Standard lead times only</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some flexibility for key customers</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Demand signals trigger adjustments</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time demand-driven production</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="7" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p7-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">7.3</div>
+            <div class="assess-q-text">Is sustainability performance discussed or reported to supply chain partners?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="7" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">Never</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Informally on request</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Regular reporting to key partners</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">Integrated in contracts and KPIs</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="7" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p7-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">7.4</div>
+            <div class="assess-q-text">Are inter-organisational data flows automated?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="7" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">All manual &mdash; phone, email, spreadsheet</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partially automated</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Mostly automated</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Fully automated digital chain</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="7" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p7-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">7.5</div>
+            <div class="assess-q-text">Is the factory part of any platform or network connecting it digitally to partners?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="7" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">No</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Exploring options</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Member of industry platforms</span></button>
+            <button class="rating-btn" data-pillar="7" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Active in integrated digital chain</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="7" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-7" data-pillar="7">
+          <label for="sustain-7">Sustainability dimension addressed (sustainability practices across suppliers and partners)</label>
+        </div>
+      </div>
+    </div>
+    <div id="mode-3" class="mode">
+      <div class="section-title">Mode 3</div>
+      <div class="section-heading">Session Output</div>
+      <div class="section-sub">Print-ready summary. Edit inline fields before printing.</div>
+
+      <div id="output-content">
+
+        <!-- OUTPUT HEADER BLOCK -->
+        <div class="output-header-block">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center">
+              <div class="un-emblem" style="width:40px;height:40px;background:white;color:#0A2463;font-size:0.8rem;font-weight:700">UN</div>
+              <span style="font-size:0.65rem;letter-spacing:0.12em;color:rgba(255,255,255,0.6);margin-left:0.75rem;text-transform:uppercase">UNIDO &middot; TCS/DAI &middot; Project 230258</span>
+            </div>
+          </div>
+          <div style="font-family:'Source Serif 4',serif;font-size:1.3rem;font-weight:600;margin:0.75rem 0 0.3rem">Factory of the Future &mdash; Advisor Session Report</div>
+
+          <div style="display:flex;gap:2rem;margin-top:1rem;flex-wrap:wrap">
+            <div>
+              <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.2rem">Date</label>
+              <input type="text" id="out-date" value="14 April 2026" style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.3);color:white;font-size:0.85rem;width:120px;font-family:'Source Sans 3',sans-serif;outline:none;padding:0.2rem 0">
+            </div>
+            <div>
+              <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.2rem">SME</label>
+              <span id="out-sme-name" style="color:white;font-weight:600;font-size:0.9rem">&mdash;</span>
+            </div>
+            <div>
+              <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.2rem">Advisor</label>
+              <input type="text" id="out-advisor" placeholder="Advisor name" style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.3);color:white;font-size:0.85rem;width:160px;font-family:'Source Sans 3',sans-serif;outline:none;padding:0.2rem 0">
+            </div>
+          </div>
+
+          <div style="margin-top:0.75rem">
+            <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.3rem">Visit type</label>
+            <label style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.7rem;border:1px solid rgba(255,255,255,0.25);border-radius:20px;margin-right:0.4rem;font-size:0.78rem;cursor:pointer;color:white">
+              <input type="radio" name="visit-type" value="Pre-assessment" style="accent-color:#009EDB"> Pre-assessment
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.7rem;border:1px solid rgba(255,255,255,0.25);border-radius:20px;margin-right:0.4rem;font-size:0.78rem;cursor:pointer;color:white">
+              <input type="radio" name="visit-type" value="Maturity Scan" style="accent-color:#009EDB"> Maturity Scan
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.7rem;border:1px solid rgba(255,255,255,0.25);border-radius:20px;font-size:0.78rem;cursor:pointer;color:white">
+              <input type="radio" name="visit-type" value="Follow-up" style="accent-color:#009EDB"> Follow-up
+            </label>
+          </div>
+        </div>
+
+        <!-- SECTION 1 — SME PROFILE -->
+        <div class="output-section">
+          <div class="output-section-title">1 &mdash; SME Profile</div>
+          <table class="output-table" id="out-profile-table">
+            <tr><td>Sector</td><td id="out-profile-sector">&mdash;</td></tr>
+            <tr><td>Company Size</td><td id="out-profile-size">&mdash;</td></tr>
+            <tr><td>Primary Market</td><td id="out-profile-market">&mdash;</td></tr>
+            <tr><td>Self-Reported Stage</td><td id="out-profile-stage">&mdash;</td></tr>
+            <tr><td>Main Challenge</td><td id="out-profile-challenge">&mdash;</td></tr>
+            <tr><td>Certifications</td><td id="out-profile-certs">&mdash;</td></tr>
+          </table>
+        </div>
+
+        <!-- SECTION 2 — LEAN READINESS -->
+        <div class="output-section">
+          <div class="output-section-title">2 &mdash; Lean Readiness</div>
+          <div style="display:flex;gap:2rem;align-items:center;margin-bottom:1rem">
+            <div>
+              <span id="out-lean-score" style="font-size:2rem;font-weight:700;color:#0A2463">0</span><span style="font-size:1rem;color:#9BAABF">/16</span>
+            </div>
+            <span id="out-lean-tag" class="lean-path-tag"></span>
+          </div>
+          <table class="output-table" id="out-lean-table">
+            <tr><td>5S &amp; Visual Management</td><td id="out-lean-rating-1">&mdash;</td><td id="out-lean-dot-1" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Value Stream Mapping</td><td id="out-lean-rating-2">&mdash;</td><td id="out-lean-dot-2" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Standard Work</td><td id="out-lean-rating-3">&mdash;</td><td id="out-lean-dot-3" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Kaizen / CI Culture</td><td id="out-lean-rating-4">&mdash;</td><td id="out-lean-dot-4" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>TPM</td><td id="out-lean-rating-5">&mdash;</td><td id="out-lean-dot-5" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Pull Systems / Kanban</td><td id="out-lean-rating-6">&mdash;</td><td id="out-lean-dot-6" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Structured Problem-Solving</td><td id="out-lean-rating-7">&mdash;</td><td id="out-lean-dot-7" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Waste Elimination</td><td id="out-lean-rating-8">&mdash;</td><td id="out-lean-dot-8" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+          </table>
+        </div>
+
+        <!-- SECTION 3 — MATURITY SCAN RESULTS -->
+        <div class="output-section">
+          <div class="output-section-title">3 &mdash; Maturity Scan Results</div>
+
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem">
+            <div id="out-overall-badge" style="width:56px;height:56px;border-radius:50%;background:#009EDB;color:white;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center">&mdash;</div>
+            <div>
+              <div style="font-size:0.65rem;color:#9BAABF;text-transform:uppercase;letter-spacing:0.1em">Overall Maturity Estimate</div>
+              <div id="out-stage-name" style="font-family:'Source Serif 4',serif;font-size:1.2rem;font-weight:600;color:#0A2463">&mdash;</div>
+            </div>
+          </div>
+
+          <div id="out-pillar-bars" style="margin-bottom:1.2rem">
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Advanced Manufacturing Technologies</span><span id="out-pillar-score-1">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-1" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Digitalisation &amp; Data</span><span id="out-pillar-score-2">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-2" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Eco-Efficiency &amp; Circularity</span><span id="out-pillar-score-3">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-3" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Carbon &amp; Energy Management</span><span id="out-pillar-score-4">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-4" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Human-Centric Operations</span><span id="out-pillar-score-5">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-5" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Smart &amp; Flexible Manufacturing</span><span id="out-pillar-score-6">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-6" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Organisational &amp; Cultural Foundations</span><span id="out-pillar-score-7">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-7" style="width:0%;background:#009EDB"></div></div>
+            </div>
+          </div>
+
+          <table class="output-table" id="out-pillar-table">
+            <tr style="background:#F4FAFD">
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Pillar</td>
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Stage</td>
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Sustain.</td>
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Key Observation</td>
+            </tr>
+            <tr><td>Advanced Manufacturing Technologies</td><td id="out-pt-stage-1">&mdash;</td><td id="out-pt-sus-1" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-1">&mdash;</td></tr>
+            <tr><td>Digitalisation &amp; Data</td><td id="out-pt-stage-2">&mdash;</td><td id="out-pt-sus-2" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-2">&mdash;</td></tr>
+            <tr><td>Eco-Efficiency &amp; Circularity</td><td id="out-pt-stage-3">&mdash;</td><td id="out-pt-sus-3" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-3">&mdash;</td></tr>
+            <tr><td>Carbon &amp; Energy Management</td><td id="out-pt-stage-4">&mdash;</td><td id="out-pt-sus-4" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-4">&mdash;</td></tr>
+            <tr><td>Human-Centric Operations</td><td id="out-pt-stage-5">&mdash;</td><td id="out-pt-sus-5" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-5">&mdash;</td></tr>
+            <tr><td>Smart &amp; Flexible Manufacturing</td><td id="out-pt-stage-6">&mdash;</td><td id="out-pt-sus-6" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-6">&mdash;</td></tr>
+            <tr><td>Organisational &amp; Cultural Foundations</td><td id="out-pt-stage-7">&mdash;</td><td id="out-pt-sus-7" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-7">&mdash;</td></tr>
+          </table>
+        </div>
+
+        <!-- SECTION 4 — SUSTAINABILITY COVERAGE -->
+        <div class="output-section">
+          <div class="output-section-title">4 &mdash; Sustainability Coverage</div>
+          <div id="out-sustain-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.5rem">
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">AMT</div>
+              <div id="out-sustain-1" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">DIG</div>
+              <div id="out-sustain-2" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">ECO</div>
+              <div id="out-sustain-3" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">CFE</div>
+              <div id="out-sustain-4" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">HCO</div>
+              <div id="out-sustain-5" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">SMF</div>
+              <div id="out-sustain-6" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">OCF</div>
+              <div id="out-sustain-7" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5 — SUGGESTED NEXT STEPS -->
+        <div class="output-section">
+          <div class="output-section-title">5 &mdash; Suggested Next Steps</div>
+          <p style="font-size:0.75rem;color:#9BAABF;margin-bottom:0.75rem">Edit inline before printing.</p>
+
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div contenteditable="true" id="next-step-1" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div contenteditable="true" id="next-step-2" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div contenteditable="true" id="next-step-3" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
+            <div contenteditable="true" id="next-step-4" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div>
+            <div contenteditable="true" id="next-step-5" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Print button row -->
+      <div class="no-print" style="margin-top:1.5rem;display:flex;gap:0.75rem">
+        <button class="btn btn-primary" onclick="window.print()">Print / Export PDF</button>
+        <button class="btn btn-outline" onclick="refreshOutput()">Refresh from assessment data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== BOTTOM BAR ========== -->
+<div class="bottom-bar">
+  <div class="bottom-bar-stage" id="overall-stage">Overall estimate: —</div>
+  <div class="bottom-bar-count" id="q-counter">0 of 35 questions answered</div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<div class="tool-footer">UNIDO · TCS/DAI · Project ID 230258 · Advisor Tool · D1 v1.0 · April 2026</div>
+
+<script>
+// ── STATE ──────────────────────────────────────
+const smeState = [1,2,3].map(n => ({
+  name: 'SME ' + n,
+  profile: { sector:'', size:'', market:[], stage:'', challenge:'', certs:[] },
+  leanScores: new Array(8).fill(null),
+  pillarRatings: Array.from({length:7}, () => new Array(5).fill(null)),
+  pillarNotes: Array.from({length:7}, () => new Array(5).fill('')),
+  sustainChecks: new Array(7).fill(false)
+}));
+let activeSme = 0;
+let activeMode = 1;
+let activePillar = 1;
+
+// ── PASSWORD ────────────────────────────────────
+function checkPassword() {
+  const input = document.getElementById('gate-input');
+  const error = document.getElementById('gate-error');
+  const val = input.value.trim().toUpperCase().replace(/[\s\-]/g,'\/');
+  if (val === 'UNIDO/230258') {
+    document.getElementById('password-gate').style.display = 'none';
+    if (error) error.textContent = '';
+  } else {
+    error.textContent = 'Incorrect access code. Please try again.';
+    input.classList.add('error');
+    input.value = '';
+    setTimeout(() => input.classList.remove('error'), 400);
+    input.focus();
+  }
+}
+
+// ── SME SELECTOR ────────────────────────────────
+function selectSme(n) {
+  activeSme = n - 1;
+  document.querySelectorAll('.sme-btn').forEach((b,i) => b.classList.toggle('active', i===activeSme));
+  document.querySelectorAll('.sme-name-input').forEach((inp,i) => {
+    inp.style.display = i===activeSme ? 'block' : 'none';
+    if (i===activeSme) inp.value = smeState[activeSme].name === ('SME ' + (activeSme+1)) ? '' : smeState[activeSme].name;
+  });
+  loadSmeState();
+  updateCounters();
+}
+
+function updateSmeName(n) {
+  const inp = document.getElementById('sme-name-' + n);
+  if (inp) smeState[n-1].name = inp.value.trim() || ('SME ' + n);
+  const btn = document.getElementById('sme-btn-' + n);
+  if (btn) btn.textContent = smeState[n-1].name;
+}
+
+function loadSmeState() {
+  const st = smeState[activeSme];
+  // Lean rating buttons
+  document.querySelectorAll('.lean-rating-btn').forEach(btn => {
+    const row = parseInt(btn.dataset.row);
+    const score = parseInt(btn.dataset.score);
+    const stored = st.leanScores[row];
+    btn.classList.remove('sel-yes','sel-partially','sel-no');
+    if (stored !== null && stored === score) {
+      if (score === 2) btn.classList.add('sel-yes');
+      else if (score === 1) btn.classList.add('sel-partially');
+      else btn.classList.add('sel-no');
+    }
+  });
+  updateLeanScore();
+  // Pillar ratings
+  document.querySelectorAll('.rating-btn').forEach(btn => {
+    const p = parseInt(btn.dataset.pillar) - 1;
+    const q = parseInt(btn.dataset.q) - 1;
+    const r = parseInt(btn.dataset.r) - 1;
+    btn.classList.toggle('selected', st.pillarRatings[p][q] === r);
+  });
+  // Sustain checks
+  document.querySelectorAll('.sustain-check input').forEach((cb, i) => {
+    cb.checked = st.sustainChecks[i];
+  });
+  // Assessment notes
+  document.querySelectorAll('.assess-note').forEach(ta => {
+    const p = parseInt(ta.dataset.pillar) - 1;
+    const q = parseInt(ta.dataset.q) - 1;
+    ta.value = st.pillarNotes[p][q] || '';
+  });
+  // Profile selects
+  const selectMap = {'p-sector':'sector','p-size':'size','p-challenge':'challenge'};
+  Object.entries(selectMap).forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = st.profile[key] || '';
+  });
+  // Profile chip-groups (market, certs) and stage pills
+  document.querySelectorAll('.chip-group[data-group]').forEach(group => {
+    const key = group.dataset.group;
+    const val = st.profile[key];
+    if (key === 'stage') {
+      group.querySelectorAll('.stage-pill').forEach(pill => {
+        pill.classList.toggle('selected', pill.textContent.trim() === val);
+      });
+    } else {
+      const arr = Array.isArray(val) ? val : [];
+      group.querySelectorAll('.chip').forEach(chip => {
+        chip.classList.toggle('selected', arr.includes(chip.textContent.trim()));
+      });
+    }
+  });
+  updatePillarStageEstimates();
+  updateOverallEstimate();
+}
+
+// ── MODE SWITCHING ───────────────────────────────
+function switchMode(n) {
+  activeMode = n;
+  document.querySelectorAll('.mode').forEach((m,i) => m.classList.toggle('active', i===n-1));
+  document.querySelectorAll('.mode-btn').forEach((b,i) => b.classList.toggle('active', i===n-1));
+  if (n===3) refreshOutput();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── PANEL TOGGLE ────────────────────────────────
+function togglePanel(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  if (body) body.classList.toggle('open');
+}
+
+// ── CHIP / PILL TOGGLES ─────────────────────────
+function toggleChip(el, group) {
+  el.classList.toggle('selected');
+  const vals = [...el.closest('.chip-group').querySelectorAll('.chip.selected')].map(c => c.textContent.trim());
+  smeState[activeSme].profile[group] = vals;
+}
+
+function togglePill(el, group) {
+  el.closest('.chip-group').querySelectorAll('.stage-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  smeState[activeSme].profile[group] = el.textContent.trim();
+}
+
+// ── LEAN SCORING ────────────────────────────────
+function rateLean(btn, rowIdx, score) {
+  const row = btn.closest('tr');
+  row.querySelectorAll('.lean-rating-btn').forEach(b => b.classList.remove('sel-yes','sel-partially','sel-no'));
+  if (score === 2) btn.classList.add('sel-yes');
+  else if (score === 1) btn.classList.add('sel-partially');
+  else btn.classList.add('sel-no');
+  smeState[activeSme].leanScores[rowIdx] = score;
+  updateLeanScore();
+}
+
+function updateLeanScore() {
+  const scores = smeState[activeSme].leanScores;
+  const total = scores.reduce((a,b) => a + (b !== null ? b : 0), 0);
+  const answered = scores.filter(s => s !== null).length;
+  const display = answered > 0 ? total : 0;
+  const el = document.getElementById('lean-score-num');
+  if (el) el.textContent = display;
+  const tag = document.getElementById('lean-path-tag');
+  if (tag) {
+    if (answered === 0) { tag.textContent = ''; tag.style.cssText = ''; return; }
+    if (total <= 5) { tag.textContent = 'Lean Readiness Pathway'; tag.style.cssText = 'background:#FDF2EE;color:#C0392B;border:1px solid #F2C4B0'; }
+    else if (total <= 10) { tag.textContent = 'Lean Acceleration Track'; tag.style.cssText = 'background:#FDF6E3;color:#C68B00;border:1px solid #EDD88A'; }
+    else { tag.textContent = 'Direct Entry'; tag.style.cssText = 'background:#EAF5EE;color:#2E8B57;border:1px solid #A8D5B8'; }
+  }
+  updateAgenda(total);
+}
+
+function updateAgenda(score) {
+  const container = document.getElementById('agenda-container');
+  if (!container) return;
+  let items = [];
+  if (score <= 5) {
+    items = [
+      {time:'09:00',label:'Welcome & introductions'},
+      {time:'09:30',label:'Factory walk — 5S and visual management observation'},
+      {time:'10:30',label:'Process documentation review'},
+      {time:'11:15',label:'Maintenance records and TPM check'},
+      {time:'12:00',label:'Operator interviews (2–3 workers)'},
+      {time:'13:00',label:'Findings discussion with management'},
+      {time:'13:45',label:'Next steps and lean pathway briefing'}
+    ];
+  } else if (score <= 10) {
+    items = [
+      {time:'09:00',label:'Welcome & SME profile review'},
+      {time:'09:30',label:'Factory walk — lean and digital observation'},
+      {time:'10:15',label:'Lean foundations check (priority dimensions)'},
+      {time:'11:00',label:'Priority pillars maturity scan (3 pillars)'},
+      {time:'12:30',label:'Data and systems review'},
+      {time:'13:15',label:'Findings and programme entry discussion'}
+    ];
+  } else {
+    items = [
+      {time:'09:00',label:'Welcome & profile review'},
+      {time:'09:30',label:'Factory walk'},
+      {time:'10:30',label:'Full 7-pillar maturity scan'},
+      {time:'13:00',label:'Sustainability sub-indicators review'},
+      {time:'13:30',label:'Transformation plan framing'},
+      {time:'14:15',label:'Next steps and programme timeline'}
+    ];
+  }
+  container.innerHTML = items.map((item, i) =>
+    '<div class="agenda-item">' +
+    '<div class="agenda-time">' + item.time + '</div>' +
+    '<div style="flex:1"><div class="agenda-label"><input type="checkbox" checked style="margin-right:0.5rem;accent-color:#009EDB"> ' + item.label + '</div>' +
+    '<textarea class="agenda-note" rows="1" placeholder="Add note..."></textarea></div></div>'
+  ).join('');
+}
+
+// ── PILLAR ASSESSMENT ────────────────────────────
+function showPillar(n) {
+  activePillar = n;
+  document.querySelectorAll('.pillar-tab').forEach((t,i) => t.classList.toggle('active', i===n-1));
+  document.querySelectorAll('.pillar-panel').forEach((p,i) => p.style.display = i===n-1 ? 'block' : 'none');
+}
+
+function rateQuestion(btn, pillar, q, rating) {
+  const p = pillar - 1, qi = q - 1;
+  const ratingRow = btn.closest('.rating-row');
+  ratingRow.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  smeState[activeSme].pillarRatings[p][qi] = rating - 1;
+  updatePillarStageEstimates();
+  updateOverallEstimate();
+  updateCounters();
+}
+
+function saveNote(ta, pillar, q) {
+  smeState[activeSme].pillarNotes[pillar-1][q-1] = ta.value;
+}
+
+function toggleSustain(cb, pillar) {
+  smeState[activeSme].sustainChecks[pillar-1] = cb.checked;
+}
+
+function updatePillarStageEstimates() {
+  for (let p = 0; p < 7; p++) {
+    const ratings = smeState[activeSme].pillarRatings[p].filter(r => r !== null);
+    const badge = document.getElementById('pillar-stage-' + (p+1));
+    const tabBadge = document.getElementById('tab-badge-' + (p+1));
+    if (tabBadge) tabBadge.textContent = ratings.length + '/5';
+    if (!badge) continue;
+    if (!ratings.length) { badge.textContent = '—'; badge.style.background = 'rgba(255,255,255,0.15)'; continue; }
+    const avg = ratings.reduce((a,b)=>a+b,0)/ratings.length;
+    const stage = avg < 0.75 ? 1 : avg < 1.75 ? 2 : avg < 2.75 ? 3 : 4;
+    const colours = {1:'#C0392B',2:'#C68B00',3:'#2E8B57',4:'#1A5F9C'};
+    badge.textContent = 'Stage ' + stage;
+    badge.style.background = colours[stage];
+  }
+}
+
+function updateOverallEstimate() {
+  const all = smeState[activeSme].pillarRatings.flat().filter(r => r !== null);
+  const bar = document.getElementById('overall-stage');
+  if (!bar) return;
+  if (!all.length) { bar.textContent = 'Overall estimate: —'; return; }
+  const avg = all.reduce((a,b)=>a+b,0)/all.length;
+  const stage = avg < 0.75 ? 1 : avg < 1.75 ? 2 : avg < 2.75 ? 3 : 4;
+  const names = {1:'Ad Hoc',2:'Aware',3:'Structured',4:'Integrated'};
+  bar.textContent = 'Overall estimate: Stage ' + stage + ' — ' + names[stage];
+}
+
+function updateCounters() {
+  const answered = smeState[activeSme].pillarRatings.flat().filter(r => r !== null).length;
+  const counter = document.getElementById('q-counter');
+  if (counter) counter.textContent = answered + ' of 35 questions answered';
+  const sideCounter = document.getElementById('completion-counter');
+  if (sideCounter) sideCounter.textContent = answered + ' of 35 answered';
+}
+
+// ── OUTPUT / MODE 3 ──────────────────────────────
+function refreshOutput() {
+  const st = smeState[activeSme];
+  const pillarNames = ['Advanced Manufacturing','Digital Factory','Eco Factory','Customer Engineering','Human Organisation','Smart Manufacturing','Open Factory'];
+  const pillarAbbr = ['AMT','DIG','ECO','CFE','HCO','SMF','OCF'];
+
+  // Header
+  const outSme = document.getElementById('out-sme-name');
+  if (outSme) outSme.textContent = st.name;
+  const outDate = document.getElementById('out-date');
+  if (outDate && !outDate.value) outDate.value = new Date().toLocaleDateString('en-GB');
+
+  // Profile table
+  const tbl = document.getElementById('out-profile-table');
+  if (tbl) {
+    const p = st.profile;
+    tbl.innerHTML = [
+      ['Sector', p.sector || '—'],
+      ['Company Size', p.size || '—'],
+      ['Primary Market', (p.market||[]).join(', ') || '—'],
+      ['Self-Reported Stage', p.stage || '—'],
+      ['Main Challenge', p.challenge || '—'],
+      ['Certifications', (p.certs||[]).join(', ') || '—']
+    ].map(([l,v]) => '<tr><td>' + l + '</td><td>' + v + '</td></tr>').join('');
+  }
+
+  // Lean
+  const leanScores = st.leanScores;
+  const leanTotal = leanScores.reduce((a,b) => a+(b||0), 0);
+  const leanLabels = ['5S & Visual Management','Value Stream Mapping','Standard Work','Kaizen / CI Culture','TPM','Pull Systems / Kanban','Structured Problem-Solving','Waste Elimination'];
+  const leanWords = [null, 'No', 'Partially', 'Yes'];
+  const leanDotColours = [null, '#C0392B', '#C68B00', '#2E8B57'];
+  const outLean = document.getElementById('out-lean-score');
+  if (outLean) outLean.textContent = leanTotal;
+  const outLeanTag = document.getElementById('out-lean-tag');
+  if (outLeanTag) {
+    if (leanTotal <= 5) { outLeanTag.textContent = 'Lean Readiness Pathway'; outLeanTag.style.cssText = 'background:#FDF2EE;color:#C0392B;border:1px solid #F2C4B0'; }
+    else if (leanTotal <= 10) { outLeanTag.textContent = 'Lean Acceleration Track'; outLeanTag.style.cssText = 'background:#FDF6E3;color:#C68B00;border:1px solid #EDD88A'; }
+    else { outLeanTag.textContent = 'Direct Entry'; outLeanTag.style.cssText = 'background:#EAF5EE;color:#2E8B57;border:1px solid #A8D5B8'; }
+  }
+  const leanTbl = document.getElementById('out-lean-table');
+  if (leanTbl) {
+    leanTbl.innerHTML = leanLabels.map((label, i) => {
+      const s = leanScores[i];
+      const word = s !== null ? leanWords[s+1] || '—' : '—';
+      const col = s !== null ? leanDotColours[s+1] || '#9BAABF' : '#9BAABF';
+      return '<tr><td>' + label + '</td><td>' + word + '</td><td style="color:' + col + ';font-size:1.1rem">●</td></tr>';
+    }).join('');
+  }
+
+  // Pillar scores
+  const pillarAvgs = st.pillarRatings.map(ratings => {
+    const filled = ratings.filter(r => r !== null);
+    if (!filled.length) return null;
+    return filled.reduce((a,b)=>a+b,0)/filled.length;
+  });
+  const stageOf = avg => avg === null ? null : avg < 0.75 ? 1 : avg < 1.75 ? 2 : avg < 2.75 ? 3 : 4;
+  const stageColours = {1:'#C0392B',2:'#C68B00',3:'#2E8B57',4:'#1A5F9C'};
+  const allRatings = st.pillarRatings.flat().filter(r=>r!==null);
+  const overallAvg = allRatings.length ? allRatings.reduce((a,b)=>a+b,0)/allRatings.length : null;
+  const overallStage = stageOf(overallAvg);
+  const stageNames = {1:'Ad Hoc',2:'Aware',3:'Structured',4:'Integrated'};
+  const outBadge = document.getElementById('out-overall-badge');
+  if (outBadge) { outBadge.textContent = overallStage || '—'; if(overallStage) outBadge.style.background = stageColours[overallStage]; }
+  const outStageName = document.getElementById('out-stage-name');
+  if (outStageName) outStageName.textContent = overallStage ? 'Stage ' + overallStage + ' — ' + stageNames[overallStage] : 'Insufficient data';
+
+  pillarAvgs.forEach((avg, i) => {
+    const stage = stageOf(avg);
+    const scoreEl = document.getElementById('out-pillar-score-' + (i+1));
+    const barEl = document.getElementById('out-bar-fill-' + (i+1));
+    if (scoreEl) scoreEl.textContent = stage ? 'Stage ' + stage : '—';
+    if (barEl) {
+      barEl.style.background = stage ? stageColours[stage] : '#E9EDF2';
+      setTimeout(() => { if(barEl) barEl.style.width = stage ? (stage/4*100)+'%' : '0%'; }, 100);
+    }
+  });
+
+  // Pillar detail table
+  const pillarTbl = document.getElementById('out-pillar-table');
+  if (pillarTbl) {
+    pillarTbl.innerHTML = '<tr style="font-size:0.68rem;color:#9BAABF;text-transform:uppercase;letter-spacing:0.1em"><td>Pillar</td><td>Stage</td><td>Sustainability</td><td>Key Observation</td></tr>' +
+    pillarNames.map((name, i) => {
+      const stage = stageOf(pillarAvgs[i]);
+      const sustain = st.sustainChecks[i] ? '<span style="color:#2E8B57">✓</span>' : '<span style="color:#9BAABF">–</span>';
+      const note = (st.pillarNotes[i][0] || '').substring(0,120) + (st.pillarNotes[i][0]&&st.pillarNotes[i][0].length>120?'…':'');
+      return '<tr><td>' + name + '</td><td>' + (stage ? 'Stage ' + stage : '—') + '</td><td>' + sustain + '</td><td style="font-size:0.78rem;color:#546E8A">' + (note||'—') + '</td></tr>';
+    }).join('');
+  }
+
+  // Sustainability grid
+  st.sustainChecks.forEach((checked, i) => {
+    const el = document.getElementById('out-sustain-' + (i+1));
+    if (el) { el.textContent = checked ? '✓' : '–'; el.style.color = checked ? '#2E8B57' : '#9BAABF'; }
+  });
+
+  // Next steps
+  const leanPath = leanTotal <= 5 ? 'readiness' : leanTotal <= 10 ? 'acceleration' : 'direct';
+  const sortedPillars = pillarAvgs.map((a,i)=>({i,a})).sort((x,y)=>(x.a||0)-(y.a||0));
+  const weakest = sortedPillars.slice(0,2).map(p=>pillarNames[p.i]);
+  const nextSteps = {
+    readiness: ['Work with your UNIDO advisor on lean foundations before beginning the formal assessment.', 'Focus on 5S implementation and basic process documentation as first priorities.', 'Establish a preventive maintenance schedule for key equipment.', 'Address gap in ' + (weakest[0]||'operations') + ' as part of the lean preparation phase.', 'Schedule D2 Maturity Scan for after lean readiness pathway completion (est. 3–6 months).'],
+    acceleration: ['Begin the D2 Maturity Scan while addressing lean gaps in parallel.', 'Prioritise ' + (weakest[0]||'Digital Factory') + ' as the primary digital gap to address.', 'Develop standard work documentation for top 3 production processes.', 'Address ' + (weakest[1]||'data visibility') + ' through targeted lean and digital actions.', 'Build Transformation Plan (D3) with both lean and digital actions integrated.'],
+    direct: ['Proceed to full D2 Maturity Scan — lean foundations are sufficient.', 'Focus Transformation Plan on cross-functional integration (Stage 3→4 transition).', 'Prioritise ' + (weakest[0]||'Smart Manufacturing') + ' as the primary gap for D3 actions.', 'Address ' + (weakest[1]||'Open Factory') + ' through supply chain coordination actions.', 'Target at least one sustainability action with a measurable KPI in the D3 plan.']
+  };
+  (nextSteps[leanPath]||nextSteps.direct).forEach((text, i) => {
+    const el = document.getElementById('next-step-' + (i+1));
+    if (!el) return;
+    // Only overwrite if the user hasn't edited this line (auto-generated or default placeholder)
+    if (!el.dataset.userEdited) el.textContent = text;
+  });
+}
+
+// ── INIT ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Password: Enter-to-submit
+  const gi = document.getElementById('gate-input');
+  if (gi) gi.addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+
+  // Panel collapse/expand (single source of truth; no inline onclick)
+  document.querySelectorAll('.panel-header').forEach(h => {
+    h.addEventListener('click', () => togglePanel(h));
+  });
+
+  // Mode 2 pillar question ratings
+  document.querySelectorAll('.rating-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      rateQuestion(btn, parseInt(btn.dataset.pillar), parseInt(btn.dataset.q), parseInt(btn.dataset.r));
+    });
+  });
+  // Assessment notes
+  document.querySelectorAll('.assess-note').forEach(ta => {
+    ta.addEventListener('input', () => saveNote(ta, parseInt(ta.dataset.pillar), parseInt(ta.dataset.q)));
+  });
+  // Sustainability checkboxes
+  document.querySelectorAll('.sustain-check input').forEach((cb, i) => {
+    cb.addEventListener('change', () => toggleSustain(cb, i+1));
+  });
+  // Lean readiness buttons rely on their inline onclick — nothing to wire here
+
+  // Mode 1 profile selects
+  const selectMap = {'p-sector':'sector','p-size':'size','p-challenge':'challenge'};
+  Object.entries(selectMap).forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => { smeState[activeSme].profile[key] = el.value; });
+  });
+
+  // Mode 3 next-step contenteditable fields: mark as user-edited so refresh won't overwrite
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('next-step-' + i);
+    if (el) el.addEventListener('input', () => { el.dataset.userEdited = '1'; });
+  }
+
+  // Activate SME 1 and first pillar
+  selectSme(1);
+  showPillar(1);
+});
+</script>
+
+</body>
+</html>
