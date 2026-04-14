@@ -1183,7 +1183,216 @@ body {
       </div>
     </div>
     <div id="mode-2" class="mode"></div>
-    <div id="mode-3" class="mode"></div>
+    <div id="mode-3" class="mode">
+      <div class="section-title">Mode 3</div>
+      <div class="section-heading">Session Output</div>
+      <div class="section-sub">Print-ready summary. Edit inline fields before printing.</div>
+
+      <div id="output-content">
+
+        <!-- OUTPUT HEADER BLOCK -->
+        <div class="output-header-block">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center">
+              <div class="un-emblem" style="width:40px;height:40px;background:white;color:#0A2463;font-size:0.8rem;font-weight:700">UN</div>
+              <span style="font-size:0.65rem;letter-spacing:0.12em;color:rgba(255,255,255,0.6);margin-left:0.75rem;text-transform:uppercase">UNIDO &middot; TCS/DAI &middot; Project 230258</span>
+            </div>
+          </div>
+          <div style="font-family:'Source Serif 4',serif;font-size:1.3rem;font-weight:600;margin:0.75rem 0 0.3rem">Factory of the Future &mdash; Advisor Session Report</div>
+
+          <div style="display:flex;gap:2rem;margin-top:1rem;flex-wrap:wrap">
+            <div>
+              <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.2rem">Date</label>
+              <input type="text" id="out-date" value="14 April 2026" style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.3);color:white;font-size:0.85rem;width:120px;font-family:'Source Sans 3',sans-serif;outline:none;padding:0.2rem 0">
+            </div>
+            <div>
+              <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.2rem">SME</label>
+              <span id="out-sme-name" style="color:white;font-weight:600;font-size:0.9rem">&mdash;</span>
+            </div>
+            <div>
+              <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.2rem">Advisor</label>
+              <input type="text" id="out-advisor" placeholder="Advisor name" style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.3);color:white;font-size:0.85rem;width:160px;font-family:'Source Sans 3',sans-serif;outline:none;padding:0.2rem 0">
+            </div>
+          </div>
+
+          <div style="margin-top:0.75rem">
+            <label style="font-size:0.65rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.3rem">Visit type</label>
+            <label style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.7rem;border:1px solid rgba(255,255,255,0.25);border-radius:20px;margin-right:0.4rem;font-size:0.78rem;cursor:pointer;color:white">
+              <input type="radio" name="visit-type" value="Pre-assessment" style="accent-color:#009EDB"> Pre-assessment
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.7rem;border:1px solid rgba(255,255,255,0.25);border-radius:20px;margin-right:0.4rem;font-size:0.78rem;cursor:pointer;color:white">
+              <input type="radio" name="visit-type" value="Maturity Scan" style="accent-color:#009EDB"> Maturity Scan
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.3rem 0.7rem;border:1px solid rgba(255,255,255,0.25);border-radius:20px;font-size:0.78rem;cursor:pointer;color:white">
+              <input type="radio" name="visit-type" value="Follow-up" style="accent-color:#009EDB"> Follow-up
+            </label>
+          </div>
+        </div>
+
+        <!-- SECTION 1 — SME PROFILE -->
+        <div class="output-section">
+          <div class="output-section-title">1 &mdash; SME Profile</div>
+          <table class="output-table" id="out-profile-table">
+            <tr><td>Sector</td><td id="out-profile-sector">&mdash;</td></tr>
+            <tr><td>Company Size</td><td id="out-profile-size">&mdash;</td></tr>
+            <tr><td>Primary Market</td><td id="out-profile-market">&mdash;</td></tr>
+            <tr><td>Self-Reported Stage</td><td id="out-profile-stage">&mdash;</td></tr>
+            <tr><td>Main Challenge</td><td id="out-profile-challenge">&mdash;</td></tr>
+            <tr><td>Certifications</td><td id="out-profile-certs">&mdash;</td></tr>
+          </table>
+        </div>
+
+        <!-- SECTION 2 — LEAN READINESS -->
+        <div class="output-section">
+          <div class="output-section-title">2 &mdash; Lean Readiness</div>
+          <div style="display:flex;gap:2rem;align-items:center;margin-bottom:1rem">
+            <div>
+              <span id="out-lean-score" style="font-size:2rem;font-weight:700;color:#0A2463">0</span><span style="font-size:1rem;color:#9BAABF">/16</span>
+            </div>
+            <span id="out-lean-tag" class="lean-path-tag"></span>
+          </div>
+          <table class="output-table" id="out-lean-table">
+            <tr><td>5S &amp; Visual Management</td><td id="out-lean-rating-1">&mdash;</td><td id="out-lean-dot-1" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Value Stream Mapping</td><td id="out-lean-rating-2">&mdash;</td><td id="out-lean-dot-2" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Standard Work</td><td id="out-lean-rating-3">&mdash;</td><td id="out-lean-dot-3" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Kaizen / CI Culture</td><td id="out-lean-rating-4">&mdash;</td><td id="out-lean-dot-4" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>TPM</td><td id="out-lean-rating-5">&mdash;</td><td id="out-lean-dot-5" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Pull Systems / Kanban</td><td id="out-lean-rating-6">&mdash;</td><td id="out-lean-dot-6" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Structured Problem-Solving</td><td id="out-lean-rating-7">&mdash;</td><td id="out-lean-dot-7" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+            <tr><td>Waste Elimination</td><td id="out-lean-rating-8">&mdash;</td><td id="out-lean-dot-8" style="width:24px;text-align:center;color:#9BAABF">&#9679;</td></tr>
+          </table>
+        </div>
+
+        <!-- SECTION 3 — MATURITY SCAN RESULTS -->
+        <div class="output-section">
+          <div class="output-section-title">3 &mdash; Maturity Scan Results</div>
+
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem">
+            <div id="out-overall-badge" style="width:56px;height:56px;border-radius:50%;background:#009EDB;color:white;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center">&mdash;</div>
+            <div>
+              <div style="font-size:0.65rem;color:#9BAABF;text-transform:uppercase;letter-spacing:0.1em">Overall Maturity Estimate</div>
+              <div id="out-stage-name" style="font-family:'Source Serif 4',serif;font-size:1.2rem;font-weight:600;color:#0A2463">&mdash;</div>
+            </div>
+          </div>
+
+          <div id="out-pillar-bars" style="margin-bottom:1.2rem">
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Advanced Manufacturing Technologies</span><span id="out-pillar-score-1">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-1" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Digitalisation &amp; Data</span><span id="out-pillar-score-2">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-2" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Eco-Efficiency &amp; Circularity</span><span id="out-pillar-score-3">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-3" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Carbon &amp; Energy Management</span><span id="out-pillar-score-4">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-4" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Human-Centric Operations</span><span id="out-pillar-score-5">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-5" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Smart &amp; Flexible Manufacturing</span><span id="out-pillar-score-6">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-6" style="width:0%;background:#009EDB"></div></div>
+            </div>
+            <div class="output-bar-wrap">
+              <div class="output-bar-label"><span>Organisational &amp; Cultural Foundations</span><span id="out-pillar-score-7">&mdash;</span></div>
+              <div class="output-bar"><div class="output-bar-fill" id="out-bar-fill-7" style="width:0%;background:#009EDB"></div></div>
+            </div>
+          </div>
+
+          <table class="output-table" id="out-pillar-table">
+            <tr style="background:#F4FAFD">
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Pillar</td>
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Stage</td>
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Sustain.</td>
+              <td style="font-weight:700;color:#0A2463;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em">Key Observation</td>
+            </tr>
+            <tr><td>Advanced Manufacturing Technologies</td><td id="out-pt-stage-1">&mdash;</td><td id="out-pt-sus-1" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-1">&mdash;</td></tr>
+            <tr><td>Digitalisation &amp; Data</td><td id="out-pt-stage-2">&mdash;</td><td id="out-pt-sus-2" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-2">&mdash;</td></tr>
+            <tr><td>Eco-Efficiency &amp; Circularity</td><td id="out-pt-stage-3">&mdash;</td><td id="out-pt-sus-3" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-3">&mdash;</td></tr>
+            <tr><td>Carbon &amp; Energy Management</td><td id="out-pt-stage-4">&mdash;</td><td id="out-pt-sus-4" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-4">&mdash;</td></tr>
+            <tr><td>Human-Centric Operations</td><td id="out-pt-stage-5">&mdash;</td><td id="out-pt-sus-5" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-5">&mdash;</td></tr>
+            <tr><td>Smart &amp; Flexible Manufacturing</td><td id="out-pt-stage-6">&mdash;</td><td id="out-pt-sus-6" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-6">&mdash;</td></tr>
+            <tr><td>Organisational &amp; Cultural Foundations</td><td id="out-pt-stage-7">&mdash;</td><td id="out-pt-sus-7" style="color:#9BAABF">&ndash;</td><td id="out-pt-obs-7">&mdash;</td></tr>
+          </table>
+        </div>
+
+        <!-- SECTION 4 — SUSTAINABILITY COVERAGE -->
+        <div class="output-section">
+          <div class="output-section-title">4 &mdash; Sustainability Coverage</div>
+          <div id="out-sustain-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.5rem">
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">AMT</div>
+              <div id="out-sustain-1" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">DIG</div>
+              <div id="out-sustain-2" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">ECO</div>
+              <div id="out-sustain-3" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">CFE</div>
+              <div id="out-sustain-4" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">HCO</div>
+              <div id="out-sustain-5" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">SMF</div>
+              <div id="out-sustain-6" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+            <div style="border:1px solid #E9EDF2;border-radius:4px;padding:0.5rem;text-align:center">
+              <div style="font-size:0.65rem;color:#9BAABF">OCF</div>
+              <div id="out-sustain-7" style="font-size:1.1rem;color:#9BAABF">&ndash;</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5 — SUGGESTED NEXT STEPS -->
+        <div class="output-section">
+          <div class="output-section-title">5 &mdash; Suggested Next Steps</div>
+          <p style="font-size:0.75rem;color:#9BAABF;margin-bottom:0.75rem">Edit inline before printing.</p>
+
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div contenteditable="true" id="next-step-1" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div contenteditable="true" id="next-step-2" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div contenteditable="true" id="next-step-3" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
+            <div contenteditable="true" id="next-step-4" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #E9EDF2">
+            <div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div>
+            <div contenteditable="true" id="next-step-5" style="flex:1;font-size:0.83rem;color:#2D3F55;outline:none;min-height:1.2rem;border-bottom:1px dashed #E9EDF2">Next step will be suggested based on lean pathway and lowest pillar scores.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Print button row -->
+      <div class="no-print" style="margin-top:1.5rem;display:flex;gap:0.75rem">
+        <button class="btn btn-primary" onclick="window.print()">Print / Export PDF</button>
+        <button class="btn btn-outline" onclick="refreshOutput()">Refresh from assessment data</button>
+      </div>
+    </div>
   </div>
 </div>
 
