@@ -1182,7 +1182,283 @@ body {
         </div>
       </div>
     </div>
-    <div id="mode-2" class="mode"></div>
+    <div id="mode-2" class="mode">
+      <div class="section-title">Mode 2</div>
+      <div class="section-heading">On-Site Assessment &mdash; Maturity Scan D2</div>
+      <div class="section-sub">Score each question based on what you observe. Notes are optional but recommended.</div>
+
+      <!-- PILLAR TABS -->
+      <div class="pillar-tabs">
+        <button class="pillar-tab active" onclick="showPillar(1)">P1 Advanced Mfg <span class="tab-badge" id="tab-badge-1">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(2)">P2 Digital Factory <span class="tab-badge" id="tab-badge-2">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(3)">P3 Eco Factory <span class="tab-badge" id="tab-badge-3">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(4)">P4 Customer Eng. <span class="tab-badge" id="tab-badge-4">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(5)">P5 Human Org. <span class="tab-badge" id="tab-badge-5">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(6)">P6 Smart Mfg <span class="tab-badge" id="tab-badge-6">0/5</span></button>
+        <button class="pillar-tab" onclick="showPillar(7)">P7 Open Factory <span class="tab-badge" id="tab-badge-7">0/5</span></button>
+      </div>
+
+      <!-- PILLAR 1 -->
+      <div class="pillar-panel" id="pillar-1" style="display:block">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 01</div>
+            <div class="pillar-name">Advanced Manufacturing Technologies</div>
+            <div class="pillar-def">Capability to deploy and operate production technologies that enhance process precision, flexibility, and efficiency, building on stable and standardised processes</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-1">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p1-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.1</div>
+            <div class="assess-q-text">Are production technologies deployed on stable, standardised processes &mdash; or do they compensate for process instability?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Technologies mask process problems</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some stability, inconsistent</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Technologies on well-defined processes</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Fully optimised, adaptive</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.2</div>
+            <div class="assess-q-text">How consistently are production technologies used across shifts and operators?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">Varies significantly by operator</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some consistency, informal rules</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Documented procedures followed</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Digital systems enforce consistency</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.3</div>
+            <div class="assess-q-text">Is equipment capability matched to current product and process requirements?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">Over or under-specified</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partially matched, some gaps</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Well-matched, regularly reviewed</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">Dynamically reconfigured</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.4</div>
+            <div class="assess-q-text">Is there evidence that technology investments have improved consistency, throughput, or resource efficiency?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">No improvement tracked</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Anecdotal improvement</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Measured with before/after data</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Continuous improvement loop</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p1-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">1.5</div>
+            <div class="assess-q-text">Is advanced manufacturing (additive, flexible automation, collaborative robotics) in use or planned?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">Not considered</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Awareness, no concrete plan</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Pilot or partial deployment</span></button>
+            <button class="rating-btn" data-pillar="1" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Integrated in production strategy</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="1" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-1" data-pillar="1">
+          <label for="sustain-1">Sustainability dimension addressed in this pillar (material efficiency, scrap reduction)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 2 -->
+      <div class="pillar-panel" id="pillar-2" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 02</div>
+            <div class="pillar-name">Digital Factory</div>
+            <div class="pillar-def">Capability to capture, access, and use operational data across the organisation, including in fragmented data environments</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-2">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p2-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.1</div>
+            <div class="assess-q-text">Can operational data (production, inventory, quality) be accessed and combined across functions without manual reconciliation?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Data locked in silos</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Possible with major effort</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Mostly accessible, minor steps</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time across functions</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.2</div>
+            <div class="assess-q-text">Is there a single version of truth for key operational metrics?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">Different departments, different numbers</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partial alignment, frequent gaps</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Agreed metrics, mostly consistent</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Single integrated source</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.3</div>
+            <div class="assess-q-text">How current and reliable is operational data at the point of decision?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">Outdated or unreliable</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Partially current, some lag</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Generally reliable</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time, high reliability</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.4</div>
+            <div class="assess-q-text">Are ERP, MES, or equivalent systems in use and actively used by operations teams?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">No systems</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Installed but underused</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Actively used by key roles</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Embedded across all decisions</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p2-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">2.5</div>
+            <div class="assess-q-text">Where formal integration is absent, are context-based or bridging approaches used to combine data?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">Silos accepted as fixed</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Ad hoc individual workarounds</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Structured informal integration</span></button>
+            <button class="rating-btn" data-pillar="2" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Systematic context-based access</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="2" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-2" data-pillar="2">
+          <label for="sustain-2">Sustainability dimension addressed (energy and resource consumption visibility)</label>
+        </div>
+      </div>
+
+      <!-- PILLAR 3 -->
+      <div class="pillar-panel" id="pillar-3" style="display:none">
+        <div class="pillar-header">
+          <div class="pillar-header-left">
+            <div class="pillar-num-label">Pillar 03</div>
+            <div class="pillar-name">Eco Factory</div>
+            <div class="pillar-def">Capability to monitor, manage, and reduce environmental impact and resource use within production systems</div>
+          </div>
+          <div class="stage-badge" id="pillar-stage-3">&mdash;</div>
+        </div>
+
+        <div class="assess-q" id="p3-q1">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.1</div>
+            <div class="assess-q-text">Is energy consumption measured at the process or machine level?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="1"><span class="rating-num">1</span><span class="rating-label">Total bill only</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="2"><span class="rating-num">2</span><span class="rating-label">Area-level measurement</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="3"><span class="rating-num">3</span><span class="rating-label">Process or machine level</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="1" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time per-unit tracking</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="1" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q2">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.2</div>
+            <div class="assess-q-text">Is waste and scrap quantified, categorised, and linked to specific production activities?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="1"><span class="rating-num">1</span><span class="rating-label">Not measured</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="2"><span class="rating-num">2</span><span class="rating-label">Total volumes estimated</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="3"><span class="rating-num">3</span><span class="rating-label">Categorised and linked to processes</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="2" data-r="4"><span class="rating-num">4</span><span class="rating-label">Real-time with automated alerts</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="2" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q3">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.3</div>
+            <div class="assess-q-text">Are resource efficiency targets set and tracked with defined KPIs?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="1"><span class="rating-num">1</span><span class="rating-label">No targets</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="2"><span class="rating-num">2</span><span class="rating-label">Informal, not tracked</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="3"><span class="rating-num">3</span><span class="rating-label">Formal KPIs tracked regularly</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="3" data-r="4"><span class="rating-num">4</span><span class="rating-label">KPIs linked to decisions</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="3" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q4">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.4</div>
+            <div class="assess-q-text">Is environmental data used in operational decisions &mdash; not just reported?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="1"><span class="rating-num">1</span><span class="rating-label">Not used in decisions</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="2"><span class="rating-num">2</span><span class="rating-label">Referenced occasionally</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="3"><span class="rating-num">3</span><span class="rating-label">Routinely considered</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="4" data-r="4"><span class="rating-num">4</span><span class="rating-label">Primary decision criterion</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="4" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="assess-q" id="p3-q5">
+          <div class="assess-q-head">
+            <div class="assess-q-num">3.5</div>
+            <div class="assess-q-text">Is there evidence of circular resource flows &mdash; reuse, recycling, or material recovery?</div>
+          </div>
+          <div class="rating-row">
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="1"><span class="rating-num">1</span><span class="rating-label">No circular practices</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="2"><span class="rating-num">2</span><span class="rating-label">Some informal reuse</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="3"><span class="rating-num">3</span><span class="rating-label">Structured recycling programme</span></button>
+            <button class="rating-btn" data-pillar="3" data-q="5" data-r="4"><span class="rating-num">4</span><span class="rating-label">Circular flows in product design</span></button>
+          </div>
+          <textarea class="assess-note" rows="2" data-pillar="3" data-q="5" placeholder="Observation..."></textarea>
+        </div>
+
+        <div class="sustain-check">
+          <input type="checkbox" id="sustain-3" data-pillar="3">
+          <label for="sustain-3">Sustainability dimension addressed (structured environmental practices and circularity)</label>
+        </div>
+      </div>
+    </div>
     <div id="mode-3" class="mode">
       <div class="section-title">Mode 3</div>
       <div class="section-heading">Session Output</div>
