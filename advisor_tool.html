@@ -1406,22 +1406,392 @@ body {
 <div class="tool-footer">UNIDO · TCS/DAI · Project ID 230258 · Advisor Tool · D1 v1.0 · April 2026</div>
 
 <script>
+// ── STATE ──────────────────────────────────────
+const smeState = [1,2,3].map(n => ({
+  name: 'SME ' + n,
+  profile: { sector:'', size:'', market:[], stage:'', challenge:'', certs:[] },
+  leanScores: new Array(8).fill(null),
+  pillarRatings: Array.from({length:7}, () => new Array(5).fill(null)),
+  pillarNotes: Array.from({length:7}, () => new Array(5).fill('')),
+  sustainChecks: new Array(7).fill(false)
+}));
+let activeSme = 0;
+let activeMode = 1;
+let activePillar = 1;
+
+// ── PASSWORD ────────────────────────────────────
 function checkPassword() {
-  var input = document.getElementById('gate-input');
-  var err = document.getElementById('gate-error');
-  var raw = (input.value || '').toUpperCase().replace(/[\s\-]/g, '/');
-  if (raw === 'UNIDO/230258') {
+  const input = document.getElementById('gate-input');
+  const error = document.getElementById('gate-error');
+  const val = input.value.trim().toUpperCase().replace(/[\s\-]/g,'\/');
+  if (val === 'UNIDO/230258') {
     document.getElementById('password-gate').style.display = 'none';
-    err.textContent = '';
-    input.classList.remove('error');
   } else {
-    input.classList.remove('error');
-    void input.offsetWidth;
+    error.textContent = 'Incorrect access code. Please try again.';
     input.classList.add('error');
-    err.textContent = 'Incorrect access code. Please try again.';
     input.value = '';
+    setTimeout(() => input.classList.remove('error'), 400);
+    input.focus();
   }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const gi = document.getElementById('gate-input');
+  if (gi) gi.addEventListener('keydown', e => { if(e.key==='Enter') checkPassword(); });
+});
+
+// ── SME SELECTOR ────────────────────────────────
+function selectSme(n) {
+  activeSme = n - 1;
+  document.querySelectorAll('.sme-btn').forEach((b,i) => b.classList.toggle('active', i===activeSme));
+  document.querySelectorAll('.sme-name-input').forEach((inp,i) => {
+    inp.style.display = i===activeSme ? 'block' : 'none';
+    if (i===activeSme) inp.value = smeState[activeSme].name;
+  });
+  loadSmeState();
+  updateCounters();
+}
+
+function updateSmeName(n) {
+  const inp = document.getElementById('sme-name-' + n);
+  if (inp) smeState[n-1].name = inp.value || ('SME ' + n);
+  const btn = document.querySelector('.sme-btn:nth-child(' + n + ')');
+  if (btn) btn.textContent = smeState[n-1].name || ('SME ' + n);
+}
+
+function loadSmeState() {
+  // Reload lean scores visual
+  const st = smeState[activeSme];
+  document.querySelectorAll('.lean-rating-btn').forEach(btn => {
+    const row = parseInt(btn.dataset.row);
+    const score = parseInt(btn.dataset.score);
+    const label = btn.dataset.label;
+    const stored = st.leanScores[row];
+    btn.classList.remove('sel-yes','sel-partially','sel-no');
+    if (stored !== null) {
+      if (stored === 2 && label === 'Yes') btn.classList.add('sel-yes');
+      if (stored === 1 && label === 'Partially') btn.classList.add('sel-partially');
+      if (stored === 0 && label === 'No') btn.classList.add('sel-no');
+    }
+  });
+  updateLeanScore();
+  // Reload pillar ratings
+  document.querySelectorAll('.rating-btn').forEach(btn => {
+    const p = parseInt(btn.dataset.pillar) - 1;
+    const q = parseInt(btn.dataset.q) - 1;
+    const r = parseInt(btn.dataset.r) - 1;
+    btn.classList.toggle('selected', st.pillarRatings[p][q] === r);
+  });
+  // Reload sustain checks
+  document.querySelectorAll('.sustain-check input').forEach((cb, i) => {
+    cb.checked = st.sustainChecks[i];
+  });
+  // Reload notes
+  document.querySelectorAll('.assess-note').forEach(ta => {
+    const p = parseInt(ta.dataset.pillar) - 1;
+    const q = parseInt(ta.dataset.q) - 1;
+    ta.value = st.pillarNotes[p][q] || '';
+  });
+  updatePillarStageEstimates();
+  updateOverallEstimate();
+}
+
+// ── MODE SWITCHING ───────────────────────────────
+function switchMode(n) {
+  activeMode = n;
+  document.querySelectorAll('.mode').forEach((m,i) => m.classList.toggle('active', i===n-1));
+  document.querySelectorAll('.mode-btn').forEach((b,i) => b.classList.toggle('active', i===n-1));
+  if (n===3) refreshOutput();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── PANEL TOGGLE ────────────────────────────────
+function togglePanel(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+  header.querySelector('.panel-arrow').textContent = header.classList.contains('open') ? '▲' : '▼';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.panel-header').forEach(h => {
+    h.addEventListener('click', () => togglePanel(h));
+  });
+});
+
+// ── CHIP / PILL TOGGLES ─────────────────────────
+function toggleChip(el, group) {
+  el.classList.toggle('selected');
+  const vals = [...el.closest('.chip-group').querySelectorAll('.chip.selected')].map(c => c.textContent.trim());
+  smeState[activeSme].profile[group] = vals;
+}
+
+function togglePill(el, group) {
+  el.closest('.chip-group').querySelectorAll('.stage-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  smeState[activeSme].profile[group] = el.textContent.trim();
+}
+
+// ── LEAN SCORING ────────────────────────────────
+function rateLean(btn, rowIdx, score) {
+  const label = btn.dataset.label;
+  const row = btn.closest('tr');
+  row.querySelectorAll('.lean-rating-btn').forEach(b => b.classList.remove('sel-yes','sel-partially','sel-no'));
+  if (label==='Yes') btn.classList.add('sel-yes');
+  else if (label==='Partially') btn.classList.add('sel-partially');
+  else btn.classList.add('sel-no');
+  smeState[activeSme].leanScores[rowIdx] = score;
+  updateLeanScore();
+}
+
+function updateLeanScore() {
+  const scores = smeState[activeSme].leanScores;
+  const total = scores.reduce((a,b) => a + (b !== null ? b : 0), 0);
+  const answered = scores.filter(s => s !== null).length;
+  const display = answered > 0 ? total : 0;
+  const el = document.getElementById('lean-score-num');
+  if (el) el.textContent = display;
+  const tag = document.getElementById('lean-path-tag');
+  if (tag) {
+    if (answered === 0) { tag.textContent = ''; tag.style.cssText = ''; return; }
+    if (total <= 5) { tag.textContent = 'Lean Readiness Pathway'; tag.style.cssText = 'background:#FDF2EE;color:#C0392B;border:1px solid #F2C4B0'; }
+    else if (total <= 10) { tag.textContent = 'Lean Acceleration Track'; tag.style.cssText = 'background:#FDF6E3;color:#C68B00;border:1px solid #EDD88A'; }
+    else { tag.textContent = 'Direct Entry'; tag.style.cssText = 'background:#EAF5EE;color:#2E8B57;border:1px solid #A8D5B8'; }
+  }
+  updateAgenda(total);
+}
+
+function updateAgenda(score) {
+  const container = document.getElementById('agenda-container');
+  if (!container) return;
+  let items = [];
+  if (score <= 5) {
+    items = [
+      {time:'09:00',label:'Welcome & introductions'},
+      {time:'09:30',label:'Factory walk — 5S and visual management observation'},
+      {time:'10:30',label:'Process documentation review'},
+      {time:'11:15',label:'Maintenance records and TPM check'},
+      {time:'12:00',label:'Operator interviews (2–3 workers)'},
+      {time:'13:00',label:'Findings discussion with management'},
+      {time:'13:45',label:'Next steps and lean pathway briefing'}
+    ];
+  } else if (score <= 10) {
+    items = [
+      {time:'09:00',label:'Welcome & SME profile review'},
+      {time:'09:30',label:'Factory walk — lean and digital observation'},
+      {time:'10:15',label:'Lean foundations check (priority dimensions)'},
+      {time:'11:00',label:'Priority pillars maturity scan (3 pillars)'},
+      {time:'12:30',label:'Data and systems review'},
+      {time:'13:15',label:'Findings and programme entry discussion'}
+    ];
+  } else {
+    items = [
+      {time:'09:00',label:'Welcome & profile review'},
+      {time:'09:30',label:'Factory walk'},
+      {time:'10:30',label:'Full 7-pillar maturity scan'},
+      {time:'13:00',label:'Sustainability sub-indicators review'},
+      {time:'13:30',label:'Transformation plan framing'},
+      {time:'14:15',label:'Next steps and programme timeline'}
+    ];
+  }
+  container.innerHTML = items.map((item, i) =>
+    '<div class="agenda-item">' +
+    '<div class="agenda-time">' + item.time + '</div>' +
+    '<div style="flex:1"><div class="agenda-label"><input type="checkbox" checked style="margin-right:0.5rem;accent-color:#009EDB"> ' + item.label + '</div>' +
+    '<textarea class="agenda-note" rows="1" placeholder="Add note..."></textarea></div></div>'
+  ).join('');
+}
+
+// ── PILLAR ASSESSMENT ────────────────────────────
+function showPillar(n) {
+  activePillar = n;
+  document.querySelectorAll('.pillar-tab').forEach((t,i) => t.classList.toggle('active', i===n-1));
+  document.querySelectorAll('.pillar-panel').forEach((p,i) => p.style.display = i===n-1 ? 'block' : 'none');
+}
+
+function rateQuestion(btn, pillar, q, rating) {
+  const p = pillar - 1, qi = q - 1;
+  const ratingRow = btn.closest('.rating-row');
+  ratingRow.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  smeState[activeSme].pillarRatings[p][qi] = rating - 1;
+  updatePillarStageEstimates();
+  updateOverallEstimate();
+  updateCounters();
+}
+
+function saveNote(ta, pillar, q) {
+  smeState[activeSme].pillarNotes[pillar-1][q-1] = ta.value;
+}
+
+function toggleSustain(cb, pillar) {
+  smeState[activeSme].sustainChecks[pillar-1] = cb.checked;
+}
+
+function updatePillarStageEstimates() {
+  for (let p = 0; p < 7; p++) {
+    const ratings = smeState[activeSme].pillarRatings[p].filter(r => r !== null);
+    const badge = document.getElementById('pillar-stage-' + (p+1));
+    if (!badge) continue;
+    if (!ratings.length) { badge.textContent = '—'; badge.style.background = 'rgba(255,255,255,0.15)'; continue; }
+    const avg = ratings.reduce((a,b)=>a+b,0)/ratings.length;
+    const stage = avg < 0.75 ? 1 : avg < 1.75 ? 2 : avg < 2.75 ? 3 : 4;
+    const colours = {1:'#C0392B',2:'#C68B00',3:'#2E8B57',4:'#1A5F9C'};
+    badge.textContent = 'Stage ' + stage;
+    badge.style.background = colours[stage];
+    // Update tab badge
+    const tabBadge = document.getElementById('tab-badge-' + (p+1));
+    if (tabBadge) tabBadge.textContent = ratings.length + '/5';
+  }
+}
+
+function updateOverallEstimate() {
+  const all = smeState[activeSme].pillarRatings.flat().filter(r => r !== null);
+  const bar = document.getElementById('overall-stage');
+  if (!bar) return;
+  if (!all.length) { bar.textContent = 'Overall estimate: —'; return; }
+  const avg = all.reduce((a,b)=>a+b,0)/all.length;
+  const stage = avg < 0.75 ? 1 : avg < 1.75 ? 2 : avg < 2.75 ? 3 : 4;
+  const names = {1:'Ad Hoc',2:'Aware',3:'Structured',4:'Integrated'};
+  bar.textContent = 'Overall estimate: Stage ' + stage + ' — ' + names[stage];
+}
+
+function updateCounters() {
+  const answered = smeState[activeSme].pillarRatings.flat().filter(r => r !== null).length;
+  const counter = document.getElementById('q-counter');
+  if (counter) counter.textContent = answered + ' of 35 questions answered';
+  const sideCounter = document.getElementById('completion-counter');
+  if (sideCounter) sideCounter.textContent = answered + ' of 35 answered';
+}
+
+// ── OUTPUT / MODE 3 ──────────────────────────────
+function refreshOutput() {
+  const st = smeState[activeSme];
+  const pillarNames = ['Advanced Manufacturing','Digital Factory','Eco Factory','Customer Engineering','Human Organisation','Smart Manufacturing','Open Factory'];
+  const pillarAbbr = ['AMT','DIG','ECO','CFE','HCO','SMF','OCF'];
+
+  // Header
+  const outSme = document.getElementById('out-sme-name');
+  if (outSme) outSme.textContent = st.name;
+  const outDate = document.getElementById('out-date');
+  if (outDate && !outDate.value) outDate.value = new Date().toLocaleDateString('en-GB');
+
+  // Profile table
+  const tbl = document.getElementById('out-profile-table');
+  if (tbl) {
+    const p = st.profile;
+    tbl.innerHTML = [
+      ['Sector', p.sector || '—'],
+      ['Company Size', p.size || '—'],
+      ['Primary Market', (p.market||[]).join(', ') || '—'],
+      ['Self-Reported Stage', p.stage || '—'],
+      ['Main Challenge', p.challenge || '—'],
+      ['Certifications', (p.certs||[]).join(', ') || '—']
+    ].map(([l,v]) => '<tr><td>' + l + '</td><td>' + v + '</td></tr>').join('');
+  }
+
+  // Lean
+  const leanScores = st.leanScores;
+  const leanTotal = leanScores.reduce((a,b) => a+(b||0), 0);
+  const leanLabels = ['5S & Visual Management','Value Stream Mapping','Standard Work','Kaizen / CI Culture','TPM','Pull Systems / Kanban','Structured Problem-Solving','Waste Elimination'];
+  const leanWords = [null, 'No', 'Partially', 'Yes'];
+  const leanDotColours = [null, '#C0392B', '#C68B00', '#2E8B57'];
+  const outLean = document.getElementById('out-lean-score');
+  if (outLean) outLean.textContent = leanTotal;
+  const outLeanTag = document.getElementById('out-lean-tag');
+  if (outLeanTag) {
+    if (leanTotal <= 5) { outLeanTag.textContent = 'Lean Readiness Pathway'; outLeanTag.style.cssText = 'background:#FDF2EE;color:#C0392B;border:1px solid #F2C4B0'; }
+    else if (leanTotal <= 10) { outLeanTag.textContent = 'Lean Acceleration Track'; outLeanTag.style.cssText = 'background:#FDF6E3;color:#C68B00;border:1px solid #EDD88A'; }
+    else { outLeanTag.textContent = 'Direct Entry'; outLeanTag.style.cssText = 'background:#EAF5EE;color:#2E8B57;border:1px solid #A8D5B8'; }
+  }
+  const leanTbl = document.getElementById('out-lean-table');
+  if (leanTbl) {
+    leanTbl.innerHTML = leanLabels.map((label, i) => {
+      const s = leanScores[i];
+      const word = s !== null ? leanWords[s+1] || '—' : '—';
+      const col = s !== null ? leanDotColours[s+1] || '#9BAABF' : '#9BAABF';
+      return '<tr><td>' + label + '</td><td>' + word + '</td><td style="color:' + col + ';font-size:1.1rem">●</td></tr>';
+    }).join('');
+  }
+
+  // Pillar scores
+  const pillarAvgs = st.pillarRatings.map(ratings => {
+    const filled = ratings.filter(r => r !== null);
+    if (!filled.length) return null;
+    return filled.reduce((a,b)=>a+b,0)/filled.length;
+  });
+  const stageOf = avg => avg === null ? null : avg < 0.75 ? 1 : avg < 1.75 ? 2 : avg < 2.75 ? 3 : 4;
+  const stageColours = {1:'#C0392B',2:'#C68B00',3:'#2E8B57',4:'#1A5F9C'};
+  const allRatings = st.pillarRatings.flat().filter(r=>r!==null);
+  const overallAvg = allRatings.length ? allRatings.reduce((a,b)=>a+b,0)/allRatings.length : null;
+  const overallStage = stageOf(overallAvg);
+  const stageNames = {1:'Ad Hoc',2:'Aware',3:'Structured',4:'Integrated'};
+  const outBadge = document.getElementById('out-overall-badge');
+  if (outBadge) { outBadge.textContent = overallStage || '—'; if(overallStage) outBadge.style.background = stageColours[overallStage]; }
+  const outStageName = document.getElementById('out-stage-name');
+  if (outStageName) outStageName.textContent = overallStage ? 'Stage ' + overallStage + ' — ' + stageNames[overallStage] : 'Insufficient data';
+
+  pillarAvgs.forEach((avg, i) => {
+    const stage = stageOf(avg);
+    const scoreEl = document.getElementById('out-pillar-score-' + (i+1));
+    const barEl = document.getElementById('out-bar-fill-' + (i+1));
+    if (scoreEl) scoreEl.textContent = stage ? 'Stage ' + stage : '—';
+    if (barEl) {
+      barEl.style.background = stage ? stageColours[stage] : '#E9EDF2';
+      setTimeout(() => { if(barEl) barEl.style.width = stage ? (stage/4*100)+'%' : '0%'; }, 100);
+    }
+  });
+
+  // Pillar detail table
+  const pillarTbl = document.getElementById('out-pillar-table');
+  if (pillarTbl) {
+    pillarTbl.innerHTML = '<tr style="font-size:0.68rem;color:#9BAABF;text-transform:uppercase;letter-spacing:0.1em"><td>Pillar</td><td>Stage</td><td>Sustainability</td><td>Key Observation</td></tr>' +
+    pillarNames.map((name, i) => {
+      const stage = stageOf(pillarAvgs[i]);
+      const sustain = st.sustainChecks[i] ? '<span style="color:#2E8B57">✓</span>' : '<span style="color:#9BAABF">–</span>';
+      const note = (st.pillarNotes[i][0] || '').substring(0,120) + (st.pillarNotes[i][0]&&st.pillarNotes[i][0].length>120?'…':'');
+      return '<tr><td>' + name + '</td><td>' + (stage ? 'Stage ' + stage : '—') + '</td><td>' + sustain + '</td><td style="font-size:0.78rem;color:#546E8A">' + (note||'—') + '</td></tr>';
+    }).join('');
+  }
+
+  // Sustainability grid
+  st.sustainChecks.forEach((checked, i) => {
+    const el = document.getElementById('out-sustain-' + (i+1));
+    if (el) { el.textContent = checked ? '✓' : '–'; el.style.color = checked ? '#2E8B57' : '#9BAABF'; }
+  });
+
+  // Next steps
+  const leanPath = leanTotal <= 5 ? 'readiness' : leanTotal <= 10 ? 'acceleration' : 'direct';
+  const sortedPillars = pillarAvgs.map((a,i)=>({i,a})).sort((x,y)=>(x.a||0)-(y.a||0));
+  const weakest = sortedPillars.slice(0,2).map(p=>pillarNames[p.i]);
+  const nextSteps = {
+    readiness: ['Work with your UNIDO advisor on lean foundations before beginning the formal assessment.', 'Focus on 5S implementation and basic process documentation as first priorities.', 'Establish a preventive maintenance schedule for key equipment.', 'Address gap in ' + (weakest[0]||'operations') + ' as part of the lean preparation phase.', 'Schedule D2 Maturity Scan for after lean readiness pathway completion (est. 3–6 months).'],
+    acceleration: ['Begin the D2 Maturity Scan while addressing lean gaps in parallel.', 'Prioritise ' + (weakest[0]||'Digital Factory') + ' as the primary digital gap to address.', 'Develop standard work documentation for top 3 production processes.', 'Address ' + (weakest[1]||'data visibility') + ' through targeted lean and digital actions.', 'Build Transformation Plan (D3) with both lean and digital actions integrated.'],
+    direct: ['Proceed to full D2 Maturity Scan — lean foundations are sufficient.', 'Focus Transformation Plan on cross-functional integration (Stage 3→4 transition).', 'Prioritise ' + (weakest[0]||'Smart Manufacturing') + ' as the primary gap for D3 actions.', 'Address ' + (weakest[1]||'Open Factory') + ' through supply chain coordination actions.', 'Target at least one sustainability action with a measurable KPI in the D3 plan.']
+  };
+  (nextSteps[leanPath]||nextSteps.direct).forEach((text, i) => {
+    const el = document.getElementById('next-step-' + (i+1));
+    if (el && !el.textContent.trim()) el.textContent = text;
+  });
+}
+
+// ── INIT ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  selectSme(1);
+  showPillar(1);
+  document.querySelectorAll('.rating-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      rateQuestion(btn, parseInt(btn.dataset.pillar), parseInt(btn.dataset.q), parseInt(btn.dataset.r));
+    });
+  });
+  document.querySelectorAll('.assess-note').forEach(ta => {
+    ta.addEventListener('input', () => saveNote(ta, parseInt(ta.dataset.pillar), parseInt(ta.dataset.q)));
+  });
+  document.querySelectorAll('.sustain-check input').forEach((cb, i) => {
+    cb.addEventListener('change', () => toggleSustain(cb, i+1));
+  });
+  document.querySelectorAll('.lean-rating-btn').forEach(btn => {
+    btn.addEventListener('click', () => rateLean(btn, parseInt(btn.dataset.row), parseInt(btn.dataset.score)));
+  });
+});
 </script>
 
 </body>
