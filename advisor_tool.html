@@ -972,7 +972,216 @@ body {
 <!-- ========== MAIN CONTENT ========== -->
 <div class="main-content">
   <div class="content-area">
-    <div id="mode-1" class="mode active"></div>
+    <div id="mode-1" class="mode active">
+      <div class="section-title">Mode 1</div>
+      <div class="section-heading">Pre-Visit Preparation</div>
+      <div class="section-sub">Complete before the site visit. Profile the SME, score lean readiness, and generate a suggested agenda.</div>
+
+      <!-- PANEL A — SME PROFILE INPUT -->
+      <div class="panel">
+        <div class="panel-header open" onclick="togglePanel(this)">
+          <div class="panel-title">Panel A — SME Profile</div>
+          <div class="panel-arrow">&#9660;</div>
+        </div>
+        <div class="panel-body open">
+          <div class="form-row">
+            <label class="form-label">Sector</label>
+            <select id="p-sector" class="form-select">
+              <option value="">Select sector...</option>
+              <option>Metal/Machinery</option>
+              <option>Food &amp; Beverage</option>
+              <option>Wood/Furniture</option>
+              <option>Textiles/Apparel</option>
+              <option>Chemicals/Pharma</option>
+              <option>Automotive parts</option>
+              <option>Other manufacturing</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Company Size</label>
+            <select id="p-size" class="form-select">
+              <option value="">Select size...</option>
+              <option>Fewer than 10</option>
+              <option>10&ndash;49</option>
+              <option>50&ndash;249</option>
+              <option>250 or more</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Primary Market</label>
+            <div class="chip-group">
+              <div class="chip" onclick="toggleChip(this,'market')">Local only</div>
+              <div class="chip" onclick="toggleChip(this,'market')">EU export</div>
+              <div class="chip" onclick="toggleChip(this,'market')">Non-EU export</div>
+              <div class="chip" onclick="toggleChip(this,'market')">Mixed</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">SME Self-Reported Stage (if available)</label>
+            <div class="chip-group">
+              <div class="stage-pill" onclick="togglePill(this,'stage')">1 Ad Hoc</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">2 Aware</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">3 Structured</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">4 Integrated</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">5 Intelligent</div>
+              <div class="stage-pill" onclick="togglePill(this,'stage')">Not completed</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Main Stated Challenge</label>
+            <select id="p-challenge" class="form-select">
+              <option value="">Select challenge...</option>
+              <option>Quality consistency</option>
+              <option>Delivery reliability</option>
+              <option>Cost reduction</option>
+              <option>Skills and workforce</option>
+              <option>Customer requirements</option>
+              <option>Supply chain management</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Certifications Held</label>
+            <div class="chip-group">
+              <div class="chip" onclick="toggleChip(this,'certs')">ISO 9001</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">ISO 14001</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">ISO 45001</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">IATF 16949</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">CE marking</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">Customer-specific</div>
+              <div class="chip" onclick="toggleChip(this,'certs')">None</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL B — LEAN READINESS PRE-CHECK -->
+      <div class="panel">
+        <div class="panel-header" onclick="togglePanel(this)">
+          <div class="panel-title">Panel B — Lean Readiness Pre-Check</div>
+          <div class="panel-arrow">&#9660;</div>
+        </div>
+        <div class="panel-body">
+          <div class="lean-score-display">
+            <div>
+              <div class="lean-score-num" id="lean-score-num">0</div>
+              <div class="lean-score-label">out of 16</div>
+            </div>
+            <div>
+              <label class="form-label" style="display:inline;margin-right:0.5rem;">Pathway:</label>
+              <span id="lean-path-tag" class="lean-path-tag"></span>
+            </div>
+          </div>
+
+          <table class="lean-table">
+            <tr>
+              <td>
+                <div>5S &amp; Visual Management</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Workspace organised with defined places for tools, parts, and materials</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="1" data-score="2" onclick="rateLean(this,1,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="1" data-score="1" onclick="rateLean(this,1,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="1" data-score="0" onclick="rateLean(this,1,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Value Stream Mapping</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">SME can describe complete product flow from material to customer</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="2" data-score="2" onclick="rateLean(this,2,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="2" data-score="1" onclick="rateLean(this,2,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="2" data-score="0" onclick="rateLean(this,2,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Standard Work</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Key production steps documented in a way operators actually follow</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="3" data-score="2" onclick="rateLean(this,3,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="3" data-score="1" onclick="rateLean(this,3,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="3" data-score="0" onclick="rateLean(this,3,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Kaizen / CI Culture</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Workers at all levels regularly identify and act on improvement opportunities</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="4" data-score="2" onclick="rateLean(this,4,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="4" data-score="1" onclick="rateLean(this,4,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="4" data-score="0" onclick="rateLean(this,4,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>TPM</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Scheduled preventive maintenance programme in place</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="5" data-score="2" onclick="rateLean(this,5,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="5" data-score="1" onclick="rateLean(this,5,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="5" data-score="0" onclick="rateLean(this,5,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Pull Systems / Kanban</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Production triggered by downstream demand, not pushed by schedule</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="6" data-score="2" onclick="rateLean(this,6,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="6" data-score="1" onclick="rateLean(this,6,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="6" data-score="0" onclick="rateLean(this,6,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Structured Problem-Solving</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Defects and problems investigated using a defined methodology (A3/PDCA)</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="7" data-score="2" onclick="rateLean(this,7,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="7" data-score="1" onclick="rateLean(this,7,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="7" data-score="0" onclick="rateLean(this,7,0)">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>Waste Elimination</div>
+                <div style="font-size:0.75rem;color:#546E8A;font-weight:400;margin-top:0.2rem;">Waste (motion, waiting, overproduction, defects, inventory) actively identified and reduced</div>
+              </td>
+              <td>
+                <button class="lean-rating-btn" data-row="8" data-score="2" onclick="rateLean(this,8,2)">Yes</button>
+                <button class="lean-rating-btn" data-row="8" data-score="1" onclick="rateLean(this,8,1)">Partially</button>
+                <button class="lean-rating-btn" data-row="8" data-score="0" onclick="rateLean(this,8,0)">No</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL C — VISIT AGENDA BUILDER -->
+      <div class="panel">
+        <div class="panel-header" onclick="togglePanel(this)">
+          <div class="panel-title">Panel C — Visit Agenda Builder</div>
+          <div class="panel-arrow">&#9660;</div>
+        </div>
+        <div class="panel-body">
+          <p style="font-size:0.8rem;color:#546E8A;margin-bottom:1rem">Agenda auto-generates based on lean score. Check or uncheck items and add notes.</p>
+          <div id="agenda-container"></div>
+        </div>
+      </div>
+    </div>
     <div id="mode-2" class="mode"></div>
     <div id="mode-3" class="mode"></div>
   </div>
