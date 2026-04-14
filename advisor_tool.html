@@ -914,7 +914,7 @@ body {
     <div class="gate-emblem">UN</div>
     <div class="gate-title">Factory of the Future</div>
     <div class="gate-sub">Advisor Tool — authorised access only.<br>Please enter the access code.</div>
-    <input type="password" id="gate-input" class="gate-input" placeholder="ACCESS CODE" onkeydown="if(event.key==='Enter') checkPassword()">
+    <input type="password" id="gate-input" class="gate-input" placeholder="ACCESS CODE">
     <button class="gate-btn" onclick="checkPassword()">Enter</button>
     <div class="gate-error" id="gate-error"></div>
   </div>
@@ -979,7 +979,7 @@ body {
 
       <!-- PANEL A — SME PROFILE INPUT -->
       <div class="panel">
-        <div class="panel-header open" onclick="togglePanel(this)">
+        <div class="panel-header open">
           <div class="panel-title">Panel A — SME Profile</div>
           <div class="panel-arrow">&#9660;</div>
         </div>
@@ -1011,7 +1011,7 @@ body {
 
           <div class="form-row">
             <label class="form-label">Primary Market</label>
-            <div class="chip-group">
+            <div class="chip-group" data-group="market">
               <div class="chip" onclick="toggleChip(this,'market')">Local only</div>
               <div class="chip" onclick="toggleChip(this,'market')">EU export</div>
               <div class="chip" onclick="toggleChip(this,'market')">Non-EU export</div>
@@ -1021,7 +1021,7 @@ body {
 
           <div class="form-row">
             <label class="form-label">SME Self-Reported Stage (if available)</label>
-            <div class="chip-group">
+            <div class="chip-group" data-group="stage">
               <div class="stage-pill" onclick="togglePill(this,'stage')">1 Ad Hoc</div>
               <div class="stage-pill" onclick="togglePill(this,'stage')">2 Aware</div>
               <div class="stage-pill" onclick="togglePill(this,'stage')">3 Structured</div>
@@ -1046,7 +1046,7 @@ body {
 
           <div class="form-row">
             <label class="form-label">Certifications Held</label>
-            <div class="chip-group">
+            <div class="chip-group" data-group="certs">
               <div class="chip" onclick="toggleChip(this,'certs')">ISO 9001</div>
               <div class="chip" onclick="toggleChip(this,'certs')">ISO 14001</div>
               <div class="chip" onclick="toggleChip(this,'certs')">ISO 45001</div>
@@ -1061,7 +1061,7 @@ body {
 
       <!-- PANEL B — LEAN READINESS PRE-CHECK -->
       <div class="panel">
-        <div class="panel-header" onclick="togglePanel(this)">
+        <div class="panel-header">
           <div class="panel-title">Panel B — Lean Readiness Pre-Check</div>
           <div class="panel-arrow">&#9660;</div>
         </div>
@@ -1172,7 +1172,7 @@ body {
 
       <!-- PANEL C — VISIT AGENDA BUILDER -->
       <div class="panel">
-        <div class="panel-header" onclick="togglePanel(this)">
+        <div class="panel-header">
           <div class="panel-title">Panel C — Visit Agenda Builder</div>
           <div class="panel-arrow">&#9660;</div>
         </div>
@@ -2050,6 +2050,7 @@ function checkPassword() {
   const val = input.value.trim().toUpperCase().replace(/[\s\-]/g,'\/');
   if (val === 'UNIDO/230258') {
     document.getElementById('password-gate').style.display = 'none';
+    if (error) error.textContent = '';
   } else {
     error.textContent = 'Incorrect access code. Please try again.';
     input.classList.add('error');
@@ -2058,10 +2059,6 @@ function checkPassword() {
     input.focus();
   }
 }
-document.addEventListener('DOMContentLoaded', () => {
-  const gi = document.getElementById('gate-input');
-  if (gi) gi.addEventListener('keydown', e => { if(e.key==='Enter') checkPassword(); });
-});
 
 // ── SME SELECTOR ────────────────────────────────
 function selectSme(n) {
@@ -2069,7 +2066,7 @@ function selectSme(n) {
   document.querySelectorAll('.sme-btn').forEach((b,i) => b.classList.toggle('active', i===activeSme));
   document.querySelectorAll('.sme-name-input').forEach((inp,i) => {
     inp.style.display = i===activeSme ? 'block' : 'none';
-    if (i===activeSme) inp.value = smeState[activeSme].name;
+    if (i===activeSme) inp.value = smeState[activeSme].name === ('SME ' + (activeSme+1)) ? '' : smeState[activeSme].name;
   });
   loadSmeState();
   updateCounters();
@@ -2077,43 +2074,63 @@ function selectSme(n) {
 
 function updateSmeName(n) {
   const inp = document.getElementById('sme-name-' + n);
-  if (inp) smeState[n-1].name = inp.value || ('SME ' + n);
-  const btn = document.querySelector('.sme-btn:nth-child(' + n + ')');
-  if (btn) btn.textContent = smeState[n-1].name || ('SME ' + n);
+  if (inp) smeState[n-1].name = inp.value.trim() || ('SME ' + n);
+  const btn = document.getElementById('sme-btn-' + n);
+  if (btn) btn.textContent = smeState[n-1].name;
 }
 
 function loadSmeState() {
-  // Reload lean scores visual
   const st = smeState[activeSme];
+  // Lean rating buttons
   document.querySelectorAll('.lean-rating-btn').forEach(btn => {
     const row = parseInt(btn.dataset.row);
     const score = parseInt(btn.dataset.score);
-    const label = btn.dataset.label;
     const stored = st.leanScores[row];
     btn.classList.remove('sel-yes','sel-partially','sel-no');
-    if (stored !== null) {
-      if (stored === 2 && label === 'Yes') btn.classList.add('sel-yes');
-      if (stored === 1 && label === 'Partially') btn.classList.add('sel-partially');
-      if (stored === 0 && label === 'No') btn.classList.add('sel-no');
+    if (stored !== null && stored === score) {
+      if (score === 2) btn.classList.add('sel-yes');
+      else if (score === 1) btn.classList.add('sel-partially');
+      else btn.classList.add('sel-no');
     }
   });
   updateLeanScore();
-  // Reload pillar ratings
+  // Pillar ratings
   document.querySelectorAll('.rating-btn').forEach(btn => {
     const p = parseInt(btn.dataset.pillar) - 1;
     const q = parseInt(btn.dataset.q) - 1;
     const r = parseInt(btn.dataset.r) - 1;
     btn.classList.toggle('selected', st.pillarRatings[p][q] === r);
   });
-  // Reload sustain checks
+  // Sustain checks
   document.querySelectorAll('.sustain-check input').forEach((cb, i) => {
     cb.checked = st.sustainChecks[i];
   });
-  // Reload notes
+  // Assessment notes
   document.querySelectorAll('.assess-note').forEach(ta => {
     const p = parseInt(ta.dataset.pillar) - 1;
     const q = parseInt(ta.dataset.q) - 1;
     ta.value = st.pillarNotes[p][q] || '';
+  });
+  // Profile selects
+  const selectMap = {'p-sector':'sector','p-size':'size','p-challenge':'challenge'};
+  Object.entries(selectMap).forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = st.profile[key] || '';
+  });
+  // Profile chip-groups (market, certs) and stage pills
+  document.querySelectorAll('.chip-group[data-group]').forEach(group => {
+    const key = group.dataset.group;
+    const val = st.profile[key];
+    if (key === 'stage') {
+      group.querySelectorAll('.stage-pill').forEach(pill => {
+        pill.classList.toggle('selected', pill.textContent.trim() === val);
+      });
+    } else {
+      const arr = Array.isArray(val) ? val : [];
+      group.querySelectorAll('.chip').forEach(chip => {
+        chip.classList.toggle('selected', arr.includes(chip.textContent.trim()));
+      });
+    }
   });
   updatePillarStageEstimates();
   updateOverallEstimate();
@@ -2132,14 +2149,8 @@ function switchMode(n) {
 function togglePanel(header) {
   header.classList.toggle('open');
   const body = header.nextElementSibling;
-  body.classList.toggle('open');
-  header.querySelector('.panel-arrow').textContent = header.classList.contains('open') ? '▲' : '▼';
+  if (body) body.classList.toggle('open');
 }
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.panel-header').forEach(h => {
-    h.addEventListener('click', () => togglePanel(h));
-  });
-});
 
 // ── CHIP / PILL TOGGLES ─────────────────────────
 function toggleChip(el, group) {
@@ -2156,11 +2167,10 @@ function togglePill(el, group) {
 
 // ── LEAN SCORING ────────────────────────────────
 function rateLean(btn, rowIdx, score) {
-  const label = btn.dataset.label;
   const row = btn.closest('tr');
   row.querySelectorAll('.lean-rating-btn').forEach(b => b.classList.remove('sel-yes','sel-partially','sel-no'));
-  if (label==='Yes') btn.classList.add('sel-yes');
-  else if (label==='Partially') btn.classList.add('sel-partially');
+  if (score === 2) btn.classList.add('sel-yes');
+  else if (score === 1) btn.classList.add('sel-partially');
   else btn.classList.add('sel-no');
   smeState[activeSme].leanScores[rowIdx] = score;
   updateLeanScore();
@@ -2254,6 +2264,8 @@ function updatePillarStageEstimates() {
   for (let p = 0; p < 7; p++) {
     const ratings = smeState[activeSme].pillarRatings[p].filter(r => r !== null);
     const badge = document.getElementById('pillar-stage-' + (p+1));
+    const tabBadge = document.getElementById('tab-badge-' + (p+1));
+    if (tabBadge) tabBadge.textContent = ratings.length + '/5';
     if (!badge) continue;
     if (!ratings.length) { badge.textContent = '—'; badge.style.background = 'rgba(255,255,255,0.15)'; continue; }
     const avg = ratings.reduce((a,b)=>a+b,0)/ratings.length;
@@ -2261,9 +2273,6 @@ function updatePillarStageEstimates() {
     const colours = {1:'#C0392B',2:'#C68B00',3:'#2E8B57',4:'#1A5F9C'};
     badge.textContent = 'Stage ' + stage;
     badge.style.background = colours[stage];
-    // Update tab badge
-    const tabBadge = document.getElementById('tab-badge-' + (p+1));
-    if (tabBadge) tabBadge.textContent = ratings.length + '/5';
   }
 }
 
@@ -2393,28 +2402,55 @@ function refreshOutput() {
   };
   (nextSteps[leanPath]||nextSteps.direct).forEach((text, i) => {
     const el = document.getElementById('next-step-' + (i+1));
-    if (el && !el.textContent.trim()) el.textContent = text;
+    if (!el) return;
+    // Only overwrite if the user hasn't edited this line (auto-generated or default placeholder)
+    if (!el.dataset.userEdited) el.textContent = text;
   });
 }
 
 // ── INIT ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  selectSme(1);
-  showPillar(1);
+  // Password: Enter-to-submit
+  const gi = document.getElementById('gate-input');
+  if (gi) gi.addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+
+  // Panel collapse/expand (single source of truth; no inline onclick)
+  document.querySelectorAll('.panel-header').forEach(h => {
+    h.addEventListener('click', () => togglePanel(h));
+  });
+
+  // Mode 2 pillar question ratings
   document.querySelectorAll('.rating-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       rateQuestion(btn, parseInt(btn.dataset.pillar), parseInt(btn.dataset.q), parseInt(btn.dataset.r));
     });
   });
+  // Assessment notes
   document.querySelectorAll('.assess-note').forEach(ta => {
     ta.addEventListener('input', () => saveNote(ta, parseInt(ta.dataset.pillar), parseInt(ta.dataset.q)));
   });
+  // Sustainability checkboxes
   document.querySelectorAll('.sustain-check input').forEach((cb, i) => {
     cb.addEventListener('change', () => toggleSustain(cb, i+1));
   });
-  document.querySelectorAll('.lean-rating-btn').forEach(btn => {
-    btn.addEventListener('click', () => rateLean(btn, parseInt(btn.dataset.row), parseInt(btn.dataset.score)));
+  // Lean readiness buttons rely on their inline onclick — nothing to wire here
+
+  // Mode 1 profile selects
+  const selectMap = {'p-sector':'sector','p-size':'size','p-challenge':'challenge'};
+  Object.entries(selectMap).forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => { smeState[activeSme].profile[key] = el.value; });
   });
+
+  // Mode 3 next-step contenteditable fields: mark as user-edited so refresh won't overwrite
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('next-step-' + i);
+    if (el) el.addEventListener('input', () => { el.dataset.userEdited = '1'; });
+  }
+
+  // Activate SME 1 and first pillar
+  selectSme(1);
+  showPillar(1);
 });
 </script>
 
