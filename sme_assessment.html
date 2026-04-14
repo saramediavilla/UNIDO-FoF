@@ -1310,21 +1310,149 @@
 <div class="tool-footer">UNIDO · TCS/DAI · Project ID 230258 · D1 v1.0 · April 2026</div>
 
 <script>
+  const answers = {};
+
   function checkPassword() {
     const input = document.getElementById('gate-input');
-    const err = document.getElementById('gate-error');
-    const raw = (input.value || '').trim().toUpperCase();
-    const normalised = raw.replace(/[\s\-]+/g, '/');
+    const error = document.getElementById('gate-error');
+    const normalised = input.value.trim().toUpperCase().replace(/[\s\-]/g, '/');
     if (normalised === 'UNIDO/230258') {
       document.getElementById('password-gate').style.display = 'none';
-      err.textContent = '';
     } else {
+      error.textContent = 'Incorrect access code. Please try again.';
       input.classList.add('error');
-      err.textContent = 'Incorrect access code. Please try again.';
       input.value = '';
       setTimeout(() => input.classList.remove('error'), 400);
       input.focus();
     }
+  }
+
+  function goTo(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('sc-' + n).classList.add('active');
+    const pct = n === 0 ? 2 : n === 5 ? 100 : (n / 5) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    if ([1,2,3,4].includes(n)) renderStepIndicator(n);
+    if (n === 5) renderResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderStepIndicator(current) {
+    const steps = ['Company','Operations','Environment','Readiness'];
+    ['step-ind-1','step-ind-2','step-ind-3','step-ind-4'].forEach((id, idx) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let html = '';
+      steps.forEach((s, i) => {
+        const idx2 = i + 1;
+        const dotCls = idx2 < current ? 'done' : idx2 === current ? 'current' : '';
+        const lblCls = idx2 < current ? 'done' : idx2 === current ? 'current' : '';
+        if (i > 0) html += '<div class="step-line ' + (idx2 <= current ? 'done' : '') + '"></div>';
+        html += '<div class="step-dot-wrap"><div class="step-dot ' + dotCls + '">' + (idx2 < current ? '✓' : idx2) + '</div><div class="step-dot-label ' + lblCls + '">' + s + '</div></div>';
+      });
+      el.innerHTML = html;
+    });
+  }
+
+  function pick(el, qid) {
+    el.closest('.q-options').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[qid] = el.querySelector('.opt-label').textContent.trim();
+    document.getElementById(qid).classList.add('answered');
+  }
+
+  function pickMulti(el, qid) {
+    el.classList.toggle('selected');
+    const selected = [...el.closest('.q-options').querySelectorAll('.opt.selected')].map(o => o.querySelector('.opt-label').textContent.trim());
+    answers[qid] = selected;
+    document.getElementById(qid).classList.toggle('answered', selected.length > 0);
+  }
+
+  function calcStage() {
+    const scored = ['q5','q6','q7','q8','q9','q11','q12','q13','q14','q15','q17','q19','q20'];
+    let total = 0, count = 0;
+    scored.forEach(qid => {
+      const opts = [...document.querySelectorAll('#' + qid + ' .q-options .opt')];
+      const idx = opts.findIndex(o => o.classList.contains('selected'));
+      if (idx >= 0) { total += idx + 1; count++; }
+    });
+    const raw = count ? total / count : 1;
+    const selfOpts = [...document.querySelectorAll('#q24 .q-options .opt')];
+    const selfIdx = selfOpts.findIndex(o => o.classList.contains('selected'));
+    const self = selfIdx >= 0 ? selfIdx + 1 : null;
+    const blend = self ? raw * 0.75 + self * 0.25 : raw;
+    if (blend < 1.6) return 1;
+    if (blend < 2.5) return 2;
+    if (blend < 3.4) return 3;
+    if (blend < 4.3) return 4;
+    return 5;
+  }
+
+  function calcPillars() {
+    const pillars = [
+      { name: 'Advanced Manufacturing', qs: ['q6','q7','q8'] },
+      { name: 'Digital Factory',        qs: ['q9','q10','q11'] },
+      { name: 'Eco Factory',            qs: ['q14','q15','q16'] },
+      { name: 'Customer Engineering',   qs: ['q17','q18'] },
+      { name: 'Human Organisation',     qs: ['q12','q13','q22','q23'] },
+      { name: 'Smart Manufacturing',    qs: ['q8','q9','q11'] },
+      { name: 'Open Factory',           qs: ['q19','q20','q3'] }
+    ];
+    return pillars.map(p => {
+      let t = 0, c = 0;
+      p.qs.forEach(qid => {
+        const opts = [...document.querySelectorAll('#' + qid + ' .q-options .opt')];
+        if (!opts.length) return;
+        const idx = opts.findIndex(o => o.classList.contains('selected'));
+        if (idx >= 0) { t += idx / (opts.length - 1); c++; }
+      });
+      return { name: p.name, pct: c ? Math.round((t / c) * 100) : 15 };
+    });
+  }
+
+  const stageData = {
+    1: { name:'Ad Hoc', desc:'Your factory operates primarily on experience and instinct. Processes vary between operators and shifts. Decisions are reactive. There is significant room to build stable foundations.', track:'Lean Readiness Pathway', trackDesc:'Before the main assessment, your advisor will work with you on lean manufacturing foundations — organised workspaces, documented procedures, and basic maintenance discipline. This typically takes 3–6 months.', next:['A UNIDO advisor will contact you to schedule an introductory site visit.','You will receive a lean readiness starter guide before the first visit.','Your advisor will co-develop a lean foundations action plan with you.','After completing lean foundations, you will enter the full Maturity Scan (D2).','A Transformation Plan (D3) will be built together, with achievable milestones.'] },
+    2: { name:'Aware', desc:'Your leadership understands that change is needed. You use some digital tools, but they are not connected. Some processes are documented, but not consistently applied.', track:'Lean Acceleration Track', trackDesc:'You enter the programme directly. Your advisor will work on lean and digital elements simultaneously — reinforcing process discipline while introducing digital tools on a stable foundation.', next:['A UNIDO advisor will contact you to schedule your Maturity Scan visit.','The Maturity Scan maps your factory across all 7 capability areas.','Lean and digital gaps are prioritised together in your Transformation Plan.','Quick-win actions will be identified alongside medium-term investments.','You will receive a structured support plan with regular advisor check-ins.'] },
+    3: { name:'Structured', desc:'Your processes are documented and mostly followed. You use data regularly, but primarily within separate departments. Cross-functional integration is the main gap ahead.', track:'Direct Entry — Structured Track', trackDesc:'Your lean foundations are in place. You enter the full programme immediately. The focus will be on connecting information across functions and enabling integrated decision-making.', next:['Your Maturity Scan (D2) will be scheduled within 2–4 weeks.','The scan will produce a detailed capability profile across all 7 pillars.','The critical gap — cross-functional integration — will be the central focus.','Your Transformation Plan will include technical and organisational change actions.','UNIDO will support you with both technology selection and change management.'] },
+    4: { name:'Integrated', desc:'Your systems and teams share information. Sustainability is tracked and factored into decisions. Workers are upskilled and engaged. The focus now is optimisation and advanced analytics.', track:'Direct Entry — Advanced Track', trackDesc:'You enter the programme at an advanced level. The Maturity Scan will confirm your profile and identify which pillars are ready to progress toward predictive and intelligent operations.', next:['Your Maturity Scan will identify which pillars have reached Stage 4.','The Transformation Plan will chart a path toward Stage 5 capabilities.','AI-supported tools, predictive operations, and circular economy integration will be explored.','UNIDO will connect you with peers and networks in your sector.','Pilot activities with advanced tools may be included in your programme.'] },
+    5: { name:'Intelligent', desc:'Your factory operates with AI-supported decisions, predictive systems, and circular economy principles. You participate in global value chains digitally.', track:'Benchmark Track', trackDesc:'Your entry focuses on validation, extension, and knowledge-sharing. Even at Stage 5, specific pillars may not yet have reached the same level — the scan will confirm this.', next:['Your Maturity Scan will confirm Stage 5 capabilities and identify any pillar gaps.','You may be invited to participate as a peer reference for other programme SMEs.','The programme will focus on resilience, supply chain sustainability, and global standards.','Advanced reporting frameworks (CBAM compliance, ESG disclosure) will be addressed.','Opportunities for regional and international collaboration will be explored.'] }
+  };
+
+  function renderResults() {
+    const stage = calcStage();
+    const info = stageData[stage];
+    const pillars = calcPillars();
+    const sector = answers['q2'] || '—';
+    const size = answers['q1'] || '—';
+
+    const barRows = pillars.map(p =>
+      '<div class="profile-bar-wrap"><div class="profile-bar-label"><span>' + p.name + '</span><span>' + p.pct + '%</span></div><div class="profile-bar"><div class="profile-bar-fill" style="width:0%" data-target="' + p.pct + '"></div></div></div>'
+    ).join('');
+
+    const nextItems = info.next.map((s, i) =>
+      '<li style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.7rem 0;border-bottom:1px solid #E9EDF2;font-size:0.83rem;color:#2D3F55;line-height:1.5"><div style="width:24px;height:24px;border-radius:50%;background:#E8F4FC;color:#009EDB;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">' + (i+1) + '</div><span>' + s + '</span></li>'
+    ).join('');
+
+    document.getElementById('results-content').innerHTML =
+      '<div class="screen-title">Your assessment results</div>' +
+      '<div class="screen-heading" style="margin-bottom:1.2rem">Your transformation profile</div>' +
+      '<div class="result-header"><div class="result-badge"><div class="result-badge-n">' + stage + '</div><div class="result-badge-l">of 5</div></div><div><div class="result-stage-name">Stage ' + stage + ' — ' + info.name + '</div><div class="result-stage-desc">' + info.desc + '</div></div></div>' +
+      '<div class="note-box"><strong>This is an indicative profile,</strong> not a formal assessment. Your UNIDO advisor will conduct a full on-site Maturity Scan (D2) that produces a validated capability profile across all seven areas.</div>' +
+      '<div class="profile-grid"><div class="profile-tile"><div class="profile-tile-label">Capability profile — 7 pillars</div>' + barRows + '</div><div class="profile-tile"><div class="profile-tile-label">Your context</div><div style="margin-bottom:1rem"><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Company size</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">' + size + '</div></div><div style="margin-bottom:1rem"><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Sector</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">' + sector + '</div></div><div style="margin-bottom:1rem"><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Maturity stage</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">Stage ' + stage + ' — ' + info.name + '</div></div><div><div style="font-size:0.7rem;color:#9BAABF;margin-bottom:0.2rem">Programme track</div><div style="font-size:0.87rem;font-weight:600;color:#0A2463">' + info.track + '</div></div></div></div>' +
+      '<div class="card"><div class="card-header"><div class="card-header-icon">🌿</div><div class="card-header-text"><div class="card-header-label">Programme Entry</div><div class="card-header-title">' + info.track + '</div></div></div><div class="card-body"><p style="font-size:0.85rem;color:#546E8A;line-height:1.65;margin-bottom:1rem">' + info.trackDesc + '</p><div style="font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:#0096B4;font-weight:700;margin-bottom:0.75rem">What happens next</div><ul style="list-style:none">' + nextItems + '</ul></div></div>' +
+      '<div class="card"><div class="card-header"><div class="card-header-icon">📘</div><div class="card-header-text"><div class="card-header-label">The Programme</div><div class="card-header-title">Three structured deliverables</div></div></div><div class="card-body"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">' +
+      [['D1','This Methodology','The framework, principles, and rules of the programme.','📘'],['D2','Maturity Scan','Full on-site assessment across all 7 pillars.','🔍'],['D3','Transformation Plan','Personalised action plan with steps, timelines, and KPIs.','🗺️']].map(([code,name,desc,icon]) =>
+        '<div style="border:1px solid #E9EDF2;border-radius:4px;padding:1rem;text-align:center"><div style="font-size:1.5rem;margin-bottom:0.4rem">' + icon + '</div><div style="font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#0096B4;font-weight:700;margin-bottom:0.2rem">' + code + '</div><div style="font-size:0.85rem;font-weight:600;color:#0A2463;margin-bottom:0.3rem">' + name + '</div><div style="font-size:0.75rem;color:#546E8A;line-height:1.5">' + desc + '</div></div>'
+      ).join('') +
+      '</div></div></div>' +
+      '<div class="btn-row"><button class="btn btn-outline btn-sm" onclick="goTo(4)">← Review answers</button><button class="btn btn-primary" onclick="window.print()">Print / Save PDF</button></div>';
+
+    // Animate pillar bars after render
+    setTimeout(() => {
+      document.querySelectorAll('.profile-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.target + '%';
+      });
+    }, 100);
   }
 </script>
 
