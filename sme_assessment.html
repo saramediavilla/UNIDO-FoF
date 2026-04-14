@@ -827,9 +827,287 @@
 
 <!-- ========== SCREENS ========== -->
 <div class="screen-wrap">
-  <div class="screen active" id="sc-0"></div>
-  <div class="screen" id="sc-1"></div>
-  <div class="screen" id="sc-2"></div>
+  <!-- ===== SCREEN 0 — WELCOME ===== -->
+  <div class="screen active" id="sc-0">
+    <div class="hero">
+      <div class="hero-eyebrow">UNIDO Industry 4.0 / 5.0 Programme</div>
+      <h1 class="hero-title">Is your factory ready for the <em>future</em>?</h1>
+      <p class="hero-sub">This short assessment helps you understand where your factory stands today, and what a structured transformation programme would look like for you. It takes about 8 minutes.</p>
+      <div class="hero-meta">
+        <div>
+          <div class="hero-stat-n">~8 min</div>
+          <div class="hero-stat-l">Estimated time</div>
+        </div>
+        <div>
+          <div class="hero-stat-n">24</div>
+          <div class="hero-stat-l">Questions</div>
+        </div>
+        <div>
+          <div class="hero-stat-n">7</div>
+          <div class="hero-stat-l">Capability areas</div>
+        </div>
+        <div>
+          <div class="hero-stat-n">No IT</div>
+          <div class="hero-stat-l">Needed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-tile">
+        <div class="info-tile-icon">🏭</div>
+        <div class="info-tile-label">Who this is for</div>
+        <div class="info-tile-title">Manufacturing SMEs</div>
+        <div class="info-tile-text">Factory owners, production managers, or operational leads in manufacturing companies of any size.</div>
+      </div>
+      <div class="info-tile">
+        <div class="info-tile-icon">📊</div>
+        <div class="info-tile-label">What you get</div>
+        <div class="info-tile-title">Your transformation profile</div>
+        <div class="info-tile-text">A clear picture of your current maturity stage and a recommended programme entry path.</div>
+      </div>
+      <div class="info-tile">
+        <div class="info-tile-icon">🔒</div>
+        <div class="info-tile-label">How data is used</div>
+        <div class="info-tile-title">For programme design only</div>
+        <div class="info-tile-text">Your answers help your UNIDO advisor prepare for the full on-site assessment. Nothing is shared externally.</div>
+      </div>
+      <div class="info-tile">
+        <div class="info-tile-icon">✅</div>
+        <div class="info-tile-label">Format</div>
+        <div class="info-tile-title">Mostly multiple choice</div>
+        <div class="info-tile-text">Select the option that best describes your situation. There are no right or wrong answers — be honest.</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary btn-lg" onclick="goTo(1)">Start assessment →</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 1 — ABOUT YOUR COMPANY ===== -->
+  <div class="screen" id="sc-1">
+    <div class="step-indicator" id="step-ind-1"></div>
+    <div class="screen-title">Section 1 of 4</div>
+    <h2 class="screen-heading">About your company</h2>
+    <p class="screen-sub">A few basics to help us contextualise your results.</p>
+
+    <div class="q-section-label">Size & Sector</div>
+
+    <div class="q-block" id="q1">
+      <div class="q-head">
+        <div class="q-number">Q1</div>
+        <div>
+          <div class="q-text">How many people work in your factory?</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">Fewer than 10</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">10–49</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">50–249</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q1')"><span class="opt-dot"></span><span class="opt-label">250 or more</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q2">
+      <div class="q-head">
+        <div class="q-number">Q2</div>
+        <div>
+          <div class="q-text">What best describes your main production sector?</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Metal/Machinery</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Food & Beverage</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Wood/Furniture</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Textiles/Apparel</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Chemicals/Pharma</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Automotive parts</span></div>
+        <div class="opt horizontal-chip" onclick="pick(this,'q2')"><span class="opt-dot"></span><span class="opt-label">Other manufacturing</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q3">
+      <div class="q-head">
+        <div class="q-number">Q3</div>
+        <div>
+          <div class="q-text">Who are your main customers?</div>
+          <div class="q-sub">Select all that apply</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Local/domestic market</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Export to EU</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Export outside EU</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Large manufacturers (Tier 1/2 supplier)</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q3')"><span class="opt-dot"></span><span class="opt-label">Direct to consumer</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q4">
+      <div class="q-head">
+        <div class="q-number">Q4</div>
+        <div>
+          <div class="q-text">What is your biggest operational challenge right now?</div>
+        </div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Keeping quality consistent across shifts and operators</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Meeting delivery deadlines reliably</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Reducing costs — energy, materials, or labour</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Finding and keeping skilled workers</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Keeping up with customer requirements and certifications</span></div>
+        <div class="opt" onclick="pick(this,'q4')"><span class="opt-dot"></span><span class="opt-label">Managing suppliers and raw material availability</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline btn-sm" onclick="goTo(0)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2 — HOW YOU WORK TODAY ===== -->
+  <div class="screen" id="sc-2">
+    <div class="step-indicator" id="step-ind-2"></div>
+    <div class="screen-title">Section 2 of 4</div>
+    <h2 class="screen-heading">How you work today</h2>
+    <p class="screen-sub">Select the option that best matches your current reality — not what you aspire to.</p>
+
+    <div class="q-section-label">Production & Process</div>
+
+    <div class="q-block" id="q5">
+      <div class="q-head">
+        <div class="q-number">Q5</div>
+        <div><div class="q-text">How are your production processes documented?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">Not documented — people work from experience and memory</span></div>
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">Some written down but not consistently followed</span></div>
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">Most have documented procedures operators follow regularly</span></div>
+        <div class="opt" onclick="pick(this,'q5')"><span class="opt-dot"></span><span class="opt-label">All key processes documented, version-controlled, and linked to training</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q6">
+      <div class="q-head">
+        <div class="q-number">Q6</div>
+        <div><div class="q-text">When a machine breaks down unexpectedly, what typically happens?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">We react and fix it — no formal process</span></div>
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">We have a maintenance team but breakdowns are mostly reactive</span></div>
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">Regular preventive maintenance on a schedule — breakdowns are less frequent</span></div>
+        <div class="opt" onclick="pick(this,'q6')"><span class="opt-dot"></span><span class="opt-label">Sensor data or alerts predict and prevent failures before they happen</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q7">
+      <div class="q-head">
+        <div class="q-number">Q7</div>
+        <div><div class="q-text">How is your factory floor organised?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Tools and parts not always in a defined place</span></div>
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Some areas organised, others not consistent</span></div>
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Factory is organised and visual — anyone can see normal vs. abnormal</span></div>
+        <div class="opt" onclick="pick(this,'q7')"><span class="opt-dot"></span><span class="opt-label">Digital displays give real-time production and quality status</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q8">
+      <div class="q-head">
+        <div class="q-number">Q8</div>
+        <div><div class="q-text">When a quality defect is found, how do you respond?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Fix it and move on — no root cause investigation</span></div>
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Try to find the cause but depends on who is available</span></div>
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Defined process for root cause analysis and corrective action</span></div>
+        <div class="opt" onclick="pick(this,'q8')"><span class="opt-dot"></span><span class="opt-label">Quality data tracked continuously, defect patterns identified before accumulation</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">Information & Data</div>
+
+    <div class="q-block" id="q9">
+      <div class="q-head">
+        <div class="q-number">Q9</div>
+        <div><div class="q-text">If a customer calls for a delivery status update, how do you find the answer?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Walk to the floor or call the responsible person</span></div>
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Check a spreadsheet or logbook — not always up to date</span></div>
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Check a system — data is usually accurate and current</span></div>
+        <div class="opt" onclick="pick(this,'q9')"><span class="opt-dot"></span><span class="opt-label">Customer can track this via a shared portal</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q10">
+      <div class="q-head">
+        <div class="q-number">Q10</div>
+        <div>
+          <div class="q-text">Which digital tools do you currently use?</div>
+          <div class="q-sub">Select all that apply</div>
+        </div>
+      </div>
+      <div class="q-options horizontal">
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Spreadsheets (Excel/Sheets)</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Accounting/ERP software</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Production planning system (MES/MRP)</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Quality management software</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Machine sensors/IoT devices</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">Inventory/warehouse system</span></div>
+        <div class="opt horizontal-chip multi" onclick="pickMulti(this,'q10')"><span class="opt-dot"></span><span class="opt-label">None of the above</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q11">
+      <div class="q-head">
+        <div class="q-number">Q11</div>
+        <div><div class="q-text">How do your factory systems share information with each other?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">They don't — each department keeps its own data</span></div>
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">We manually copy or re-enter data between systems</span></div>
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">Some systems connected, others still require manual transfer</span></div>
+        <div class="opt" onclick="pick(this,'q11')"><span class="opt-dot"></span><span class="opt-label">Main systems exchange data automatically — shared information base</span></div>
+      </div>
+    </div>
+
+    <div class="q-section-label">People & Culture</div>
+
+    <div class="q-block" id="q12">
+      <div class="q-head">
+        <div class="q-number">Q12</div>
+        <div><div class="q-text">How are improvement ideas typically generated?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">Owner or manager identifies problems and decides fixes</span></div>
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">A few key people raise issues occasionally, not systematic</span></div>
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">Workers encouraged to flag problems — some ideas get implemented</span></div>
+        <div class="opt" onclick="pick(this,'q12')"><span class="opt-dot"></span><span class="opt-label">Formal improvement process where floor-level data drives regular structured changes</span></div>
+      </div>
+    </div>
+
+    <div class="q-block" id="q13">
+      <div class="q-head">
+        <div class="q-number">Q13</div>
+        <div><div class="q-text">How would you describe your team's relationship with digital tools?</div></div>
+      </div>
+      <div class="q-options">
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">Most workers prefer to work without screens — creates friction</span></div>
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">A few comfortable, others resistant or unfamiliar</span></div>
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">Most workers use basic digital tools without major issues</span></div>
+        <div class="opt" onclick="pick(this,'q13')"><span class="opt-dot"></span><span class="opt-label">Workers actively use data to monitor their area and flag issues in real time</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline btn-sm" onclick="goTo(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Continue →</button>
+    </div>
+  </div>
   <div class="screen" id="sc-3"></div>
   <div class="screen" id="sc-4"></div>
   <div class="screen" id="sc-5"></div>
