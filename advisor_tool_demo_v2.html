@@ -78,7 +78,7 @@ input,select,textarea{font-family:var(--font)}
 </head>
 <body>
 <style>
-#main{margin-left:220px;margin-top:50px;padding:2rem;min-height:calc(100vh - 50px)}
+#main{margin-left:220px;margin-top:50px;padding:2rem 2rem 60px;min-height:calc(100vh - 50px)}
 .c-inner{max-width:900px}
 .sec-eye{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--blue-500);margin-bottom:0.3rem}
 .sec-head{font-family:var(--font-s);font-size:1.4rem;font-weight:600;color:var(--blue-900);margin-bottom:0.3rem}
@@ -443,6 +443,12 @@ input,select,textarea{font-family:var(--font)}
       </div>
     </div>
   </div>
+
+  <div style="display:flex;justify-content:flex-end;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--border)">
+    <button class="btn btn-p" onclick="swMode(2)">
+      <i class="ti ti-arrow-right"></i> Continue to Maturity Scan
+    </button>
+  </div>
 </div>
     <div class="mode-pnl" id="mode-2">
   <div class="sec-eye">Mode 2</div>
@@ -524,9 +530,12 @@ input,select,textarea{font-family:var(--font)}
       </div>
       <textarea class="aq-note" rows="2" data-p="1" data-q="5" placeholder="Observation..."></textarea>
     </div>
-    <div class="sust-row">
-      <input type="checkbox" id="sust-1" onchange="sustCheck(this,1)">
-      <label for="sust-1">Sustainability dimension addressed (material efficiency, scrap reduction)</label>
+    <div style="margin:0.75rem 1.2rem 1rem;padding:0.75rem 1rem;background:var(--green-bg);border-radius:var(--r-sm);border:1px solid #A9DFBF;display:flex;align-items:flex-start;gap:0.75rem">
+      <input type="checkbox" id="sust-1" onchange="sustCheck(this,1)" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#1A7A4A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">Sustainability check</div>
+        <label for="sust-1" style="font-size:12px;color:#2E7D52;cursor:pointer">Sustainability dimension addressed (material efficiency, scrap reduction)</label>
+      </div>
     </div>
   </div>
 
@@ -595,9 +604,12 @@ input,select,textarea{font-family:var(--font)}
       </div>
       <textarea class="aq-note" rows="2" data-p="2" data-q="5" placeholder="Observation..."></textarea>
     </div>
-    <div class="sust-row">
-      <input type="checkbox" id="sust-2" onchange="sustCheck(this,2)">
-      <label for="sust-2">Sustainability dimension addressed (energy monitoring, emissions data)</label>
+    <div style="margin:0.75rem 1.2rem 1rem;padding:0.75rem 1rem;background:var(--green-bg);border-radius:var(--r-sm);border:1px solid #A9DFBF;display:flex;align-items:flex-start;gap:0.75rem">
+      <input type="checkbox" id="sust-2" onchange="sustCheck(this,2)" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#1A7A4A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">Sustainability check</div>
+        <label for="sust-2" style="font-size:12px;color:#2E7D52;cursor:pointer">Sustainability dimension addressed (energy monitoring, emissions data)</label>
+      </div>
     </div>
   </div>
 
@@ -666,9 +678,12 @@ input,select,textarea{font-family:var(--font)}
       </div>
       <textarea class="aq-note" rows="2" data-p="3" data-q="5" placeholder="Observation..."></textarea>
     </div>
-    <div class="sust-row">
-      <input type="checkbox" id="sust-3" onchange="sustCheck(this,3)">
-      <label for="sust-3">Sustainability dimension addressed (structured environmental practices and circularity)</label>
+    <div style="margin:0.75rem 1.2rem 1rem;padding:0.75rem 1rem;background:var(--green-bg);border-radius:var(--r-sm);border:1px solid #A9DFBF;display:flex;align-items:flex-start;gap:0.75rem">
+      <input type="checkbox" id="sust-3" onchange="sustCheck(this,3)" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#1A7A4A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">Sustainability check</div>
+        <label for="sust-3" style="font-size:12px;color:#2E7D52;cursor:pointer">Sustainability dimension addressed (structured environmental practices and circularity)</label>
+      </div>
     </div>
   </div>
 
@@ -737,9 +752,12 @@ input,select,textarea{font-family:var(--font)}
       </div>
       <textarea class="aq-note" rows="2" data-p="4" data-q="5" placeholder="Observation..."></textarea>
     </div>
-    <div class="sust-row">
-      <input type="checkbox" id="sust-4" onchange="sustCheck(this,4)">
-      <label for="sust-4">Sustainability dimension addressed (product and packaging efficiency)</label>
+    <div style="margin:0.75rem 1.2rem 1rem;padding:0.75rem 1rem;background:var(--green-bg);border-radius:var(--r-sm);border:1px solid #A9DFBF;display:flex;align-items:flex-start;gap:0.75rem">
+      <input type="checkbox" id="sust-4" onchange="sustCheck(this,4)" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#1A7A4A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">Sustainability check</div>
+        <label for="sust-4" style="font-size:12px;color:#2E7D52;cursor:pointer">Sustainability dimension addressed (product and packaging efficiency)</label>
+      </div>
     </div>
   </div>
 
@@ -808,9 +826,12 @@ input,select,textarea{font-family:var(--font)}
       </div>
       <textarea class="aq-note" rows="2" data-p="5" data-q="5" placeholder="Observation..."></textarea>
     </div>
-    <div class="sust-row">
-      <input type="checkbox" id="sust-5" onchange="sustCheck(this,5)">
-      <label for="sust-5">Sustainability dimension addressed (workforce awareness and behavioural practices)</label>
+    <div style="margin:0.75rem 1.2rem 1rem;padding:0.75rem 1rem;background:var(--green-bg);border-radius:var(--r-sm);border:1px solid #A9DFBF;display:flex;align-items:flex-start;gap:0.75rem">
+      <input type="checkbox" id="sust-5" onchange="sustCheck(this,5)" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#1A7A4A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">Sustainability check</div>
+        <label for="sust-5" style="font-size:12px;color:#2E7D52;cursor:pointer">Sustainability dimension addressed (workforce awareness and behavioural practices)</label>
+      </div>
     </div>
   </div>
 
@@ -879,9 +900,12 @@ input,select,textarea{font-family:var(--font)}
       </div>
       <textarea class="aq-note" rows="2" data-p="6" data-q="5" placeholder="Observation..."></textarea>
     </div>
-    <div class="sust-row">
-      <input type="checkbox" id="sust-6" onchange="sustCheck(this,6)">
-      <label for="sust-6">Sustainability dimension addressed (optimisation of resource use through system intelligence)</label>
+    <div style="margin:0.75rem 1.2rem 1rem;padding:0.75rem 1rem;background:var(--green-bg);border-radius:var(--r-sm);border:1px solid #A9DFBF;display:flex;align-items:flex-start;gap:0.75rem">
+      <input type="checkbox" id="sust-6" onchange="sustCheck(this,6)" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#1A7A4A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">Sustainability check</div>
+        <label for="sust-6" style="font-size:12px;color:#2E7D52;cursor:pointer">Sustainability dimension addressed (optimisation of resource use through system intelligence)</label>
+      </div>
     </div>
   </div>
 
@@ -950,9 +974,29 @@ input,select,textarea{font-family:var(--font)}
       </div>
       <textarea class="aq-note" rows="2" data-p="7" data-q="5" placeholder="Observation..."></textarea>
     </div>
-    <div class="sust-row">
-      <input type="checkbox" id="sust-7" onchange="sustCheck(this,7)">
-      <label for="sust-7">Sustainability dimension addressed (sustainability practices across suppliers and partners)</label>
+    <div style="margin:0.75rem 1.2rem 1rem;padding:0.75rem 1rem;background:var(--green-bg);border-radius:var(--r-sm);border:1px solid #A9DFBF;display:flex;align-items:flex-start;gap:0.75rem">
+      <input type="checkbox" id="sust-7" onchange="sustCheck(this,7)" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#1A7A4A;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">Sustainability check</div>
+        <label for="sust-7" style="font-size:12px;color:#2E7D52;cursor:pointer">Sustainability dimension addressed (sustainability practices across suppliers and partners)</label>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--border)">
+    <button class="btn btn-o" onclick="swMode(1)">
+      <i class="ti ti-arrow-left"></i> Back to Pre-Visit Prep
+    </button>
+    <div style="display:flex;gap:0.5rem">
+      <button class="btn btn-o btn-sm" id="prev-pillar-btn" onclick="prevPillar()">
+        <i class="ti ti-chevron-left"></i> Previous pillar
+      </button>
+      <button class="btn btn-o btn-sm" id="next-pillar-btn" onclick="nextPillar()">
+        Next pillar <i class="ti ti-chevron-right"></i>
+      </button>
+      <button class="btn btn-p" id="to-output-btn" onclick="swMode(3);buildOutput()" style="display:none">
+        <i class="ti ti-file-report"></i> Generate report
+      </button>
     </div>
   </div>
 </div>
@@ -962,7 +1006,8 @@ input,select,textarea{font-family:var(--font)}
   <div class="sec-sub">Print-ready report generated from Mode 1 and Mode 2 data. Edit inline fields before printing.</div>
 
   <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem">
-    <button class="btn btn-p" onclick="buildOutput()"><i class="ti ti-refresh"></i> Refresh from assessment data</button>
+    <button class="btn btn-p" onclick="swMode(3);setTimeout(buildOutput,50)"><i class="ti ti-refresh"></i> Generate report</button>
+    <button class="btn btn-o" onclick="swMode(2)"><i class="ti ti-arrow-left"></i> Back to Maturity Scan</button>
     <button class="btn btn-o" onclick="window.print()"><i class="ti ti-printer"></i> Print / Export PDF</button>
   </div>
 
@@ -1107,6 +1152,7 @@ document.getElementById('gate-inp').addEventListener('keydown',e=>{if(e.key==='E
 function swMode(n){
   document.querySelectorAll('.mode-pnl').forEach((p,i)=>p.classList.toggle('active',i===n-1));
   document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+  document.getElementById('main').scrollTo({top:0,behavior:'smooth'});
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1694,6 +1740,35 @@ function buildNextSteps(avgs,stages,lean){
       <div class="ns-num">${i+1}</div>
       <div class="ns-text" contenteditable="true">${text}</div>
     </div>`).join('');
+}
+
+// ── PILLAR NAVIGATION BUTTONS ──
+let activePillar=1;
+
+function showP(n){
+  activePillar=n;
+  document.querySelectorAll('.pillar-pnl').forEach((p,i)=>p.style.display=i===n-1?'block':'none');
+  document.querySelectorAll('.p-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  updatePillarNavBtns();
+  document.getElementById('main').scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextPillar(){
+  if(activePillar<7)showP(activePillar+1);
+}
+
+function prevPillar(){
+  if(activePillar>1)showP(activePillar-1);
+}
+
+function updatePillarNavBtns(){
+  const prev=document.getElementById('prev-pillar-btn');
+  const next=document.getElementById('next-pillar-btn');
+  const toOut=document.getElementById('to-output-btn');
+  if(prev)prev.style.opacity=activePillar===1?'0.3':'1';
+  if(next)next.style.display=activePillar===7?'none':'inline-flex';
+  if(toOut)toOut.style.display=activePillar===7?'inline-flex':'none';
 }
 
 // ── INIT ──
