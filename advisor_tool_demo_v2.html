@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoF Advisor Tool — UNIDO 230258</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root {
+  --blue-900:#003F6B; --blue-700:#005B99; --blue-500:#009EDB;
+  --blue-200:#90CAF9; --blue-50:#E8F4FC;
+  --ink:#1A2B3C; --ink-2:#2D3F55; --ink-3:#546E8A; --ink-4:#9BAABF;
+  --border:rgba(0,0,0,0.08); --bg:#F5F7FA; --bg-2:#ECEEF2; --white:#FFFFFF;
+  --amber:#E67E22; --amber-bg:#FEF3E8;
+  --green:#27AE60; --green-bg:#E8F5EE;
+  --red:#E24B4A; --red-bg:#FADBD8;
+  --s1-c:#922B21; --s1-bg:#FADBD8;
+  --s2-c:#784212; --s2-bg:#FDEBD0;
+  --s3-c:#7D6608; --s3-bg:#FEF9E7;
+  --s4-c:#1A7A4A; --s4-bg:#EAFAF1;
+  --s5-c:#003F6B; --s5-bg:#E8F4FC;
+  --r-sm:6px; --r-md:10px; --r-lg:14px;
+  --sh-sm:0 1px 3px rgba(0,0,0,0.08);
+  --sh-md:0 4px 12px rgba(0,0,0,0.10);
+  --font:'Inter',sans-serif;
+  --font-s:'IBM Plex Serif',serif;
+}
+</style>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);font-size:14px;line-height:1.5;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer}
+input,select,textarea{font-family:var(--font)}
+
+#gate{position:fixed;inset:0;z-index:9999;background:var(--blue-900);display:flex;align-items:center;justify-content:center;flex-direction:column}
+.gate-card{background:var(--white);border-radius:var(--r-lg);padding:2.5rem 2rem;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center}
+.gate-emblem{width:44px;height:44px;border-radius:50%;background:var(--blue-900);color:var(--white);font-size:11px;font-weight:600;letter-spacing:0.05em;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.gate-title{font-family:var(--font-s);font-size:1.1rem;font-weight:600;color:var(--blue-900);margin-bottom:0.25rem}
+.gate-sub{font-size:12px;color:var(--ink-3);margin-bottom:1.5rem;line-height:1.5}
+.gate-input{width:100%;padding:0.6rem 0.9rem;border:1.5px solid var(--bg-2);border-radius:var(--r-sm);font-size:13px;text-align:center;letter-spacing:0.12em;margin-bottom:0.75rem;outline:none;transition:border-color 0.15s}
+.gate-input:focus{border-color:var(--blue-500)}
+.gate-input.err{border-color:var(--red);animation:shake 0.3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.gate-btn{width:100%;padding:0.65rem;background:var(--blue-500);color:var(--white);border:none;border-radius:var(--r-sm);font-size:13px;font-weight:500;transition:background 0.15s}
+.gate-btn:hover{background:var(--blue-700)}
+.gate-err{font-size:12px;color:var(--red);margin-top:0.5rem;min-height:1rem}
+.gate-foot{font-size:11px;color:rgba(255,255,255,0.3);margin-top:1.5rem;letter-spacing:0.08em;text-transform:uppercase}
+
+#topbar{position:fixed;top:0;left:0;right:0;height:50px;z-index:200;background:var(--blue-900);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;box-shadow:0 1px 0 rgba(255,255,255,0.08),0 2px 8px rgba(0,0,0,0.2)}
+.tb-left{display:flex;align-items:center;gap:0.75rem}
+.tb-emblem{width:28px;height:28px;border-radius:50%;background:var(--white);color:var(--blue-900);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tb-div{width:1px;height:18px;background:rgba(255,255,255,0.15)}
+.tb-org{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase}
+.tb-title{font-size:13px;color:var(--white);font-weight:500}
+.tb-right{font-size:11px;color:rgba(255,255,255,0.35)}
+
+#sidebar{position:fixed;top:50px;left:0;bottom:0;width:220px;z-index:100;background:var(--blue-900);display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.06);overflow-y:auto}
+.sb-sec{padding:1rem 1rem 0.4rem;font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.sb-div{height:1px;background:rgba(255,255,255,0.08);margin:0.5rem 1rem}
+.sme-btn{display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.55rem 1rem;background:transparent;border:none;border-left:3px solid transparent;color:rgba(255,255,255,0.5);font-size:12px;text-align:left;transition:all 0.15s}
+.sme-btn:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.05)}
+.sme-btn.active{color:var(--white);border-left-color:var(--amber);background:rgba(255,255,255,0.07);font-weight:500}
+.sme-name-wrap{padding:0.25rem 1rem 0.75rem;display:none}
+.sme-name-wrap.vis{display:block}
+.sme-name-inp{width:100%;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-sm);color:var(--white);font-size:12px;outline:none}
+.sme-name-inp::placeholder{color:rgba(255,255,255,0.3)}
+.mode-btn{display:flex;align-items:center;gap:0.65rem;width:100%;padding:0.65rem 1rem;background:transparent;border:none;border-left:3px solid transparent;color:rgba(255,255,255,0.5);font-size:12px;text-align:left;transition:all 0.15s}
+.mode-btn:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.05)}
+.mode-btn.active{color:var(--white);border-left-color:var(--amber);background:rgba(255,255,255,0.07);font-weight:500}
+.mode-btn .ti{font-size:16px;flex-shrink:0}
+.mb-label{display:flex;flex-direction:column}
+.mb-num{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.08em;text-transform:uppercase}
+.sb-counter{padding:0.5rem 1rem;font-size:11px;color:rgba(255,255,255,0.3)}
+.sb-bottom{margin-top:auto;padding:1rem;font-size:10px;color:rgba(255,255,255,0.2);line-height:1.5;border-top:1px solid rgba(255,255,255,0.06)}
+</style>
+</head>
+<body>
+<style>
+#main{margin-left:220px;margin-top:50px;padding:2rem;min-height:calc(100vh - 50px)}
+.c-inner{max-width:900px}
+.sec-eye{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--blue-500);margin-bottom:0.3rem}
+.sec-head{font-family:var(--font-s);font-size:1.4rem;font-weight:600;color:var(--blue-900);margin-bottom:0.3rem}
+.sec-sub{font-size:13px;color:var(--ink-3);line-height:1.6;margin-bottom:1.5rem;max-width:640px}
+.card{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--sh-sm);margin-bottom:1rem}
+.card-title{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:1rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.two-col-w{display:grid;grid-template-columns:1.1fr 0.9fr;gap:1rem;margin-bottom:1rem}
+.f-row{margin-bottom:0.9rem}
+.f-label{display:block;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:0.35rem}
+.f-select,.f-input{width:100%;padding:0.5rem 0.75rem;border:1.5px solid var(--bg-2);border-radius:var(--r-sm);font-size:13px;color:var(--ink);background:var(--white);outline:none;transition:border-color 0.15s}
+.f-select:focus,.f-input:focus{border-color:var(--blue-500)}
+.chip-g{display:flex;flex-wrap:wrap;gap:0.4rem}
+.chip{padding:0.3rem 0.75rem;border:1.5px solid var(--bg-2);border-radius:20px;font-size:12px;cursor:pointer;background:var(--white);transition:all 0.15s;user-select:none}
+.chip:hover{border-color:var(--blue-500);background:var(--blue-50)}
+.chip.sel{border-color:var(--blue-500);background:var(--blue-50);color:var(--blue-900);font-weight:500}
+.panel{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r-lg);margin-bottom:0.75rem;overflow:hidden;box-shadow:var(--sh-sm)}
+.p-hdr{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.25rem;cursor:pointer;border-bottom:0.5px solid transparent;transition:background 0.15s}
+.p-hdr:hover{background:var(--bg)}
+.p-hdr.open{border-bottom-color:var(--border)}
+.p-hdr-l{display:flex;align-items:center;gap:0.6rem}
+.p-hdr-num{width:22px;height:22px;border-radius:50%;background:var(--blue-50);color:var(--blue-700);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.p-hdr-title{font-size:13px;font-weight:600;color:var(--ink)}
+.p-hdr-sub{font-size:11px;color:var(--ink-4);margin-left:0.4rem}
+.p-arrow{font-size:16px;color:var(--ink-4);transition:transform 0.2s}
+.p-hdr.open .p-arrow{transform:rotate(180deg)}
+.p-body{padding:1.25rem;display:none}
+.p-body.open{display:block}
+.score-disp{display:flex;align-items:center;gap:1.25rem;background:var(--bg);border-radius:var(--r-md);padding:1rem 1.25rem;margin-bottom:1rem;border:0.5px solid var(--border)}
+.score-big{font-size:2.2rem;font-weight:300;color:var(--blue-900);line-height:1}
+.score-den{font-size:1rem;color:var(--ink-4)}
+.score-lbl{font-size:11px;color:var(--ink-4);margin-top:0.2rem}
+.ptag{display:inline-flex;align-items:center;gap:0.4rem;padding:0.3rem 0.85rem;border-radius:20px;font-size:12px;font-weight:500}
+.pt-r{background:var(--red-bg);color:var(--red);border:1px solid #F5B7B1}
+.pt-a{background:var(--amber-bg);color:var(--amber);border:1px solid #FAD7A0}
+.pt-g{background:var(--green-bg);color:var(--green);border:1px solid #A9DFBF}
+.sp{display:inline-block;border-radius:10px;padding:2px 10px;font-size:11px;font-weight:500}
+.sp-1{background:var(--s1-bg);color:var(--s1-c)}
+.sp-2{background:var(--s2-bg);color:var(--s2-c)}
+.sp-3{background:var(--s3-bg);color:var(--s3-c)}
+.sp-4{background:var(--s4-bg);color:var(--s4-c)}
+.sp-5{background:var(--s5-bg);color:var(--s5-c)}
+</style>
+</head>
+<body>
+<style>
+.p-tabs{display:flex;border-bottom:2px solid var(--bg-2);margin-bottom:1.5rem;overflow-x:auto}
+.p-tab{padding:0.6rem 0.9rem;font-size:12px;font-weight:500;color:var(--ink-4);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;transition:all 0.15s;display:flex;align-items:center;gap:0.4rem}
+.p-tab:hover{color:var(--ink)}
+.p-tab.active{color:var(--blue-900);border-bottom-color:var(--blue-500);font-weight:600}
+.tab-bdg{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--bg-2);color:var(--ink-4);font-size:10px;font-weight:700;padding:0 4px}
+.p-tab.active .tab-bdg{background:var(--blue-500);color:var(--white)}
+.p-hd{background:var(--blue-900);border-radius:var(--r-lg);padding:1.1rem 1.5rem;color:var(--white);display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.ph-eye{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue-200);margin-bottom:0.25rem}
+.ph-name{font-family:var(--font-s);font-size:1.1rem;font-weight:600;margin-bottom:0.3rem}
+.ph-def{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;max-width:540px}
+.ph-bdg{padding:0.3rem 0.9rem;border-radius:20px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.15);color:var(--white);white-space:nowrap;flex-shrink:0;margin-left:1rem}
+.aq{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r-md);margin-bottom:0.75rem;overflow:hidden;transition:border-color 0.15s}
+.aq.done{border-color:var(--blue-500)}
+.aq-head{padding:0.85rem 1.2rem 0.6rem;border-bottom:0.5px solid var(--bg-2)}
+.aq-num{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue-500);font-weight:700;margin-bottom:0.2rem}
+.aq-text{font-size:13px;font-weight:600;color:var(--ink);line-height:1.4}
+.r-row{display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;padding:0.75rem 1.2rem}
+.r-btn{padding:0.5rem 0.3rem;border:1.5px solid var(--bg-2);border-radius:var(--r-sm);cursor:pointer;background:var(--white);text-align:center;transition:all 0.15s}
+.r-btn:hover{border-color:var(--blue-500);background:var(--blue-50)}
+.r-btn.sel{border-color:var(--blue-500);background:var(--blue-50)}
+.rb-n{font-size:1rem;font-weight:600;color:var(--ink-3);display:block}
+.r-btn.sel .rb-n{color:var(--blue-900)}
+.rb-l{font-size:10px;color:var(--ink-4);display:block;margin-top:0.15rem;line-height:1.3}
+.r-btn.sel .rb-l{color:var(--ink-3)}
+.aq-note{width:calc(100% - 2.4rem);margin:0 1.2rem 0.75rem;padding:0.4rem 0.6rem;border:1px solid var(--bg-2);border-radius:var(--r-sm);font-size:12px;color:var(--ink);resize:none;outline:none;background:var(--bg)}
+.aq-note:focus{border-color:var(--blue-500);background:var(--white)}
+.sust-row{display:flex;align-items:center;gap:0.6rem;padding:0.7rem 1.2rem;border-top:0.5px solid var(--bg-2);font-size:12px;color:var(--ink-3)}
+.sust-row input{width:15px;height:15px;accent-color:var(--blue-500);cursor:pointer}
+#bot-bar{position:fixed;bottom:0;left:220px;right:0;height:42px;z-index:99;background:var(--blue-900);border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;padding:0 2rem}
+.bb-stage{font-size:13px;color:var(--white);font-weight:500}
+.bb-count{font-size:12px;color:rgba(255,255,255,0.4)}
+.rpt-hdr{background:var(--blue-900);border-radius:var(--r-lg);padding:1.5rem 1.75rem;margin-bottom:1.25rem;color:var(--white)}
+.rh-brand{font-size:11px;font-weight:500;color:var(--blue-200);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+.rh-firm{font-size:22px;font-weight:400;font-family:var(--font-s);margin-bottom:4px}
+.rh-meta{font-size:13px;color:#B0C4DE}
+.rh-big{font-size:44px;font-weight:300;color:#FFD54F;line-height:1}
+.rh-lbl{font-size:11px;color:var(--blue-200);margin:4px 0 8px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.25rem}
+.kpi-c{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r-md);padding:1rem;box-shadow:var(--sh-sm)}
+.kpi-lbl{font-size:11px;color:var(--ink-3);margin-bottom:0.3rem}
+.kpi-val{font-size:22px;font-weight:500;color:var(--ink)}
+.kpi-sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+.dep-item{border-radius:var(--r-sm);padding:0.75rem 1rem;margin-bottom:0.6rem;border-left:3px solid}
+.dep-block{background:var(--red-bg);border-left-color:var(--red)}
+.dep-warn{background:var(--amber-bg);border-left-color:var(--amber)}
+.dep-ok{background:var(--green-bg);border-left-color:var(--green)}
+.dep-t{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.dep-d{font-size:11px;color:var(--ink-3);line-height:1.5}
+.pri-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem}
+.pri-c{border-radius:var(--r-md);padding:1rem;border:0.5px solid var(--border)}
+.pri-1{background:var(--amber-bg);border-color:var(--amber)}
+.pri-2{background:var(--green-bg);border-color:var(--green)}
+.pri-3{background:var(--blue-50);border-color:var(--blue-500)}
+.pri-rank{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+.pri-1 .pri-rank{color:var(--amber)}
+.pri-2 .pri-rank{color:var(--green)}
+.pri-3 .pri-rank{color:var(--blue-700)}
+.pri-t{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.pri-f{font-size:11px;color:var(--ink-3);margin-bottom:6px}
+.pri-w{font-size:11px;color:var(--ink-3);line-height:1.5}
+.pbr{margin-bottom:10px}
+.pbr-h{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.pbr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.pbr-name{font-size:12px;font-weight:500;color:var(--ink);flex:1}
+.pbr-sc{font-size:12px;font-weight:600;width:28px;text-align:right}
+.pbr-trk{background:var(--bg-2);border-radius:4px;height:7px;position:relative}
+.pbr-fill{height:7px;border-radius:4px;transition:width 0.6s ease}
+.pbr-peer{position:absolute;top:0;width:2px;height:7px;background:var(--blue-500);border-radius:1px}
+.ldim-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ldim-lbl{font-size:12px;color:var(--ink);width:170px;flex-shrink:0}
+.ldim-trk{flex:1;background:var(--bg-2);border-radius:4px;height:7px}
+.ldim-fill{height:7px;border-radius:4px}
+.ldim-sc{font-size:12px;font-weight:600;width:28px;text-align:right;flex-shrink:0}
+.ldim-tag{font-size:10px;padding:2px 8px;border-radius:10px;width:56px;text-align:center;flex-shrink:0}
+.tag-s{background:var(--green-bg);color:#1A7A4A}
+.tag-p{background:var(--amber-bg);color:#B35C00}
+.tag-g{background:var(--red-bg);color:#922B21}
+.btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1.2rem;border-radius:var(--r-sm);font-size:13px;font-weight:500;border:none;transition:all 0.15s;cursor:pointer}
+.btn-p{background:var(--blue-500);color:var(--white)}
+.btn-p:hover{background:var(--blue-700)}
+.btn-o{background:transparent;color:var(--blue-700);border:1.5px solid var(--blue-200)}
+.btn-o:hover{background:var(--blue-50)}
+.btn-sm{padding:0.4rem 0.9rem;font-size:12px}
+.out-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.out-tbl th{text-align:left;font-size:10px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;padding:6px 8px;border-bottom:0.5px solid var(--border)}
+.out-tbl td{padding:8px;border-bottom:0.5px solid var(--bg-2);vertical-align:top;color:var(--ink-2)}
+.out-tbl tr:last-child td{border-bottom:none}
+.out-tbl td:first-child{color:var(--ink-3);font-weight:500}
+.mode-pnl{display:none}
+.mode-pnl.active{display:block}
+@media print{
+  #gate,#topbar,#sidebar,#bot-bar,.btn,.mode-btn,.sme-btn,.p-tabs{display:none!important}
+  #main{margin-left:0!important;margin-top:0!important;padding:0!important}
+  body{background:white}
+}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-emblem">UN</div>
+    <div class="gate-title">Factory of the Future</div>
+    <div class="gate-sub">Advisor Tool · v1.0<br>Enter access code to continue</div>
+    <input id="gate-inp" class="gate-input" type="password" placeholder="Access code" autocomplete="off">
+    <button class="gate-btn" id="gate-btn">Enter</button>
+    <div class="gate-err" id="gate-msg"></div>
+  </div>
+  <div class="gate-foot">UNIDO · TCS/DAI · Project 230258</div>
+</div>
+
+<div id="topbar">
+  <div class="tb-left">
+    <div class="tb-emblem">UN</div>
+    <div class="tb-div"></div>
+    <div class="tb-org">UNIDO · TCS/DAI · 230258</div>
+    <div class="tb-div"></div>
+    <div class="tb-title">Factory of the Future — Advisor Tool</div>
+  </div>
+  <div class="tb-right">D1 v2.0 · April 2026</div>
+</div>
+
+<div id="sidebar">
+  <div class="sb-sec">Active SME</div>
+  <button class="sme-btn active" id="sb1" onclick="selSme(1)">
+    <i class="ti ti-building-factory-2"></i><span id="sl1">SME 1</span>
+  </button>
+  <div class="sme-name-wrap vis" id="snw1">
+    <input class="sme-name-inp" id="sni1" placeholder="Company name..." oninput="updName(1)">
+  </div>
+  <button class="sme-btn" id="sb2" onclick="selSme(2)">
+    <i class="ti ti-building-factory-2"></i><span id="sl2">SME 2</span>
+  </button>
+  <div class="sme-name-wrap" id="snw2">
+    <input class="sme-name-inp" id="sni2" placeholder="Company name..." oninput="updName(2)">
+  </div>
+  <button class="sme-btn" id="sb3" onclick="selSme(3)">
+    <i class="ti ti-building-factory-2"></i><span id="sl3">SME 3</span>
+  </button>
+  <div class="sme-name-wrap" id="snw3">
+    <input class="sme-name-inp" id="sni3" placeholder="Company name..." oninput="updName(3)">
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-sec">Mode</div>
+  <button class="mode-btn active" id="mb1" onclick="swMode(1)">
+    <i class="ti ti-clipboard-list"></i>
+    <div class="mb-label"><span class="mb-num">Mode 1</span><span>Pre-Visit Prep</span></div>
+  </button>
+  <button class="mode-btn" id="mb2" onclick="swMode(2)">
+    <i class="ti ti-chart-radar"></i>
+    <div class="mb-label"><span class="mb-num">Mode 2</span><span>Maturity Scan</span></div>
+  </button>
+  <button class="mode-btn" id="mb3" onclick="swMode(3)">
+    <i class="ti ti-file-report"></i>
+    <div class="mb-label"><span class="mb-num">Mode 3</span><span>Session Output</span></div>
+  </button>
+  <div class="sb-div"></div>
+  <div class="sb-counter" id="sb-ctr">0 of 35 indicators answered</div>
+  <div class="sb-bottom">Fostering Industry 4.0 for Green Transition · Project 230258</div>
+</div>
+
+<div id="main">
+  <div class="c-inner">
+    <div class="mode-pnl active" id="mode-1">
+  <div class="sec-eye">Mode 1</div>
+  <div class="sec-head">Pre-Visit Preparation</div>
+  <div class="sec-sub">Complete before the site visit. Profile the SME, score lean readiness, and review the suggested visit agenda.</div>
+
+  <!-- PANEL A: SME PROFILE -->
+  <div class="panel">
+    <div class="p-hdr open" onclick="toggleP(this)">
+      <div class="p-hdr-l">
+        <div class="p-hdr-num">A</div>
+        <div class="p-hdr-title">SME Profile</div>
+        <div class="p-hdr-sub">(complete before visit)</div>
+      </div>
+      <i class="ti ti-chevron-up p-arrow"></i>
+    </div>
+    <div class="p-body open">
+      <div class="two-col">
+        <div>
+          <div class="f-row">
+            <label class="f-label">Sector</label>
+            <select class="f-select" id="p-sector">
+              <option value="">-- Select --</option>
+              <option>Metal fabrication &amp; machinery</option>
+              <option>Food &amp; beverage processing</option>
+              <option>Wood, furniture &amp; construction</option>
+              <option>Textiles &amp; apparel</option>
+              <option>Chemicals &amp; pharmaceuticals</option>
+              <option>Automotive components</option>
+              <option>Other manufacturing</option>
+            </select>
+          </div>
+          <div class="f-row">
+            <label class="f-label">Company size</label>
+            <select class="f-select" id="p-size">
+              <option value="">-- Select --</option>
+              <option>Fewer than 10 employees</option>
+              <option>10–49 employees</option>
+              <option>50–249 employees</option>
+              <option>250 or more employees</option>
+            </select>
+          </div>
+          <div class="f-row">
+            <label class="f-label">Location</label>
+            <input class="f-input" id="p-location" type="text" placeholder="City, country">
+          </div>
+          <div class="f-row">
+            <label class="f-label">Primary export market</label>
+            <div class="chip-g">
+              <span class="chip" onclick="chipS(this,'market')">Local market only</span>
+              <span class="chip" onclick="chipS(this,'market')">EU export</span>
+              <span class="chip" onclick="chipS(this,'market')">Non-EU export</span>
+              <span class="chip" onclick="chipS(this,'market')">Mixed</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="f-row">
+            <label class="f-label">SME self-reported stage</label>
+            <div class="chip-g">
+              <span class="chip" onclick="chipS(this,'self-stage')">1 — Ad Hoc</span>
+              <span class="chip" onclick="chipS(this,'self-stage')">2 — Aware</span>
+              <span class="chip" onclick="chipS(this,'self-stage')">3 — Structured</span>
+              <span class="chip" onclick="chipS(this,'self-stage')">4 — Integrated</span>
+              <span class="chip" onclick="chipS(this,'self-stage')">5 — Intelligent</span>
+              <span class="chip" onclick="chipS(this,'self-stage')">Not completed</span>
+            </div>
+          </div>
+          <div class="f-row">
+            <label class="f-label">Main stated challenge</label>
+            <select class="f-select" id="p-challenge">
+              <option value="">-- Select --</option>
+              <option>Quality consistency across shifts</option>
+              <option>Meeting delivery deadlines</option>
+              <option>Reducing costs (energy, materials, labour)</option>
+              <option>Finding and retaining skilled workers</option>
+              <option>Meeting customer or export requirements</option>
+              <option>Supply chain reliability</option>
+            </select>
+          </div>
+          <div class="f-row">
+            <label class="f-label">Certifications held</label>
+            <div class="chip-g">
+              <span class="chip" onclick="chipM(this)">ISO 9001</span>
+              <span class="chip" onclick="chipM(this)">ISO 14001</span>
+              <span class="chip" onclick="chipM(this)">ISO 45001</span>
+              <span class="chip" onclick="chipM(this)">IATF 16949</span>
+              <span class="chip" onclick="chipM(this)">CE marking</span>
+              <span class="chip" onclick="chipM(this)">Customer-specific</span>
+              <span class="chip" onclick="chipM(this)">None</span>
+            </div>
+          </div>
+          <div class="f-row">
+            <label class="f-label">Advisor notes</label>
+            <textarea id="p-notes" rows="3" style="width:100%;padding:0.5rem 0.75rem;border:1.5px solid var(--bg-2);border-radius:var(--r-sm);font-size:13px;resize:vertical;outline:none;font-family:var(--font)" onfocus="this.style.borderColor='var(--blue-500)'" onblur="this.style.borderColor='var(--bg-2)'" placeholder="Key observations from pre-visit call..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL B: LEAN READINESS -->
+  <div class="panel">
+    <div class="p-hdr" onclick="toggleP(this)">
+      <div class="p-hdr-l">
+        <div class="p-hdr-num">B</div>
+        <div class="p-hdr-title">Lean Readiness Pre-Check</div>
+        <div class="p-hdr-sub" id="lean-hdr-sub">(not started)</div>
+      </div>
+      <i class="ti ti-chevron-down p-arrow"></i>
+    </div>
+    <div class="p-body">
+      <div class="score-disp">
+        <div>
+          <span class="score-big" id="lean-avg">—</span><span class="score-den"> / 5.0</span>
+          <div class="score-lbl">Average lean score</div>
+        </div>
+        <div id="lean-ptag"></div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin-bottom:1rem;line-height:1.6">Score each dimension 1–5 based on pre-visit information or initial observation. 1 = not present, 3 = partially embedded, 5 = fully embedded and sustained.</p>
+      <table style="width:100%;border-collapse:collapse" id="lean-table">
+        <thead>
+          <tr>
+            <th style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);padding:6px 8px;border-bottom:0.5px solid var(--border);text-align:left;width:190px">Dimension</th>
+            <th style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);padding:6px 8px;border-bottom:0.5px solid var(--border);text-align:left">Description</th>
+            <th style="font-size:10px;font-weight:600;color:var(--ink-3);padding:6px 4px;border-bottom:0.5px solid var(--border);text-align:center;width:36px">1</th>
+            <th style="font-size:10px;font-weight:600;color:var(--ink-3);padding:6px 4px;border-bottom:0.5px solid var(--border);text-align:center;width:36px">2</th>
+            <th style="font-size:10px;font-weight:600;color:var(--ink-3);padding:6px 4px;border-bottom:0.5px solid var(--border);text-align:center;width:36px">3</th>
+            <th style="font-size:10px;font-weight:600;color:var(--ink-3);padding:6px 4px;border-bottom:0.5px solid var(--border);text-align:center;width:36px">4</th>
+            <th style="font-size:10px;font-weight:600;color:var(--ink-3);padding:6px 4px;border-bottom:0.5px solid var(--border);text-align:center;width:36px">5</th>
+          </tr>
+        </thead>
+        <tbody id="lean-tbody"></tbody>
+      </table>
+      <div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:var(--r-md);border:0.5px solid var(--border)">
+        <p style="font-size:11px;color:var(--ink-3);margin:0;line-height:1.6">Pathway: avg 1.0–2.4 → <strong>Lean Readiness Pathway</strong> (foundations required before D2). Avg 2.5–3.4 → <strong>Lean Acceleration</strong> (lean and digital in parallel). Avg 3.5–5.0 → <strong>Direct Entry</strong> (proceed to full Maturity Scan).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL C: VISIT AGENDA -->
+  <div class="panel">
+    <div class="p-hdr" onclick="toggleP(this)">
+      <div class="p-hdr-l">
+        <div class="p-hdr-num">C</div>
+        <div class="p-hdr-title">Visit Agenda</div>
+        <div class="p-hdr-sub">(auto-generated from lean score)</div>
+      </div>
+      <i class="ti ti-chevron-down p-arrow"></i>
+    </div>
+    <div class="p-body">
+      <p style="font-size:12px;color:var(--ink-3);margin-bottom:1rem;line-height:1.6">Suggested agenda based on lean readiness score. Check or uncheck items and add notes per item.</p>
+      <div id="agenda-container">
+        <p style="font-size:12px;color:var(--ink-4)">Complete lean scoring in Panel B to generate agenda.</p>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="mode-pnl" id="mode-2">
+  <div class="sec-eye">Mode 2</div>
+  <div class="sec-head">Maturity Scan — D2</div>
+  <div class="sec-sub">Score each indicator 1–5 based on direct observation. 1 = not present, 3 = partially embedded, 5 = fully embedded. Add notes for key findings.</div>
+
+  <div class="p-tabs">
+    <button class="p-tab active" id="pt1" onclick="showP(1)">AMT <span class="tab-bdg" id="tb1">0/5</span></button>
+    <button class="p-tab" id="pt2" onclick="showP(2)">Digital Factory <span class="tab-bdg" id="tb2">0/5</span></button>
+    <button class="p-tab" id="pt3" onclick="showP(3)">Eco Factory <span class="tab-bdg" id="tb3">0/5</span></button>
+    <button class="p-tab" id="pt4" onclick="showP(4)">Customer Eng. <span class="tab-bdg" id="tb4">0/5</span></button>
+    <button class="p-tab" id="pt5" onclick="showP(5)">Human Org. <span class="tab-bdg" id="tb5">0/5</span></button>
+    <button class="p-tab" id="pt6" onclick="showP(6)">Smart Mfg <span class="tab-bdg" id="tb6">0/5</span></button>
+    <button class="p-tab" id="pt7" onclick="showP(7)">Value Chain <span class="tab-bdg" id="tb7">0/5</span></button>
+  </div>
+
+  <!-- PILLAR 1 -->
+  <div class="pillar-pnl" id="pp1">
+    <div class="p-hd">
+      <div>
+        <div class="ph-eye">Pillar 01</div>
+        <div class="ph-name">Advanced Manufacturing Technologies</div>
+        <div class="ph-def">Capability to deploy and operate production technologies that enhance process precision, flexibility, and efficiency, building on stable and standardised processes.</div>
+      </div>
+      <div class="ph-bdg" id="ps1">—</div>
+    </div>
+    <div class="aq" id="aq-1-1">
+      <div class="aq-head"><div class="aq-num">1.1</div><div class="aq-text">Are production technologies deployed on stable, standardised processes — or do they compensate for process instability?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,1,1,1)"><span class="rb-n">1</span><span class="rb-l">Technologies mask process problems</span></button>
+        <button class="r-btn" onclick="rate(this,1,1,2)"><span class="rb-n">2</span><span class="rb-l">Some stability, inconsistent</span></button>
+        <button class="r-btn" onclick="rate(this,1,1,3)"><span class="rb-n">3</span><span class="rb-l">Technologies on well-defined processes</span></button>
+        <button class="r-btn" onclick="rate(this,1,1,4)"><span class="rb-n">4</span><span class="rb-l">Optimised, monitored digitally</span></button>
+        <button class="r-btn" onclick="rate(this,1,1,5)"><span class="rb-n">5</span><span class="rb-l">Fully adaptive, continuously improved</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="1" data-q="1" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-1-2">
+      <div class="aq-head"><div class="aq-num">1.2</div><div class="aq-text">How consistently are production technologies used across shifts and operators?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,1,2,1)"><span class="rb-n">1</span><span class="rb-l">Varies significantly by operator</span></button>
+        <button class="r-btn" onclick="rate(this,1,2,2)"><span class="rb-n">2</span><span class="rb-l">Some consistency, informal rules</span></button>
+        <button class="r-btn" onclick="rate(this,1,2,3)"><span class="rb-n">3</span><span class="rb-l">Documented procedures followed</span></button>
+        <button class="r-btn" onclick="rate(this,1,2,4)"><span class="rb-n">4</span><span class="rb-l">Digital systems enforce consistency</span></button>
+        <button class="r-btn" onclick="rate(this,1,2,5)"><span class="rb-n">5</span><span class="rb-l">Real-time deviation alerts</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="1" data-q="2" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-1-3">
+      <div class="aq-head"><div class="aq-num">1.3</div><div class="aq-text">Is equipment capability matched to current product and process requirements?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,1,3,1)"><span class="rb-n">1</span><span class="rb-l">Over or under-specified</span></button>
+        <button class="r-btn" onclick="rate(this,1,3,2)"><span class="rb-n">2</span><span class="rb-l">Partially matched</span></button>
+        <button class="r-btn" onclick="rate(this,1,3,3)"><span class="rb-n">3</span><span class="rb-l">Well-matched, reviewed regularly</span></button>
+        <button class="r-btn" onclick="rate(this,1,3,4)"><span class="rb-n">4</span><span class="rb-l">Dynamically reconfigured</span></button>
+        <button class="r-btn" onclick="rate(this,1,3,5)"><span class="rb-n">5</span><span class="rb-l">Fully flexible, demand-driven</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="1" data-q="3" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-1-4">
+      <div class="aq-head"><div class="aq-num">1.4</div><div class="aq-text">Is there evidence that technology investments have improved consistency, throughput, or resource efficiency?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,1,4,1)"><span class="rb-n">1</span><span class="rb-l">No improvement tracked</span></button>
+        <button class="r-btn" onclick="rate(this,1,4,2)"><span class="rb-n">2</span><span class="rb-l">Anecdotal improvement</span></button>
+        <button class="r-btn" onclick="rate(this,1,4,3)"><span class="rb-n">3</span><span class="rb-l">Measured with before/after data</span></button>
+        <button class="r-btn" onclick="rate(this,1,4,4)"><span class="rb-n">4</span><span class="rb-l">Continuous improvement loop</span></button>
+        <button class="r-btn" onclick="rate(this,1,4,5)"><span class="rb-n">5</span><span class="rb-l">AI-driven optimisation cycle</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="1" data-q="4" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-1-5">
+      <div class="aq-head"><div class="aq-num">1.5</div><div class="aq-text">Is advanced manufacturing (additive, flexible automation, collaborative robotics) in use or actively planned?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,1,5,1)"><span class="rb-n">1</span><span class="rb-l">Not considered</span></button>
+        <button class="r-btn" onclick="rate(this,1,5,2)"><span class="rb-n">2</span><span class="rb-l">Awareness, no plan</span></button>
+        <button class="r-btn" onclick="rate(this,1,5,3)"><span class="rb-n">3</span><span class="rb-l">Pilot or partial deployment</span></button>
+        <button class="r-btn" onclick="rate(this,1,5,4)"><span class="rb-n">4</span><span class="rb-l">Integrated in strategy</span></button>
+        <button class="r-btn" onclick="rate(this,1,5,5)"><span class="rb-n">5</span><span class="rb-l">Fully operational, scaling</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="1" data-q="5" placeholder="Observation..."></textarea>
+    </div>
+    <div class="sust-row">
+      <input type="checkbox" id="sust-1" onchange="sustCheck(this,1)">
+      <label for="sust-1">Sustainability dimension addressed (material efficiency, scrap reduction)</label>
+    </div>
+  </div>
+
+  <!-- PILLAR 2 -->
+  <div class="pillar-pnl" id="pp2" style="display:none">
+    <div class="p-hd">
+      <div>
+        <div class="ph-eye">Pillar 02</div>
+        <div class="ph-name">Digital Factory</div>
+        <div class="ph-def">Capability to capture, access, and use operational data across the organisation, including in environments where data is distributed across fragmented or weakly integrated systems.</div>
+      </div>
+      <div class="ph-bdg" id="ps2">—</div>
+    </div>
+    <div class="aq" id="aq-2-1">
+      <div class="aq-head"><div class="aq-num">2.1</div><div class="aq-text">Can operational data (production, inventory, quality) be accessed and combined across functions without manual reconciliation?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,2,1,1)"><span class="rb-n">1</span><span class="rb-l">Data locked in silos</span></button>
+        <button class="r-btn" onclick="rate(this,2,1,2)"><span class="rb-n">2</span><span class="rb-l">Possible with major effort</span></button>
+        <button class="r-btn" onclick="rate(this,2,1,3)"><span class="rb-n">3</span><span class="rb-l">Mostly accessible, minor steps</span></button>
+        <button class="r-btn" onclick="rate(this,2,1,4)"><span class="rb-n">4</span><span class="rb-l">Real-time across functions</span></button>
+        <button class="r-btn" onclick="rate(this,2,1,5)"><span class="rb-n">5</span><span class="rb-l">Fully automated data flows</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="2" data-q="1" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-2-2">
+      <div class="aq-head"><div class="aq-num">2.2</div><div class="aq-text">Is there a single version of truth for key operational metrics across departments?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,2,2,1)"><span class="rb-n">1</span><span class="rb-l">Different depts, different numbers</span></button>
+        <button class="r-btn" onclick="rate(this,2,2,2)"><span class="rb-n">2</span><span class="rb-l">Partial alignment, frequent gaps</span></button>
+        <button class="r-btn" onclick="rate(this,2,2,3)"><span class="rb-n">3</span><span class="rb-l">Agreed metrics, mostly consistent</span></button>
+        <button class="r-btn" onclick="rate(this,2,2,4)"><span class="rb-n">4</span><span class="rb-l">Single integrated source</span></button>
+        <button class="r-btn" onclick="rate(this,2,2,5)"><span class="rb-n">5</span><span class="rb-l">Live dashboard, all functions</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="2" data-q="2" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-2-3">
+      <div class="aq-head"><div class="aq-num">2.3</div><div class="aq-text">How current and reliable is operational data at the point of decision?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,2,3,1)"><span class="rb-n">1</span><span class="rb-l">Outdated or unreliable</span></button>
+        <button class="r-btn" onclick="rate(this,2,3,2)"><span class="rb-n">2</span><span class="rb-l">Partially current, some lag</span></button>
+        <button class="r-btn" onclick="rate(this,2,3,3)"><span class="rb-n">3</span><span class="rb-l">Generally reliable</span></button>
+        <button class="r-btn" onclick="rate(this,2,3,4)"><span class="rb-n">4</span><span class="rb-l">Real-time, high reliability</span></button>
+        <button class="r-btn" onclick="rate(this,2,3,5)"><span class="rb-n">5</span><span class="rb-l">Predictive, exception-based alerts</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="2" data-q="3" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-2-4">
+      <div class="aq-head"><div class="aq-num">2.4</div><div class="aq-text">Are ERP, MES, or equivalent systems actively used by operations teams — not just accounting?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,2,4,1)"><span class="rb-n">1</span><span class="rb-l">No systems in use</span></button>
+        <button class="r-btn" onclick="rate(this,2,4,2)"><span class="rb-n">2</span><span class="rb-l">Finance only</span></button>
+        <button class="r-btn" onclick="rate(this,2,4,3)"><span class="rb-n">3</span><span class="rb-l">Operations use basic modules</span></button>
+        <button class="r-btn" onclick="rate(this,2,4,4)"><span class="rb-n">4</span><span class="rb-l">Integrated across departments</span></button>
+        <button class="r-btn" onclick="rate(this,2,4,5)"><span class="rb-n">5</span><span class="rb-l">Real-time, shop-floor connected</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="2" data-q="4" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-2-5">
+      <div class="aq-head"><div class="aq-num">2.5</div><div class="aq-text">Is IoT or sensor data being used to monitor production or equipment in real time?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,2,5,1)"><span class="rb-n">1</span><span class="rb-l">No sensors or monitoring</span></button>
+        <button class="r-btn" onclick="rate(this,2,5,2)"><span class="rb-n">2</span><span class="rb-l">Manual checks, no automation</span></button>
+        <button class="r-btn" onclick="rate(this,2,5,3)"><span class="rb-n">3</span><span class="rb-l">Some sensors, limited integration</span></button>
+        <button class="r-btn" onclick="rate(this,2,5,4)"><span class="rb-n">4</span><span class="rb-l">Integrated IoT with dashboards</span></button>
+        <button class="r-btn" onclick="rate(this,2,5,5)"><span class="rb-n">5</span><span class="rb-l">AI-driven monitoring and response</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="2" data-q="5" placeholder="Observation..."></textarea>
+    </div>
+    <div class="sust-row">
+      <input type="checkbox" id="sust-2" onchange="sustCheck(this,2)">
+      <label for="sust-2">Sustainability dimension addressed (energy monitoring, emissions data)</label>
+    </div>
+  </div>
+
+  <!-- PILLAR 3 -->
+  <div class="pillar-pnl" id="pp3" style="display:none">
+    <div class="p-hd">
+      <div>
+        <div class="ph-eye">Pillar 03</div>
+        <div class="ph-name">Eco Factory</div>
+        <div class="ph-def">Capability to monitor, manage, and reduce environmental impact and resource use within production systems, including the ability to relate resource consumption to specific processes and operational decisions.</div>
+      </div>
+      <div class="ph-bdg" id="ps3">—</div>
+    </div>
+    <div class="aq" id="aq-3-1">
+      <div class="aq-head"><div class="aq-num">3.1</div><div class="aq-text">Is energy consumption measured at the process or machine level — or only at the total utility bill level?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,3,1,1)"><span class="rb-n">1</span><span class="rb-l">Total bill only</span></button>
+        <button class="r-btn" onclick="rate(this,3,1,2)"><span class="rb-n">2</span><span class="rb-l">Area-level measurement</span></button>
+        <button class="r-btn" onclick="rate(this,3,1,3)"><span class="rb-n">3</span><span class="rb-l">Process or machine level</span></button>
+        <button class="r-btn" onclick="rate(this,3,1,4)"><span class="rb-n">4</span><span class="rb-l">Real-time per-unit tracking</span></button>
+        <button class="r-btn" onclick="rate(this,3,1,5)"><span class="rb-n">5</span><span class="rb-l">Automated optimisation</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="3" data-q="1" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-3-2">
+      <div class="aq-head"><div class="aq-num">3.2</div><div class="aq-text">Is waste and scrap quantified, categorised by type, and linked to specific production activities?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,3,2,1)"><span class="rb-n">1</span><span class="rb-l">Not measured</span></button>
+        <button class="r-btn" onclick="rate(this,3,2,2)"><span class="rb-n">2</span><span class="rb-l">Total volumes estimated</span></button>
+        <button class="r-btn" onclick="rate(this,3,2,3)"><span class="rb-n">3</span><span class="rb-l">Categorised and linked</span></button>
+        <button class="r-btn" onclick="rate(this,3,2,4)"><span class="rb-n">4</span><span class="rb-l">Real-time with alerts</span></button>
+        <button class="r-btn" onclick="rate(this,3,2,5)"><span class="rb-n">5</span><span class="rb-l">Circular flows integrated</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="3" data-q="2" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-3-3">
+      <div class="aq-head"><div class="aq-num">3.3</div><div class="aq-text">Are resource efficiency targets set, tracked with defined KPIs, and reviewed regularly?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,3,3,1)"><span class="rb-n">1</span><span class="rb-l">No targets</span></button>
+        <button class="r-btn" onclick="rate(this,3,3,2)"><span class="rb-n">2</span><span class="rb-l">Informal, not tracked</span></button>
+        <button class="r-btn" onclick="rate(this,3,3,3)"><span class="rb-n">3</span><span class="rb-l">Formal KPIs tracked regularly</span></button>
+        <button class="r-btn" onclick="rate(this,3,3,4)"><span class="rb-n">4</span><span class="rb-l">KPIs linked to decisions</span></button>
+        <button class="r-btn" onclick="rate(this,3,3,5)"><span class="rb-n">5</span><span class="rb-l">Targets drive investment</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="3" data-q="3" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-3-4">
+      <div class="aq-head"><div class="aq-num">3.4</div><div class="aq-text">Is environmental data used in operational decisions — not just reported after the fact?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,3,4,1)"><span class="rb-n">1</span><span class="rb-l">Not used in decisions</span></button>
+        <button class="r-btn" onclick="rate(this,3,4,2)"><span class="rb-n">2</span><span class="rb-l">Referenced occasionally</span></button>
+        <button class="r-btn" onclick="rate(this,3,4,3)"><span class="rb-n">3</span><span class="rb-l">Routinely considered</span></button>
+        <button class="r-btn" onclick="rate(this,3,4,4)"><span class="rb-n">4</span><span class="rb-l">Primary decision criterion</span></button>
+        <button class="r-btn" onclick="rate(this,3,4,5)"><span class="rb-n">5</span><span class="rb-l">Automated optimisation loops</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="3" data-q="4" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-3-5">
+      <div class="aq-head"><div class="aq-num">3.5</div><div class="aq-text">Is there evidence of circular resource flows — reuse, recycling, or material recovery within or beyond the factory?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,3,5,1)"><span class="rb-n">1</span><span class="rb-l">No circular practices</span></button>
+        <button class="r-btn" onclick="rate(this,3,5,2)"><span class="rb-n">2</span><span class="rb-l">Some informal reuse</span></button>
+        <button class="r-btn" onclick="rate(this,3,5,3)"><span class="rb-n">3</span><span class="rb-l">Structured recycling programme</span></button>
+        <button class="r-btn" onclick="rate(this,3,5,4)"><span class="rb-n">4</span><span class="rb-l">Circular flows in product design</span></button>
+        <button class="r-btn" onclick="rate(this,3,5,5)"><span class="rb-n">5</span><span class="rb-l">Near-zero waste, closed loop</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="3" data-q="5" placeholder="Observation..."></textarea>
+    </div>
+    <div class="sust-row">
+      <input type="checkbox" id="sust-3" onchange="sustCheck(this,3)">
+      <label for="sust-3">Sustainability dimension addressed (structured environmental practices and circularity)</label>
+    </div>
+  </div>
+
+  <!-- PILLAR 4 -->
+  <div class="pillar-pnl" id="pp4" style="display:none">
+    <div class="p-hd">
+      <div>
+        <div class="ph-eye">Pillar 04</div>
+        <div class="ph-name">Customer-Focused Engineering</div>
+        <div class="ph-def">Capability to design and adapt products and processes based on customer requirements across the full product lifecycle, including consideration of environmental performance and end-of-life impact.</div>
+      </div>
+      <div class="ph-bdg" id="ps4">—</div>
+    </div>
+    <div class="aq" id="aq-4-1">
+      <div class="aq-head"><div class="aq-num">4.1</div><div class="aq-text">Are customer requirements formally captured and translated into product and process specifications?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,4,1,1)"><span class="rb-n">1</span><span class="rb-l">Informal, experience-based</span></button>
+        <button class="r-btn" onclick="rate(this,4,1,2)"><span class="rb-n">2</span><span class="rb-l">Partially documented</span></button>
+        <button class="r-btn" onclick="rate(this,4,1,3)"><span class="rb-n">3</span><span class="rb-l">Formal capture and translation</span></button>
+        <button class="r-btn" onclick="rate(this,4,1,4)"><span class="rb-n">4</span><span class="rb-l">Digital system, real-time link</span></button>
+        <button class="r-btn" onclick="rate(this,4,1,5)"><span class="rb-n">5</span><span class="rb-l">AI-assisted spec generation</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="4" data-q="1" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-4-2">
+      <div class="aq-head"><div class="aq-num">4.2</div><div class="aq-text">Is there a structured feedback loop between customer use, quality outcomes, and product or process design?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,4,2,1)"><span class="rb-n">1</span><span class="rb-l">No feedback loop</span></button>
+        <button class="r-btn" onclick="rate(this,4,2,2)"><span class="rb-n">2</span><span class="rb-l">Informal, occasional</span></button>
+        <button class="r-btn" onclick="rate(this,4,2,3)"><span class="rb-n">3</span><span class="rb-l">Structured, defined cycle</span></button>
+        <button class="r-btn" onclick="rate(this,4,2,4)"><span class="rb-n">4</span><span class="rb-l">Continuous feedback loop</span></button>
+        <button class="r-btn" onclick="rate(this,4,2,5)"><span class="rb-n">5</span><span class="rb-l">Real-time customer co-design</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="4" data-q="2" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-4-3">
+      <div class="aq-head"><div class="aq-num">4.3</div><div class="aq-text">Are lifecycle considerations (durability, repairability, end-of-life) part of the product design process?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,4,3,1)"><span class="rb-n">1</span><span class="rb-l">Not considered</span></button>
+        <button class="r-btn" onclick="rate(this,4,3,2)"><span class="rb-n">2</span><span class="rb-l">Considered informally</span></button>
+        <button class="r-btn" onclick="rate(this,4,3,3)"><span class="rb-n">3</span><span class="rb-l">Part of design criteria</span></button>
+        <button class="r-btn" onclick="rate(this,4,3,4)"><span class="rb-n">4</span><span class="rb-l">Lifecycle data drives design</span></button>
+        <button class="r-btn" onclick="rate(this,4,3,5)"><span class="rb-n">5</span><span class="rb-l">Digital twin lifecycle simulation</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="4" data-q="3" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-4-4">
+      <div class="aq-head"><div class="aq-num">4.4</div><div class="aq-text">How quickly can the factory adapt product design or specifications in response to a customer change request?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,4,4,1)"><span class="rb-n">1</span><span class="rb-l">Weeks or months, disruptive</span></button>
+        <button class="r-btn" onclick="rate(this,4,4,2)"><span class="rb-n">2</span><span class="rb-l">1–2 weeks with effort</span></button>
+        <button class="r-btn" onclick="rate(this,4,4,3)"><span class="rb-n">3</span><span class="rb-l">Days, managed process</span></button>
+        <button class="r-btn" onclick="rate(this,4,4,4)"><span class="rb-n">4</span><span class="rb-l">Hours, modular system</span></button>
+        <button class="r-btn" onclick="rate(this,4,4,5)"><span class="rb-n">5</span><span class="rb-l">Near real-time reconfiguration</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="4" data-q="4" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-4-5">
+      <div class="aq-head"><div class="aq-num">4.5</div><div class="aq-text">Has customer feedback driven measurable, documented improvements in the last 12 months?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,4,5,1)"><span class="rb-n">1</span><span class="rb-l">No evidence</span></button>
+        <button class="r-btn" onclick="rate(this,4,5,2)"><span class="rb-n">2</span><span class="rb-l">One or two informal changes</span></button>
+        <button class="r-btn" onclick="rate(this,4,5,3)"><span class="rb-n">3</span><span class="rb-l">Several documented improvements</span></button>
+        <button class="r-btn" onclick="rate(this,4,5,4)"><span class="rb-n">4</span><span class="rb-l">Systematic programme</span></button>
+        <button class="r-btn" onclick="rate(this,4,5,5)"><span class="rb-n">5</span><span class="rb-l">Continuous co-innovation cycle</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="4" data-q="5" placeholder="Observation..."></textarea>
+    </div>
+    <div class="sust-row">
+      <input type="checkbox" id="sust-4" onchange="sustCheck(this,4)">
+      <label for="sust-4">Sustainability dimension addressed (product and packaging efficiency)</label>
+    </div>
+  </div>
+
+  <!-- PILLAR 5 -->
+  <div class="pillar-pnl" id="pp5" style="display:none">
+    <div class="p-hd">
+      <div>
+        <div class="ph-eye">Pillar 05</div>
+        <div class="ph-name">Human-Centred Organisation</div>
+        <div class="ph-def">Capability to align workforce skills, roles, and organisational culture with evolving operational, technological, and sustainability requirements.</div>
+      </div>
+      <div class="ph-bdg" id="ps5">—</div>
+    </div>
+    <div class="aq" id="aq-5-1">
+      <div class="aq-head"><div class="aq-num">5.1</div><div class="aq-text">Are workers trained on current process standards, and is training updated when standards change?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,5,1,1)"><span class="rb-n">1</span><span class="rb-l">No formal training programme</span></button>
+        <button class="r-btn" onclick="rate(this,5,1,2)"><span class="rb-n">2</span><span class="rb-l">Exists, not systematically updated</span></button>
+        <button class="r-btn" onclick="rate(this,5,1,3)"><span class="rb-n">3</span><span class="rb-l">Regular, linked to process changes</span></button>
+        <button class="r-btn" onclick="rate(this,5,1,4)"><span class="rb-n">4</span><span class="rb-l">Continuous learning, digital support</span></button>
+        <button class="r-btn" onclick="rate(this,5,1,5)"><span class="rb-n">5</span><span class="rb-l">AI-assisted personalised learning</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="5" data-q="1" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-5-2">
+      <div class="aq-head"><div class="aq-num">5.2</div><div class="aq-text">Do floor-level workers use data or metrics to understand and manage their own area of work?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,5,2,1)"><span class="rb-n">1</span><span class="rb-l">No data access at floor level</span></button>
+        <button class="r-btn" onclick="rate(this,5,2,2)"><span class="rb-n">2</span><span class="rb-l">Some access, rarely used</span></button>
+        <button class="r-btn" onclick="rate(this,5,2,3)"><span class="rb-n">3</span><span class="rb-l">Workers regularly use metrics</span></button>
+        <button class="r-btn" onclick="rate(this,5,2,4)"><span class="rb-n">4</span><span class="rb-l">Workers own their metrics</span></button>
+        <button class="r-btn" onclick="rate(this,5,2,5)"><span class="rb-n">5</span><span class="rb-l">Workers drive improvement from data</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="5" data-q="2" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-5-3">
+      <div class="aq-head"><div class="aq-num">5.3</div><div class="aq-text">Is there a mechanism for workers to raise problems and suggest improvements — and is it actively used?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,5,3,1)"><span class="rb-n">1</span><span class="rb-l">No mechanism exists</span></button>
+        <button class="r-btn" onclick="rate(this,5,3,2)"><span class="rb-n">2</span><span class="rb-l">Exists, rarely used</span></button>
+        <button class="r-btn" onclick="rate(this,5,3,3)"><span class="rb-n">3</span><span class="rb-l">Regularly used, ideas implemented</span></button>
+        <button class="r-btn" onclick="rate(this,5,3,4)"><span class="rb-n">4</span><span class="rb-l">High participation, tracked outcomes</span></button>
+        <button class="r-btn" onclick="rate(this,5,3,5)"><span class="rb-n">5</span><span class="rb-l">Systematic kaizen, measurable impact</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="5" data-q="3" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-5-4">
+      <div class="aq-head"><div class="aq-num">5.4</div><div class="aq-text">Can supervisors and middle managers lead data-driven problem-solving — not just relay instructions?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,5,4,1)"><span class="rb-n">1</span><span class="rb-l">Relay instructions only</span></button>
+        <button class="r-btn" onclick="rate(this,5,4,2)"><span class="rb-n">2</span><span class="rb-l">Some capability, informal</span></button>
+        <button class="r-btn" onclick="rate(this,5,4,3)"><span class="rb-n">3</span><span class="rb-l">Most can facilitate structured PS</span></button>
+        <button class="r-btn" onclick="rate(this,5,4,4)"><span class="rb-n">4</span><span class="rb-l">All levels competent</span></button>
+        <button class="r-btn" onclick="rate(this,5,4,5)"><span class="rb-n">5</span><span class="rb-l">Leaders coach others in PS</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="5" data-q="4" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-5-5">
+      <div class="aq-head"><div class="aq-num">5.5</div><div class="aq-text">Is there evidence of workforce involvement in sustainability practices (energy awareness, waste reduction behaviour)?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,5,5,1)"><span class="rb-n">1</span><span class="rb-l">No awareness programme</span></button>
+        <button class="r-btn" onclick="rate(this,5,5,2)"><span class="rb-n">2</span><span class="rb-l">Awareness only, no behaviour change</span></button>
+        <button class="r-btn" onclick="rate(this,5,5,3)"><span class="rb-n">3</span><span class="rb-l">Active involvement in energy/waste</span></button>
+        <button class="r-btn" onclick="rate(this,5,5,4)"><span class="rb-n">4</span><span class="rb-l">Workers own sustainability metrics</span></button>
+        <button class="r-btn" onclick="rate(this,5,5,5)"><span class="rb-n">5</span><span class="rb-l">Workforce drives circular practices</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="5" data-q="5" placeholder="Observation..."></textarea>
+    </div>
+    <div class="sust-row">
+      <input type="checkbox" id="sust-5" onchange="sustCheck(this,5)">
+      <label for="sust-5">Sustainability dimension addressed (workforce awareness and behavioural practices)</label>
+    </div>
+  </div>
+
+  <!-- PILLAR 6 -->
+  <div class="pillar-pnl" id="pp6" style="display:none">
+    <div class="p-hd">
+      <div>
+        <div class="ph-eye">Pillar 06</div>
+        <div class="ph-name">Smart Manufacturing</div>
+        <div class="ph-def">Capability to use data and systematic analytical approaches — including, at higher maturity levels, AI-supported tools — to optimise operations and enable continuous improvement across multiple performance dimensions.</div>
+      </div>
+      <div class="ph-bdg" id="ps6">—</div>
+    </div>
+    <div class="aq" id="aq-6-1">
+      <div class="aq-head"><div class="aq-num">6.1</div><div class="aq-text">Are operational decisions based on structured data analysis — or primarily on experience and intuition?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,6,1,1)"><span class="rb-n">1</span><span class="rb-l">Almost entirely intuition</span></button>
+        <button class="r-btn" onclick="rate(this,6,1,2)"><span class="rb-n">2</span><span class="rb-l">Data consulted occasionally</span></button>
+        <button class="r-btn" onclick="rate(this,6,1,3)"><span class="rb-n">3</span><span class="rb-l">Data-informed decisions standard</span></button>
+        <button class="r-btn" onclick="rate(this,6,1,4)"><span class="rb-n">4</span><span class="rb-l">Real-time analytics driven</span></button>
+        <button class="r-btn" onclick="rate(this,6,1,5)"><span class="rb-n">5</span><span class="rb-l">Autonomous optimisation loops</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="6" data-q="1" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-6-2">
+      <div class="aq-head"><div class="aq-num">6.2</div><div class="aq-text">Is there evidence of pattern recognition across multiple variables — linking process inputs to quality or efficiency outcomes?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,6,2,1)"><span class="rb-n">1</span><span class="rb-l">No analytical capability</span></button>
+        <button class="r-btn" onclick="rate(this,6,2,2)"><span class="rb-n">2</span><span class="rb-l">Simple single-variable analysis</span></button>
+        <button class="r-btn" onclick="rate(this,6,2,3)"><span class="rb-n">3</span><span class="rb-l">Multi-variable for key decisions</span></button>
+        <button class="r-btn" onclick="rate(this,6,2,4)"><span class="rb-n">4</span><span class="rb-l">Automated pattern detection</span></button>
+        <button class="r-btn" onclick="rate(this,6,2,5)"><span class="rb-n">5</span><span class="rb-l">ML models in production use</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="6" data-q="2" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-6-3">
+      <div class="aq-head"><div class="aq-num">6.3</div><div class="aq-text">Are predictive capabilities in use or actively being developed (predictive maintenance, demand forecasting)?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,6,3,1)"><span class="rb-n">1</span><span class="rb-l">No predictive capability</span></button>
+        <button class="r-btn" onclick="rate(this,6,3,2)"><span class="rb-n">2</span><span class="rb-l">Basic forecasting only</span></button>
+        <button class="r-btn" onclick="rate(this,6,3,3)"><span class="rb-n">3</span><span class="rb-l">Predictive maintenance in pilot</span></button>
+        <button class="r-btn" onclick="rate(this,6,3,4)"><span class="rb-n">4</span><span class="rb-l">Predictive systems operational</span></button>
+        <button class="r-btn" onclick="rate(this,6,3,5)"><span class="rb-n">5</span><span class="rb-l">Self-optimising, closed loop</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="6" data-q="3" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-6-4">
+      <div class="aq-head"><div class="aq-num">6.4</div><div class="aq-text">Are analytical tools — dashboards, SPC, AI-assisted tools — actively used by operations staff in daily work?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,6,4,1)"><span class="rb-n">1</span><span class="rb-l">No tools in use</span></button>
+        <button class="r-btn" onclick="rate(this,6,4,2)"><span class="rb-n">2</span><span class="rb-l">Available but underused</span></button>
+        <button class="r-btn" onclick="rate(this,6,4,3)"><span class="rb-n">3</span><span class="rb-l">Regularly used by key roles</span></button>
+        <button class="r-btn" onclick="rate(this,6,4,4)"><span class="rb-n">4</span><span class="rb-l">Embedded in daily rhythm</span></button>
+        <button class="r-btn" onclick="rate(this,6,4,5)"><span class="rb-n">5</span><span class="rb-l">AI copilot for all operators</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="6" data-q="4" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-6-5">
+      <div class="aq-head"><div class="aq-num">6.5</div><div class="aq-text">Can the factory run scenario analysis or simulation before implementing operational changes?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,6,5,1)"><span class="rb-n">1</span><span class="rb-l">No simulation capability</span></button>
+        <button class="r-btn" onclick="rate(this,6,5,2)"><span class="rb-n">2</span><span class="rb-l">Informal what-if reasoning</span></button>
+        <button class="r-btn" onclick="rate(this,6,5,3)"><span class="rb-n">3</span><span class="rb-l">Structured scenario analysis</span></button>
+        <button class="r-btn" onclick="rate(this,6,5,4)"><span class="rb-n">4</span><span class="rb-l">Digital twin in use</span></button>
+        <button class="r-btn" onclick="rate(this,6,5,5)"><span class="rb-n">5</span><span class="rb-l">Real-time simulation, auto-adjust</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="6" data-q="5" placeholder="Observation..."></textarea>
+    </div>
+    <div class="sust-row">
+      <input type="checkbox" id="sust-6" onchange="sustCheck(this,6)">
+      <label for="sust-6">Sustainability dimension addressed (optimisation of resource use through system intelligence)</label>
+    </div>
+  </div>
+
+  <!-- PILLAR 7 -->
+  <div class="pillar-pnl" id="pp7" style="display:none">
+    <div class="p-hd">
+      <div>
+        <div class="ph-eye">Pillar 07</div>
+        <div class="ph-name">Value-Chain Open Factory</div>
+        <div class="ph-def">Capability to coordinate and integrate operations with suppliers, partners, and customers across the value chain, including collaboration on environmental and social sustainability performance.</div>
+      </div>
+      <div class="ph-bdg" id="ps7">—</div>
+    </div>
+    <div class="aq" id="aq-7-1">
+      <div class="aq-head"><div class="aq-num">7.1</div><div class="aq-text">Is information shared with key suppliers to support joint planning and coordination — beyond transactional ordering?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,7,1,1)"><span class="rb-n">1</span><span class="rb-l">No information sharing</span></button>
+        <button class="r-btn" onclick="rate(this,7,1,2)"><span class="rb-n">2</span><span class="rb-l">Ad hoc phone/email</span></button>
+        <button class="r-btn" onclick="rate(this,7,1,3)"><span class="rb-n">3</span><span class="rb-l">Structured sharing with key suppliers</span></button>
+        <button class="r-btn" onclick="rate(this,7,1,4)"><span class="rb-n">4</span><span class="rb-l">Automated data exchange</span></button>
+        <button class="r-btn" onclick="rate(this,7,1,5)"><span class="rb-n">5</span><span class="rb-l">Integrated digital supply network</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="7" data-q="1" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-7-2">
+      <div class="aq-head"><div class="aq-num">7.2</div><div class="aq-text">Can the factory receive and respond to customer demand signals faster than the standard order-acknowledgement cycle?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,7,2,1)"><span class="rb-n">1</span><span class="rb-l">Standard lead times only</span></button>
+        <button class="r-btn" onclick="rate(this,7,2,2)"><span class="rb-n">2</span><span class="rb-l">Some flexibility for key customers</span></button>
+        <button class="r-btn" onclick="rate(this,7,2,3)"><span class="rb-n">3</span><span class="rb-l">Demand signals trigger adjustments</span></button>
+        <button class="r-btn" onclick="rate(this,7,2,4)"><span class="rb-n">4</span><span class="rb-l">Real-time demand-driven production</span></button>
+        <button class="r-btn" onclick="rate(this,7,2,5)"><span class="rb-n">5</span><span class="rb-l">Autonomous demand response</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="7" data-q="2" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-7-3">
+      <div class="aq-head"><div class="aq-num">7.3</div><div class="aq-text">Is sustainability performance discussed or formally reported to supply chain partners?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,7,3,1)"><span class="rb-n">1</span><span class="rb-l">Never</span></button>
+        <button class="r-btn" onclick="rate(this,7,3,2)"><span class="rb-n">2</span><span class="rb-l">Informally on request</span></button>
+        <button class="r-btn" onclick="rate(this,7,3,3)"><span class="rb-n">3</span><span class="rb-l">Regular reporting to key partners</span></button>
+        <button class="r-btn" onclick="rate(this,7,3,4)"><span class="rb-n">4</span><span class="rb-l">Integrated in contracts and KPIs</span></button>
+        <button class="r-btn" onclick="rate(this,7,3,5)"><span class="rb-n">5</span><span class="rb-l">Real-time ESG data sharing</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="7" data-q="3" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-7-4">
+      <div class="aq-head"><div class="aq-num">7.4</div><div class="aq-text">Are inter-organisational data flows automated — or is coordination still primarily manual (phone, email, spreadsheet)?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,7,4,1)"><span class="rb-n">1</span><span class="rb-l">All manual</span></button>
+        <button class="r-btn" onclick="rate(this,7,4,2)"><span class="rb-n">2</span><span class="rb-l">Partially automated</span></button>
+        <button class="r-btn" onclick="rate(this,7,4,3)"><span class="rb-n">3</span><span class="rb-l">Mostly automated</span></button>
+        <button class="r-btn" onclick="rate(this,7,4,4)"><span class="rb-n">4</span><span class="rb-l">Fully automated digital chain</span></button>
+        <button class="r-btn" onclick="rate(this,7,4,5)"><span class="rb-n">5</span><span class="rb-l">AI-orchestrated supply network</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="7" data-q="4" placeholder="Observation..."></textarea>
+    </div>
+    <div class="aq" id="aq-7-5">
+      <div class="aq-head"><div class="aq-num">7.5</div><div class="aq-text">Is the factory part of any platform, network, or ecosystem that connects it digitally to peers, partners, or customers?</div></div>
+      <div class="r-row">
+        <button class="r-btn" onclick="rate(this,7,5,1)"><span class="rb-n">1</span><span class="rb-l">No</span></button>
+        <button class="r-btn" onclick="rate(this,7,5,2)"><span class="rb-n">2</span><span class="rb-l">Exploring options</span></button>
+        <button class="r-btn" onclick="rate(this,7,5,3)"><span class="rb-n">3</span><span class="rb-l">Member of industry platforms</span></button>
+        <button class="r-btn" onclick="rate(this,7,5,4)"><span class="rb-n">4</span><span class="rb-l">Active in integrated digital chain</span></button>
+        <button class="r-btn" onclick="rate(this,7,5,5)"><span class="rb-n">5</span><span class="rb-l">Orchestrating partner ecosystem</span></button>
+      </div>
+      <textarea class="aq-note" rows="2" data-p="7" data-q="5" placeholder="Observation..."></textarea>
+    </div>
+    <div class="sust-row">
+      <input type="checkbox" id="sust-7" onchange="sustCheck(this,7)">
+      <label for="sust-7">Sustainability dimension addressed (sustainability practices across suppliers and partners)</label>
+    </div>
+  </div>
+</div>
+    <div class="mode-pnl" id="mode-3">
+  <div class="sec-eye">Mode 3</div>
+  <div class="sec-head">Session Output</div>
+  <div class="sec-sub">Print-ready report generated from Mode 1 and Mode 2 data. Edit inline fields before printing.</div>
+
+  <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem">
+    <button class="btn btn-p" onclick="buildOutput()"><i class="ti ti-refresh"></i> Refresh from assessment data</button>
+    <button class="btn btn-o" onclick="window.print()"><i class="ti ti-printer"></i> Print / Export PDF</button>
+  </div>
+
+  <!-- REPORT HEADER -->
+  <div class="rpt-hdr" id="out-hdr">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="rh-brand">SMIC · UNIDO Project 230258 · Factory of the Future</div>
+        <div class="rh-firm" id="out-firm">—</div>
+        <div class="rh-meta" id="out-meta">—</div>
+      </div>
+      <div style="text-align:center;min-width:130px">
+        <div class="rh-big" id="out-composite">—</div>
+        <div class="rh-lbl">Composite score (out of 5.0)</div>
+        <div id="out-stage-badge" style="display:inline-block;background:#27AE60;color:#fff;border-radius:20px;padding:5px 14px;font-size:13px;font-weight:500;margin-top:6px">—</div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:8px;height:8px;margin:14px 0 4px;overflow:hidden">
+      <div id="out-progress-bar" style="height:8px;border-radius:8px;background:linear-gradient(90deg,#27AE60,#009EDB);width:0%;transition:width 0.6s ease"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#90CAF9">
+      <span>Stage 1 — Ad Hoc</span>
+      <span id="out-progress-label" style="color:#FFD54F;font-weight:500"></span>
+      <span>Stage 5 — Intelligent</span>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi-c"><div class="kpi-lbl">Pillars assessed</div><div class="kpi-val" id="out-kpi-pillars">0</div><div class="kpi-sub">of 7 transformation areas</div></div>
+    <div class="kpi-c"><div class="kpi-lbl">Highest pillar</div><div class="kpi-val" id="out-kpi-high" style="color:#1A7A4A">—</div><div class="kpi-sub" id="out-kpi-high-name">—</div></div>
+    <div class="kpi-c"><div class="kpi-lbl">Critical bottleneck</div><div class="kpi-val" id="out-kpi-low" style="color:#922B21">—</div><div class="kpi-sub" id="out-kpi-low-name">—</div></div>
+    <div class="kpi-c"><div class="kpi-lbl">Lean readiness</div><div class="kpi-val" id="out-kpi-lean">—</div><div class="kpi-sub" id="out-kpi-lean-path">—</div></div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="two-col-w" style="margin-bottom:1.25rem">
+    <div class="card">
+      <div class="card-title">Seven-pillar maturity profile</div>
+      <div style="display:flex;gap:1rem;font-size:11px;color:var(--ink-3);margin-bottom:10px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:var(--blue-900);display:inline-block"></span>This SME</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;background:var(--blue-500);display:inline-block;border-radius:1px"></span>Sector peers</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;background:#27AE60;opacity:0.4;display:inline-block;border-radius:1px"></span>FoF benchmark</span>
+      </div>
+      <div style="position:relative;width:100%;height:280px">
+        <canvas id="spiderChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Score by pillar</div>
+      <div id="out-pillar-bars"></div>
+    </div>
+  </div>
+
+  <!-- LEAN REPORT -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-title">Lean Readiness Pre-Check</div>
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1rem">
+      <div>
+        <span style="font-size:2rem;font-weight:300;color:var(--blue-900)" id="out-lean-score">—</span>
+        <span style="font-size:1rem;color:var(--ink-4)"> / 5.0</span>
+        <div style="font-size:11px;color:var(--ink-4)">Average lean score</div>
+      </div>
+      <div id="out-lean-tag"></div>
+    </div>
+    <div id="out-lean-bars"></div>
+  </div>
+
+  <!-- PILLAR DETAIL TABLE -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-title">Detailed pillar findings</div>
+    <table class="out-tbl" id="out-pillar-table">
+      <thead>
+        <tr>
+          <th style="width:22%">Pillar</th>
+          <th style="width:8%">Score</th>
+          <th style="width:10%">Stage</th>
+          <th>Key observation</th>
+          <th style="width:18%">Sustainability</th>
+        </tr>
+      </thead>
+      <tbody id="out-pillar-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- DEPENDENCY ANALYSIS -->
+  <div class="two-col" style="margin-bottom:1.25rem">
+    <div class="card">
+      <div class="card-title">Dependency analysis</div>
+      <div id="out-deps"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Peer benchmarking</div>
+      <div style="font-size:12px;color:var(--ink-3);margin-bottom:10px;line-height:1.5">Compared against regional sector peers who have completed the SMIC scan.</div>
+      <div style="position:relative;width:100%;height:180px">
+        <canvas id="benchChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIORITY ACTIONS -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-title">Transformation priority map</div>
+    <p style="font-size:12px;color:var(--ink-3);margin-bottom:1rem;line-height:1.5">Ranked by dependency impact, peer gap, and commercial urgency. These form the starting structure for the Transformation Plan (D3).</p>
+    <div class="pri-grid" id="out-priorities"></div>
+  </div>
+
+  <!-- NEXT STEPS -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-title">Suggested next steps <span style="font-size:10px;font-weight:400;color:var(--ink-4)">(click to edit before printing)</span></div>
+    <div id="out-next-steps"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="border-top:0.5px solid var(--border);padding-top:1rem;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink-3);margin-bottom:3rem">
+    <div id="out-footer-meta">Advisor: — · SMIC Certified · <span id="out-date"></span></div>
+    <div>UNIDO · TCS/DAI · Project 230258 · D1 v2.0</div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div id="bot-bar">
+  <div class="bb-stage" id="bb-stage">Overall estimate: —</div>
+  <div class="bb-count" id="bb-count">0 of 35 answered</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function checkPw(){
+  const v=document.getElementById('gate-inp').value.trim().toUpperCase().replace(/[\s\-]/g,'/');
+  if(v==='UNIDO/230258'){document.getElementById('gate').style.display='none';}
+  else{
+    const i=document.getElementById('gate-inp');
+    document.getElementById('gate-msg').textContent='Incorrect access code.';
+    i.classList.add('err'); i.value='';
+    setTimeout(()=>i.classList.remove('err'),400); i.focus();
+  }
+}
+document.getElementById('gate-btn').addEventListener('click',checkPw);
+document.getElementById('gate-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
+function swMode(n){
+  document.querySelectorAll('.mode-pnl').forEach((p,i)=>p.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selSme(n){
+  activeSme=n;
+  document.querySelectorAll('.sme-btn').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.sme-name-wrap').forEach((w,i)=>w.classList.toggle('vis',i===n-1));
+  document.getElementById('sni'+n).value=ST[n-1].name==='SME '+n?'':ST[n-1].name;
+  loadSmeState();
+}
+
+function updName(n){
+  const v=document.getElementById('sni'+n).value||('SME '+n);
+  ST[n-1].name=v;
+  document.getElementById('sl'+n).textContent=v;
+}
+
+function toggleP(hdr){
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+  const arr=hdr.querySelector('.p-arrow');
+  if(arr){arr.className='ti p-arrow '+(hdr.classList.contains('open')?'ti-chevron-up':'ti-chevron-down');}
+}
+
+function chipS(el,grp){
+  el.closest('.chip-g').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  ST[activeSme-1].profile[grp]=el.textContent.trim();
+}
+
+function chipM(el){
+  el.classList.toggle('sel');
+}
+
+// ── LEAN STATE & SCORING ──
+const LEAN_DIMS=[
+  {name:'5S / Visual management',desc:'Workplace organised with defined places for tools, parts, materials. Visual standards sustained.'},
+  {name:'Value stream mapping',desc:'SME can map complete product flow from material to customer. Waste points identified.'},
+  {name:'Standard work',desc:'Key production steps documented in a way operators actually follow consistently.'},
+  {name:'Kaizen / CI culture',desc:'Workers at all levels regularly identify and act on improvement opportunities.'},
+  {name:'TPM',desc:'Scheduled preventive maintenance programme in place and followed.'},
+  {name:'Pull systems / Kanban',desc:'Production triggered by downstream demand. Work-in-progress controlled.'},
+  {name:'Structured problem-solving',desc:'Defects investigated with a defined methodology (A3, PDCA, 8D).'},
+  {name:'Waste elimination',desc:'Seven wastes actively identified and reduced. Improvement visible and measured.'}
+];
+
+function buildLeanTable(){
+  const tb=document.getElementById('lean-tbody');
+  if(!tb)return;
+  tb.innerHTML=LEAN_DIMS.map((d,i)=>`
+    <tr id="lean-row-${i}">
+      <td style="padding:10px 8px;border-bottom:0.5px solid var(--bg-2);vertical-align:top">
+        <strong style="font-size:12px;color:var(--ink)">${d.name}</strong>
+      </td>
+      <td style="padding:10px 8px;border-bottom:0.5px solid var(--bg-2);vertical-align:top">
+        <span style="font-size:11px;color:var(--ink-4);line-height:1.5">${d.desc}</span>
+      </td>
+      ${[1,2,3,4,5].map(s=>`
+      <td style="padding:10px 4px;border-bottom:0.5px solid var(--bg-2);text-align:center">
+        <button class="lean-sb" data-row="${i}" data-score="${s}" onclick="leanScore(this,${i},${s})"
+          style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bg-2);background:var(--white);font-size:12px;font-weight:600;color:var(--ink-3);cursor:pointer;transition:all 0.15s">${s}</button>
+      </td>`).join('')}
+    </tr>`).join('');
+}
+
+function leanScore(btn,row,score){
+  ST[activeSme-1].lean[row]=score;
+  document.querySelectorAll(`#lean-row-${row} .lean-sb`).forEach(b=>{
+    b.style.background='var(--white)';
+    b.style.borderColor='var(--bg-2)';
+    b.style.color='var(--ink-3)';
+  });
+  btn.style.background='var(--blue-900)';
+  btn.style.borderColor='var(--blue-900)';
+  btn.style.color='var(--white)';
+  updateLean();
+}
+
+function updateLean(){
+  const scores=ST[activeSme-1].lean.filter(s=>s!==null);
+  if(!scores.length){
+    document.getElementById('lean-avg').textContent='—';
+    document.getElementById('lean-ptag').innerHTML='';
+    document.getElementById('lean-hdr-sub').textContent='(not started)';
+    renderAgenda(null);
+    return;
+  }
+  const avg=scores.reduce((a,b)=>a+b,0)/scores.length;
+  document.getElementById('lean-avg').textContent=avg.toFixed(1);
+  document.getElementById('lean-hdr-sub').textContent=scores.length+' of 8 scored';
+  let cls,label;
+  if(avg<2.5){cls='pt-r';label='Lean Readiness Pathway';}
+  else if(avg<3.5){cls='pt-a';label='Lean Acceleration';}
+  else{cls='pt-g';label='Direct Entry';}
+  document.getElementById('lean-ptag').innerHTML=`<span class="ptag ${cls}">${label}</span>`;
+  renderAgenda(avg);
+}
+
+function renderAgenda(avg){
+  const c=document.getElementById('agenda-container');
+  if(!c)return;
+  if(avg===null){c.innerHTML='<p style="font-size:12px;color:var(--ink-4)">Complete lean scoring in Panel B to generate agenda.</p>';return;}
+  let items;
+  if(avg<2.5){items=[
+    {t:'09:00',l:'Welcome & introductions'},
+    {t:'09:20',l:'Factory walk — 5S and visual management observation'},
+    {t:'10:15',l:'Process documentation review with production manager'},
+    {t:'11:00',l:'Maintenance records and TPM check'},
+    {t:'11:45',l:'Operator interviews (2–3 workers)'},
+    {t:'12:30',l:'Findings discussion with management'},
+    {t:'13:15',l:'Lean Readiness Pathway briefing and next steps'}
+  ];}else if(avg<3.5){items=[
+    {t:'09:00',l:'Welcome & SME profile review'},
+    {t:'09:20',l:'Factory walk — lean and digital observation'},
+    {t:'10:15',l:'Lean foundations check (priority dimensions)'},
+    {t:'11:00',l:'Maturity Scan — 3 priority pillars'},
+    {t:'12:30',l:'Data and systems review'},
+    {t:'13:15',l:'Findings and programme entry discussion'}
+  ];}else{items=[
+    {t:'09:00',l:'Welcome & profile confirmation'},
+    {t:'09:20',l:'Factory walk'},
+    {t:'10:15',l:'Full 7-pillar Maturity Scan — Pillars 1–4'},
+    {t:'12:30',l:'Full 7-pillar Maturity Scan — Pillars 5–7'},
+    {t:'13:30',l:'Sustainability sub-indicators review'},
+    {t:'14:00',l:'Dependency analysis and priority discussion'},
+    {t:'14:45',l:'Transformation Plan framing and next steps'}
+  ];}
+  c.innerHTML=items.map(item=>`
+    <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:0.5px solid var(--bg-2)">
+      <input type="checkbox" checked style="margin-top:3px;accent-color:var(--blue-500);flex-shrink:0">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:3px">
+          <span style="font-size:11px;font-weight:600;color:var(--blue-500);width:50px;flex-shrink:0">${item.t}</span>
+          <span style="font-size:13px;color:var(--ink);font-weight:500">${item.l}</span>
+        </div>
+        <textarea rows="1" placeholder="Note..." style="width:100%;padding:0.3rem 0.5rem;border:1px solid var(--bg-2);border-radius:4px;font-size:11px;font-family:var(--font);resize:none;outline:none;color:var(--ink-3);background:var(--bg)"></textarea>
+      </div>
+    </div>`).join('');
+}
+
+// ── GLOBAL STATE ──
+const ST=[1,2,3].map(n=>({
+  name:'SME '+n,
+  profile:{},
+  lean:new Array(8).fill(null),
+  pillar:Array.from({length:7},()=>new Array(5).fill(null)),
+  notes:Array.from({length:7},()=>new Array(5).fill('')),
+  sust:new Array(7).fill(false)
+}));
+let activeSme=1;
+
+function loadSmeState(){
+  const s=ST[activeSme-1];
+
+  // Reload lean buttons
+  document.querySelectorAll('.lean-sb').forEach(btn=>{
+    const row=parseInt(btn.dataset.row);
+    const score=parseInt(btn.dataset.score);
+    const stored=s.lean[row];
+    if(stored===score){
+      btn.style.background='var(--blue-900)';
+      btn.style.borderColor='var(--blue-900)';
+      btn.style.color='var(--white)';
+    } else {
+      btn.style.background='var(--white)';
+      btn.style.borderColor='var(--bg-2)';
+      btn.style.color='var(--ink-3)';
+    }
+  });
+
+  // Reload pillar rating buttons
+  document.querySelectorAll('.r-btn').forEach(btn=>{
+    btn.classList.remove('sel');
+  });
+  s.pillar.forEach((qArr,pi)=>{
+    qArr.forEach((score,qi)=>{
+      if(score===null)return;
+      const aqEl=document.getElementById('aq-'+(pi+1)+'-'+(qi+1));
+      if(!aqEl)return;
+      const btns=aqEl.querySelectorAll('.r-btn');
+      btns.forEach(b=>b.classList.remove('sel'));
+      if(btns[score-1])btns[score-1].classList.add('sel');
+      aqEl.classList.add('done');
+    });
+  });
+
+  // Reload notes
+  document.querySelectorAll('.aq-note').forEach(ta=>{
+    const p=parseInt(ta.dataset.p)-1;
+    const q=parseInt(ta.dataset.q)-1;
+    ta.value=s.notes[p][q]||'';
+  });
+
+  // Reload sustainability checkboxes
+  s.sust.forEach((checked,i)=>{
+    const cb=document.getElementById('sust-'+(i+1));
+    if(cb)cb.checked=checked;
+  });
+
+  // Reload pillar badges and tab badges
+  PILLARS.forEach((_,i)=>{
+    updatePillarBadge(i+1);
+    updateTabBadge(i+1);
+  });
+
+  updateLean();
+  updateCounters();
+}
+
+function updateCounters(){
+  const total=ST[activeSme-1].pillar.flat().filter(v=>v!==null).length;
+  document.getElementById('bb-count').textContent=total+' of 35 answered';
+  document.getElementById('sb-ctr').textContent=total+' of 35 indicators answered';
+  updateOverall();
+}
+
+function updateOverall(){
+  const all=ST[activeSme-1].pillar.flat().filter(v=>v!==null);
+  if(!all.length){document.getElementById('bb-stage').textContent='Overall estimate: —';return;}
+  const avg=all.reduce((a,b)=>a+b,0)/all.length;
+  const stage=avg<1.5?1:avg<2.5?2:avg<3.5?3:avg<4.5?4:5;
+  const names=['Ad Hoc','Aware','Structured','Integrated','Intelligent'];
+  document.getElementById('bb-stage').textContent=`Overall estimate: Stage ${stage} — ${names[stage-1]} (${avg.toFixed(1)})`;
+}
+
+// ── PILLAR NAVIGATION ──
+function showP(n){
+  document.querySelectorAll('.pillar-pnl').forEach((p,i)=>p.style.display=i===n-1?'block':'none');
+  document.querySelectorAll('.p-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+}
+
+// ── RATING ──
+function rate(btn,pillar,q,score){
+  const p=pillar-1, qi=q-1;
+  ST[activeSme-1].pillar[p][qi]=score;
+  const aqEl=document.getElementById('aq-'+pillar+'-'+q);
+  if(aqEl){
+    aqEl.querySelectorAll('.r-btn').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+    aqEl.classList.add('done');
+  }
+  updatePillarBadge(pillar);
+  updateTabBadge(pillar);
+  updateCounters();
+}
+
+function updatePillarBadge(pillar){
+  const scores=ST[activeSme-1].pillar[pillar-1].filter(v=>v!==null);
+  const badge=document.getElementById('ps'+pillar);
+  if(!badge)return;
+  if(!scores.length){badge.textContent='—';badge.style.background='rgba(255,255,255,0.15)';return;}
+  const avg=scores.reduce((a,b)=>a+b,0)/scores.length;
+  const stage=avg<1.5?1:avg<2.5?2:avg<3.5?3:avg<4.5?4:5;
+  const cols={1:'#E24B4A',2:'#E67E22',3:'#F0B429',4:'#27AE60',5:'#009EDB'};
+  badge.textContent='Stage '+stage+' ('+avg.toFixed(1)+')';
+  badge.style.background=cols[stage];
+}
+
+function updateTabBadge(pillar){
+  const scores=ST[activeSme-1].pillar[pillar-1].filter(v=>v!==null);
+  const badge=document.getElementById('tb'+pillar);
+  if(badge)badge.textContent=scores.length+'/5';
+}
+
+// ── SUSTAINABILITY CHECKBOX ──
+function sustCheck(cb,pillar){
+  ST[activeSme-1].sust[pillar-1]=cb.checked;
+}
+
+
+// ── PILLAR METADATA ──
+const PILLARS=[
+  {code:'AMT',name:'Advanced manufacturing tech',color:'#1A5276'},
+  {code:'DF', name:'Digital Factory',            color:'#154360'},
+  {code:'EF', name:'Eco Factory',                color:'#1A7A4A'},
+  {code:'CFE',name:'Customer engineering',       color:'#784212'},
+  {code:'HCO',name:'Human organisation',         color:'#4A235A'},
+  {code:'SM', name:'Smart manufacturing',        color:'#0E6655'},
+  {code:'VCOF',name:'Value chain / open factory',color:'#922B21'}
+];
+
+const PEER_AVG=[2.7,2.4,2.1,2.6,2.6,2.2,2.6];
+
+const STAGE_NAMES=['Ad Hoc','Aware','Structured','Integrated','Intelligent'];
+const STAGE_COLS={1:'#E24B4A',2:'#E67E22',3:'#F0B429',4:'#27AE60',5:'#009EDB'};
+
+function pillarAvg(p){
+  const scores=ST[activeSme-1].pillar[p].filter(v=>v!==null);
+  if(!scores.length)return null;
+  return scores.reduce((a,b)=>a+b,0)/scores.length;
+}
+
+function toStage(avg){
+  if(avg===null)return null;
+  return avg<1.5?1:avg<2.5?2:avg<3.5?3:avg<4.5?4:5;
+}
+
+// ── BUILD OUTPUT ──
+function buildOutput(){
+  const s=ST[activeSme-1];
+  const name=s.name||'—';
+  const sector=document.getElementById('p-sector')?.value||'—';
+  const size=document.getElementById('p-size')?.value||'—';
+  const location=document.getElementById('p-location')?.value||'—';
+
+  // Header
+  document.getElementById('out-firm').textContent=name;
+  document.getElementById('out-meta').textContent=sector+' · '+size+' · '+location+' · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('out-date').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('out-footer-meta').innerHTML='Advisor: <span contenteditable="true" style="border-bottom:1px dashed var(--ink-4);outline:none;min-width:80px">Click to add name</span> · SMIC Certified · '+new Date().toLocaleDateString('en-GB');
+
+  // Pillar averages
+  const avgs=PILLARS.map((_,i)=>pillarAvg(i));
+  const stages=avgs.map(toStage);
+  const answered=avgs.filter(v=>v!==null);
+  const composite=answered.length?answered.reduce((a,b)=>a+b,0)/answered.length:null;
+
+  // Composite score
+  if(composite!==null){
+    document.getElementById('out-composite').textContent=composite.toFixed(1);
+    const cs=toStage(composite);
+    document.getElementById('out-stage-badge').textContent='Stage '+cs+' — '+STAGE_NAMES[cs-1];
+    document.getElementById('out-stage-badge').style.background=STAGE_COLS[cs];
+    document.getElementById('out-progress-bar').style.width=((composite-1)/4*100)+'%';
+    document.getElementById('out-progress-label').textContent='← '+name+' is here';
+  }
+
+  // KPIs
+  document.getElementById('out-kpi-pillars').textContent=answered.length;
+  const validAvgs=avgs.map((a,i)=>({a,i})).filter(x=>x.a!==null);
+  if(validAvgs.length){
+    const hi=validAvgs.reduce((a,b)=>a.a>b.a?a:b);
+    const lo=validAvgs.reduce((a,b)=>a.a<b.a?a:b);
+    document.getElementById('out-kpi-high').textContent=PILLARS[hi.i].code+' '+hi.a.toFixed(1);
+    document.getElementById('out-kpi-high-name').textContent=PILLARS[hi.i].name;
+    document.getElementById('out-kpi-low').textContent=PILLARS[lo.i].code+' '+lo.a.toFixed(1);
+    document.getElementById('out-kpi-low-name').textContent=PILLARS[lo.i].name+' — dependency block';
+  }
+
+  // Lean KPI
+  const leanScores=s.lean.filter(v=>v!==null);
+  if(leanScores.length){
+    const la=leanScores.reduce((a,b)=>a+b,0)/leanScores.length;
+    document.getElementById('out-kpi-lean').textContent=la.toFixed(1);
+    document.getElementById('out-kpi-lean-path').textContent=la<2.5?'Lean Readiness Pathway':la<3.5?'Lean Acceleration':'Direct Entry';
+  }
+
+  // Spider chart
+  buildSpider(avgs);
+
+  // Pillar bars
+  buildPillarBars(avgs,stages);
+
+  // Lean bars
+  buildLeanBars(s.lean);
+
+  // Pillar table
+  buildPillarTable(avgs,stages,s);
+
+  // Dependency analysis
+  buildDeps(avgs,stages);
+
+  // Bench chart
+  buildBench(avgs);
+
+  // Priorities
+  buildPriorities(avgs,stages);
+
+  // Next steps
+  buildNextSteps(avgs,stages,s.lean);
+}
+
+// ── SPIDER CHART ──
+let spiderInst=null;
+function buildSpider(avgs){
+  const ctx=document.getElementById('spiderChart');
+  if(!ctx)return;
+  const isDark=false;
+  const gc='rgba(0,0,0,0.07)';
+  const lc='#666';
+  const data=avgs.map(a=>a!==null?a:0);
+  if(spiderInst){spiderInst.destroy();}
+  spiderInst=new Chart(ctx,{
+    type:'radar',
+    data:{
+      labels:PILLARS.map(p=>p.code),
+      datasets:[
+        {label:'This SME',data:data,backgroundColor:'rgba(0,63,107,0.18)',borderColor:'#003F6B',borderWidth:2,pointBackgroundColor:'#003F6B',pointRadius:4,pointHoverRadius:6},
+        {label:'Sector peers',data:PEER_AVG,backgroundColor:'rgba(0,158,219,0.07)',borderColor:'#009EDB',borderWidth:1.5,borderDash:[5,3],pointBackgroundColor:'#009EDB',pointRadius:3},
+        {label:'FoF benchmark',data:[5,5,5,5,5,5,5],backgroundColor:'rgba(39,174,96,0.04)',borderColor:'rgba(39,174,96,0.3)',borderWidth:1,borderDash:[2,4],pointRadius:0}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{r:{min:0,max:5,ticks:{stepSize:1,color:lc,font:{size:10},backdropColor:'transparent'},grid:{color:gc},angleLines:{color:gc},pointLabels:{font:{size:11},color:lc}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.r.toFixed(1)}}}
+    }
+  });
+}
+
+// ── PILLAR BARS ──
+function buildPillarBars(avgs,stages){
+  const el=document.getElementById('out-pillar-bars');
+  if(!el)return;
+  el.innerHTML=PILLARS.map((p,i)=>{
+    const a=avgs[i];
+    const st=stages[i];
+    const pct=a!==null?(a/5*100):0;
+    const peer=PEER_AVG[i];
+    const peerPct=peer/5*100;
+    const col=st?STAGE_COLS[st]:'var(--bg-2)';
+    const scText=a!==null?a.toFixed(1):'—';
+    const stText=st?'Stage '+st:'—';
+    return `<div class="pbr">
+      <div class="pbr-h">
+        <div class="pbr-dot" style="background:${p.color}"></div>
+        <span class="pbr-name">${p.name}</span>
+        <span class="pbr-sc" style="color:${col}">${scText}</span>
+        <span class="sp sp-${st||1}" style="margin-left:4px">${stText}</span>
+      </div>
+      <div class="pbr-trk">
+        <div class="pbr-fill" style="width:${pct}%;background:${col}"></div>
+        <div class="pbr-peer" style="left:${peerPct}%"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── LEAN BARS ──
+function buildLeanBars(lean){
+  const el=document.getElementById('out-lean-bars');
+  if(!el)return;
+  const answered=lean.filter(v=>v!==null);
+  if(!answered.length){el.innerHTML='<p style="font-size:12px;color:var(--ink-4)">No lean data entered yet.</p>';return;}
+  const avg=answered.reduce((a,b)=>a+b,0)/answered.length;
+  document.getElementById('out-lean-score').textContent=avg.toFixed(1);
+  const tagEl=document.getElementById('out-lean-tag');
+  if(avg<2.5){tagEl.innerHTML='<span class="ptag pt-r">Lean Readiness Pathway</span>';}
+  else if(avg<3.5){tagEl.innerHTML='<span class="ptag pt-a">Lean Acceleration</span>';}
+  else{tagEl.innerHTML='<span class="ptag pt-g">Direct Entry</span>';}
+  el.innerHTML=LEAN_DIMS.map((d,i)=>{
+    const sc=lean[i];
+    if(sc===null)return '';
+    const pct=sc/5*100;
+    const col=sc>=3.5?'#27AE60':sc>=2.5?'#E67E22':'#E24B4A';
+    const tag=sc>=3.5?'<span class="ldim-tag tag-s">Strong</span>':sc>=2.5?'<span class="ldim-tag tag-p">Partial</span>':'<span class="ldim-tag tag-g">Gap</span>';
+    return `<div class="ldim-row">
+      <span class="ldim-lbl">${d.name}</span>
+      <div class="ldim-trk"><div class="ldim-fill" style="width:${pct}%;background:${col}"></div></div>
+      <span class="ldim-sc" style="color:${col}">${sc}.0</span>
+      ${tag}
+    </div>`;
+  }).join('');
+}
+
+// ── PILLAR TABLE ──
+function buildPillarTable(avgs,stages,s){
+  const tb=document.getElementById('out-pillar-tbody');
+  if(!tb)return;
+  tb.innerHTML=PILLARS.map((p,i)=>{
+    const a=avgs[i];
+    const st=stages[i];
+    const note=s.notes[i][0]||'—';
+    const noteShort=note.length>100?note.substring(0,100)+'…':note;
+    const sust=s.sust[i]?'<span style="color:#27AE60;font-weight:600">✓ Addressed</span>':'<span style="color:#9BAABF">— Not confirmed</span>';
+    const scText=a!==null?a.toFixed(1):'—';
+    const stHtml=st?`<span class="sp sp-${st}">Stage ${st}</span>`:'—';
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p.color};margin-right:6px;vertical-align:middle"></span>${p.name}</td>
+      <td><strong style="color:${st?STAGE_COLS[st]:'var(--ink-3)'}">${scText}</strong></td>
+      <td>${stHtml}</td>
+      <td style="color:var(--ink-3);font-size:11px">${noteShort}</td>
+      <td>${sust}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── DEPENDENCY ANALYSIS ──
+function buildDeps(avgs,stages){
+  const el=document.getElementById('out-deps');
+  if(!el)return;
+  const deps=[];
+  const df=avgs[1];
+  const amt=avgs[0];
+  const sm=avgs[5];
+  const ef=avgs[2];
+  const cfe=avgs[3];
+  if(df!==null&&df<2.5){
+    deps.push({cls:'dep-block',title:'Digital Factory blocks Smart Manufacturing',desc:'SM requires DF ≥ Stage 2 (score 2.5). Current DF: '+df.toFixed(1)+'. Predictive analytics and OEE tracking cannot advance until data infrastructure is in place.'});
+    deps.push({cls:'dep-block',title:'Digital Factory blocks Eco Factory dashboard',desc:'Eco integration node requires data layer from DF. Without machine-level monitoring connected to a system, sustainability indicators cannot be aggregated.'});
+    if(cfe!==null&&cfe>=2.5)deps.push({cls:'dep-warn',title:'Customer Engineering approaching DF ceiling',desc:'CFE Stage 3+ requires DF ≥ Stage 2. At current trajectory, digital order management and customer visibility will be blocked.'});
+  }
+  if(df!==null&&df>=2.5&&sm!==null&&sm<2.5){
+    deps.push({cls:'dep-warn',title:'Smart Manufacturing — DF gate cleared, SM investment now viable',desc:'Digital Factory has reached Stage 2+. Smart Manufacturing can now advance. Recommended next: basic OEE dashboard and predictive maintenance pilot.'});
+  }
+  if(amt!==null&&amt>=3&&df!==null&&df<2){
+    deps.push({cls:'dep-ok',title:'AMT → Digital Factory — clear upgrade path',desc:'Strong AMT foundation (Stage '+toStage(amt)+') means machines are ready for connectivity. IoT gateway or OPC-UA connection to existing ERP is the enabling next step.'});
+  }
+  if(!deps.length){
+    deps.push({cls:'dep-ok',title:'No critical dependency blocks identified',desc:'Complete the Maturity Scan across all pillars to generate a full dependency analysis.'});
+  }
+  el.innerHTML=deps.map(d=>`<div class="dep-item ${d.cls}"><div class="dep-t">${d.title}</div><div class="dep-d">${d.desc}</div></div>`).join('');
+}
+
+// ── BENCH CHART ──
+let benchInst=null;
+function buildBench(avgs){
+  const ctx=document.getElementById('benchChart');
+  if(!ctx)return;
+  const data=avgs.map(a=>a!==null?parseFloat(a.toFixed(1)):0);
+  if(benchInst){benchInst.destroy();}
+  benchInst=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:PILLARS.map(p=>p.code),
+      datasets:[
+        {label:'This SME',data:data,backgroundColor:'#003F6B',borderRadius:3},
+        {label:'Sector peers',data:PEER_AVG,backgroundColor:'#009EDB',borderRadius:3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{
+        y:{min:0,max:5,ticks:{stepSize:1,color:'#666',font:{size:10}},grid:{color:'rgba(0,0,0,0.07)'}},
+        x:{ticks:{color:'#666',font:{size:9}},grid:{display:false}}
+      },
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)}}}
+    }
+  });
+}
+
+// ── PRIORITIES ──
+function buildPriorities(avgs,stages){
+  const el=document.getElementById('out-priorities');
+  if(!el)return;
+  const scored=avgs.map((a,i)=>({a,i,st:stages[i]})).filter(x=>x.a!==null);
+  if(!scored.length){el.innerHTML='<p style="font-size:12px;color:var(--ink-4)">Complete the Maturity Scan to generate priorities.</p>';return;}
+  scored.sort((a,b)=>a.a-b.a);
+  const top3=scored.slice(0,3);
+  const labels=['Priority 1 · Unlock action','Priority 2 · Commercial urgency','Priority 3 · Capability gap'];
+  const cls=['pri-1','pri-2','pri-3'];
+  el.innerHTML=top3.map((x,rank)=>{
+    const p=PILLARS[x.i];
+    const target=Math.min(5,Math.ceil(x.a)+1);
+    return `<div class="pri-c ${cls[rank]}">
+      <div class="pri-rank">${labels[rank]}</div>
+      <div class="pri-t">${p.name}</div>
+      <div class="pri-f">Current: ${x.a.toFixed(1)} &nbsp;·&nbsp; Target: ${target}.0</div>
+      <div class="pri-w" contenteditable="true" style="outline:none;border-bottom:1px dashed rgba(0,0,0,0.15)">Click to add rationale and recommended actions for this priority.</div>
+    </div>`;
+  }).join('');
+}
+
+// ── NEXT STEPS ──
+function buildNextSteps(avgs,stages,lean){
+  const el=document.getElementById('out-next-steps');
+  if(!el)return;
+  const leanAnswered=lean.filter(v=>v!==null);
+  const leanAvg=leanAnswered.length?leanAnswered.reduce((a,b)=>a+b,0)/leanAnswered.length:null;
+  const scored=avgs.map((a,i)=>({a,i})).filter(x=>x.a!==null).sort((a,b)=>a.a-b.a);
+  const w1=scored[0]?PILLARS[scored[0].i].name:'Digital Factory';
+  const w2=scored[1]?PILLARS[scored[1].i].name:'Eco Factory';
+  let steps;
+  if(leanAvg===null||leanAvg<2.5){steps=[
+    'Schedule lean readiness site visit and agree lean foundations action plan with management.',
+    'Focus on standard work documentation for top 3 production processes before beginning D2 scan.',
+    'Establish preventive maintenance schedule for critical machines.',
+    'Address gap in '+w1+' as part of lean preparation phase.',
+    'Schedule D2 Maturity Scan for after lean readiness pathway completion (est. 3–6 months).'
+  ];}else if(leanAvg<3.5){steps=[
+    'Proceed to full D2 Maturity Scan — lean foundations are sufficient for parallel track.',
+    'Prioritise '+w1+' as the primary gap — it is the binding constraint on other pillars.',
+    'Develop standard work documentation alongside first digital tool deployment.',
+    'Address '+w2+' through targeted lean and digital actions in the Transformation Plan.',
+    'Build D3 Transformation Plan with both lean and digital actions integrated.'
+  ];}else{steps=[
+    'Proceed immediately to full D2 Maturity Scan — lean foundations are strong.',
+    'Focus Transformation Plan on '+w1+' as the priority investment area.',
+    'Address '+w2+' through concrete KPI-based actions in D3.',
+    'Target the Stage 3→4 cross-functional integration transition as the central D3 objective.',
+    'Include at least one sustainability action with a measurable KPI baseline in the D3 plan.'
+  ];}
+  el.innerHTML=steps.map((text,i)=>`
+    <div class="next-step-item">
+      <div class="ns-num">${i+1}</div>
+      <div class="ns-text" contenteditable="true">${text}</div>
+    </div>`).join('');
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded',()=>{
+  buildLeanTable();
+  loadSmeState();
+
+  // Note saving
+  document.querySelectorAll('.aq-note').forEach(ta=>{
+    ta.addEventListener('input',()=>{
+      const p=parseInt(ta.dataset.p)-1;
+      const q=parseInt(ta.dataset.q)-1;
+      ST[activeSme-1].notes[p][q]=ta.value;
+    });
+  });
+
+  // Set today's date
+  const d=new Date();
+  const dateStr=d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const dateEl=document.getElementById('out-date');
+  if(dateEl)dateEl.textContent=dateStr;
+});
+</script>
+</body>
+</html>
